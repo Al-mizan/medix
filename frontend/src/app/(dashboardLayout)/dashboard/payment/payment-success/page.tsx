@@ -1,0 +1,1 @@
+export { default } from "@/app/(dashboardLayout)/(patientRouteGroup)/payment/success/page"

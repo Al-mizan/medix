@@ -1,0 +1,17 @@
+node_modules
+.next
+dist
+build
+.git
+.gitignore
+.env.*
+!.env.example
+.vscode
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+pnpm-debug.log
+Dockerfile*
+docker-compose*
+.env
+.pnpm-store
