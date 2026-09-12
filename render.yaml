@@ -9,6 +9,8 @@ services:
     dockerContext: ./backend
     plan: free
     region: oregon
+    branch: main
+    autoDeployTrigger: commit
     healthCheckPath: /
     envVars:
       - key: PORT
@@ -87,6 +89,8 @@ services:
     dockerContext: ./frontend
     plan: free
     region: oregon
+    branch: main
+    autoDeployTrigger: commit
     healthCheckPath: /
     envVars:
       - key: NEXT_PUBLIC_API_BASE_URL
