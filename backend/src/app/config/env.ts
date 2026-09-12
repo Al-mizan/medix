@@ -87,12 +87,14 @@ const loadEnvVariables = (): EnvConfig => {
         // 'RAG_EMBEDDING_MODEL',
     ]
 
-    requireEnvVariable.forEach((variable) => {
-        if (!process.env[variable]) {
-            // throw new Error(`Environment variable ${variable} is required but not set in .env file.`);
-            throw new AppError(status.INTERNAL_SERVER_ERROR, `Environment variable ${variable} is required but not set in .env file.`);
-        }
-    })
+    const missingVariables = requireEnvVariable.filter((variable) => !process.env[variable]);
+
+    if (missingVariables.length > 0) {
+        throw new AppError(
+            status.INTERNAL_SERVER_ERROR,
+            `Missing required environment variable(s):\n  - ${missingVariables.join('\n  - ')}\nPlease configure them in your Render dashboard environment variables.`
+        );
+    }
 
     return {
         NODE_ENV: process.env.NODE_ENV as string,
