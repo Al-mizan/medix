@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getNewTokensWithRefreshToken } from '@/services/auth.services';
 import { ApiResponse } from '@/types/api.types';
 import axios from 'axios';
@@ -25,7 +24,7 @@ async function tryRefreshToken(
     }
     try {
         await getNewTokensWithRefreshToken(refreshToken);
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error refreshing token in http client:", error);
     }
 }

@@ -1,13 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import status from "http-status";
 import { Role } from "../../../generated/prisma/enums";
+import { Prescription, Prisma } from "../../../generated/prisma/client";
 import { deleteFileFromCloudinary, uploadFileToCloudinary } from "../../config/cloudinary.config";
 import AppError from "../../errorHelpers/AppError";
 import { IRequestUser } from "../../interface/requestUser.interface";
 import { prisma } from "../../lib/prisma";
 import { sendEmail } from "../../utils/email";
-import { ICreatePrescriptionPayload } from "./prescription.interface";
+import { ICreatePrescriptionPayload, IUpdatePrescriptionPayload } from "./prescription.interface";
 import { generatePrescriptionPDF } from "./prescription.utils";
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import { IqueryParams } from "../../interface/query.interface";
+import { prescriptionFilterableFields, prescriptionIncludeConfig, prescriptionSearchableFields } from "./prescription.constant";
 
 const givePrescription = async (user: IRequestUser, payload: ICreatePrescriptionPayload) => {
     const doctorData = await prisma.doctor.findUniqueOrThrow({
@@ -24,8 +27,12 @@ const givePrescription = async (user: IRequestUser, payload: ICreatePrescription
             patient: true,
             doctor: {
                 include: {
-                    specialties: true
-                }
+                    specialties: {
+                        include: {
+                            specialty: true,
+                        },
+                    },
+                },
             },
             schedule: {
                 include: {
@@ -99,7 +106,7 @@ const givePrescription = async (user: IRequestUser, payload: ICreatePrescription
                 templateData: {
                     doctorName: doctor.name,
                     patientName: patient.name,
-                    specialization: doctor.specialties.map((s: any) => s.title).join(", "),
+                    specialization: doctor.specialties.map((s) => s.specialty.title).join(", "),
                     appointmentDate: new Date(appointmentData.schedule.startDateTime).toLocaleString(),
                     issuedDate: new Date().toLocaleDateString(),
                     prescriptionId: result.id,
@@ -175,19 +182,34 @@ const myPrescriptions = async (user: IRequestUser) => {
 
 };
 
-const getAllPrescriptions = async () => {
-    const result = await prisma.prescription.findMany({
-        include: {
+const getAllPrescriptions = async (query: IqueryParams) => {
+    const queryBuilder = new QueryBuilder<Prescription, Prisma.PrescriptionWhereInput, Prisma.PrescriptionInclude>(
+        prisma.prescription,
+        query,
+        {
+            searchableFields: prescriptionSearchableFields,
+            filterableFields: prescriptionFilterableFields,
+        }
+    );
+
+    const result = await queryBuilder
+        .search()
+        .filter()
+        .include({
             patient: true,
             doctor: true,
             appointment: true,
-        }
-    })
+        })
+        .dynamicInclude(prescriptionIncludeConfig)
+        .paginate()
+        .sort()
+        .fields()
+        .execute();
 
     return result;
 };
 
-const updatePrescription = async (user: IRequestUser, prescriptionId: string, payload: any) => {
+const updatePrescription = async (user: IRequestUser, prescriptionId: string, payload: Partial<IUpdatePrescriptionPayload>) => {
     // Verify user exists
     const isUserExists = await prisma.user.findUnique({
         where: {

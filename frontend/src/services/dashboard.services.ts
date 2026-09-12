@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import { httpClient } from "@/lib/axios/httpClient";
@@ -9,11 +8,11 @@ export async function getDashboardData() {
         const response = await httpClient.get<IAdminDashboardData>("/stats")
 
         return response;
-    } catch (error : any) {
-      console.log(error, "From Dashboard Server Action");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An error occurred while fetching dashboard data.";
       return {
         success: false,
-        message: error.message || "An error occurred while fetching dashboard data.",
+        message,
         data: null,
         meta: null,
       }  

@@ -1,9 +1,13 @@
 import status from "http-status";
 import { PaymentStatus, Role } from "../../../generated/prisma/enums";
+import { Prisma, Review } from "../../../generated/prisma/client";
 import AppError from "../../errorHelpers/AppError";
 import { prisma } from "../../lib/prisma";
 import { ICreateReviewPayload, IUpdateReviewPayload } from "./review.interface";
 import { IRequestUser } from "../../interface/requestUser.interface";
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import { IqueryParams } from "../../interface/query.interface";
+import { reviewFilterableFields, reviewIncludeConfig, reviewSearchableFields } from "./review.constant";
 
 const giveReview = async (user: IRequestUser, payload: ICreateReviewPayload) => {
     const patientData = await prisma.patient.findUniqueOrThrow({
@@ -69,17 +73,31 @@ const giveReview = async (user: IRequestUser, payload: ICreateReviewPayload) => 
     return result;
 };
 
-const getAllReviews = async (
-) => {
-    const reviews = await prisma.review.findMany({
-        include: {
+const getAllReviews = async (query: IqueryParams) => {
+    const queryBuilder = new QueryBuilder<Review, Prisma.ReviewWhereInput, Prisma.ReviewInclude>(
+        prisma.review,
+        query,
+        {
+            searchableFields: reviewSearchableFields,
+            filterableFields: reviewFilterableFields,
+        }
+    );
+
+    const result = await queryBuilder
+        .search()
+        .filter()
+        .include({
             doctor: true,
             patient: true,
-            appointment: true
-        }
-    });
+            appointment: true,
+        })
+        .dynamicInclude(reviewIncludeConfig)
+        .paginate()
+        .sort()
+        .fields()
+        .execute();
 
-    return reviews;
+    return result;
 };
 
 const myReviews = async (user: IRequestUser) => {

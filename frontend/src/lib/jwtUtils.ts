@@ -1,5 +1,4 @@
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 const verifyToken = (token: string, secret: string) => {
@@ -9,10 +8,11 @@ const verifyToken = (token: string, secret: string) => {
             success: true,
             data: decoded
         }
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Token verification failed";
         return {
             success: false,
-            message: error.message,
+            message,
             error
         }
     }

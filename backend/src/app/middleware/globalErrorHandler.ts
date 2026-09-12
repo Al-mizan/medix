@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
 import { envVars } from "../config/env";
 import status from "http-status";
@@ -13,7 +12,7 @@ import { Prisma } from "../../generated/prisma/client";
 import { handlePrismaClientKnownRequestError, handlePrismaClientUnknownError, handlePrismaClientValidationError, handlerPrismaClientInitializationError, handlerPrismaClientRustPanicError } from "../errorHelpers/handlePrismaErrors";
 
 
-export const globalErrorHandler = async (err: any, req: Request, res: Response, next: NextFunction) => {
+export const globalErrorHandler = async (err: unknown, req: Request, res: Response, next: NextFunction) => {
     if (envVars.NODE_ENV === 'development') {
         console.error('Error from Global Error Handler:', err);
     }

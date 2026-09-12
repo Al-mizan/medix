@@ -4,13 +4,11 @@ import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
 import { PatientService } from "./patient.service";
 import { IRequestUser } from "../../interface/requestUser.interface";
-
+import { IqueryParams } from "../../interface/query.interface";
 
 const updateMyProfile = catchAsync(async (req: Request, res: Response) => {
-
     const user = req.user as IRequestUser;
     const payload = req.body;
-
 
     const result = await PatientService.updateMyProfile(user, payload);
 
@@ -20,8 +18,61 @@ const updateMyProfile = catchAsync(async (req: Request, res: Response) => {
         message: "Profile updated successfully",
         data: result
     });
-})
+});
+
+const getMyProfile = catchAsync(async (req: Request, res: Response) => {
+    const user = req.user as IRequestUser;
+    const result = await PatientService.getMyProfile(user);
+
+    sendResponse(res, {
+        success: true,
+        httpStatusCode: status.OK,
+        message: "Patient profile retrieved successfully",
+        data: result
+    });
+});
+
+const getAllPatients = catchAsync(async (req: Request, res: Response) => {
+    const query = req.query;
+    const result = await PatientService.getAllPatients(query as IqueryParams);
+
+    sendResponse(res, {
+        success: true,
+        httpStatusCode: status.OK,
+        message: "Patients retrieved successfully",
+        data: result.data,
+        meta: result.meta,
+    });
+});
+
+const getPatientById = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await PatientService.getPatientById(id as string);
+
+    sendResponse(res, {
+        success: true,
+        httpStatusCode: status.OK,
+        message: "Patient retrieved successfully",
+        data: result
+    });
+});
+
+const deletePatient = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await PatientService.deletePatient(id as string);
+
+    sendResponse(res, {
+        success: true,
+        httpStatusCode: status.OK,
+        message: "Patient deleted successfully",
+        data: result
+    });
+});
 
 export const PatientController = {
-    updateMyProfile
-}
+    updateMyProfile,
+    getMyProfile,
+    getAllPatients,
+    getPatientById,
+    deletePatient,
+};

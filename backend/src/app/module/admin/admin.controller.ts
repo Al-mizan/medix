@@ -4,15 +4,19 @@ import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
 import { AdminService } from "./admin.service";
 
+import { IqueryParams } from "../../interface/query.interface";
+
 const getAllAdmins = catchAsync(
     async (req: Request, res: Response) => {
-        const result = await AdminService.getAllAdmins();
+        const query = req.query;
+        const result = await AdminService.getAllAdmins(query as IqueryParams);
 
         sendResponse(res, {
             httpStatusCode: status.OK,
             success: true,
             message: "Admins fetched successfully",
-            data: result,
+            data: result.data,
+            meta: result.meta,
         })
     }
 )
@@ -36,8 +40,9 @@ const updateAdmin = catchAsync(
     async (req: Request, res: Response) => {
         const { id } = req.params;
         const payload = req.body;
+        const user = req.user;
 
-        const updatedAdmin = await AdminService.updateAdmin(id as string, payload);
+        const updatedAdmin = await AdminService.updateAdmin(id as string, payload, user);
 
         sendResponse(res, {
             httpStatusCode: status.OK,

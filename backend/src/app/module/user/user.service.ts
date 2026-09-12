@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import status from "http-status";
 import { Role, Specialty } from "../../../generated/prisma/client";
 import AppError from "../../errorHelpers/AppError";
@@ -123,8 +122,11 @@ const createDoctor = async (payload: ICreateDoctorPayload) => {
 }
 
 
-const createAdmin = async (payload: ICreateAdminPayload) => {
-    //TODO: Validate who is creating the admin user. Only super admin can create admin user and only super admin can create super admin user but admin user cannot create super admin user
+const createAdmin = async (payload: ICreateAdminPayload, callerRole?: string) => {
+    // Prevent privilege escalation: only SUPER_ADMIN can create SUPER_ADMIN accounts
+    if (payload.role === "SUPER_ADMIN" && callerRole !== Role.SUPER_ADMIN) {
+        throw new AppError(status.FORBIDDEN, "Only a Super Admin can create another Super Admin account");
+    }
 
     const userExists = await prisma.user.findUnique({
         where: {
@@ -159,7 +161,7 @@ const createAdmin = async (payload: ICreateAdminPayload) => {
         return adminData;
 
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.log("Error creating admin: ", error);
         await prisma.user.delete({
             where: {

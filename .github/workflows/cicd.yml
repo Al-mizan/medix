@@ -41,6 +41,9 @@ jobs:
       - name: Generate Prisma Client
         run: pnpm db:generate
 
+      - name: Test Backend
+        run: pnpm test:backend
+
       - name: Build Backend
         run: pnpm build:backend
 
@@ -67,6 +70,9 @@ jobs:
 
       - name: Lint Frontend
         run: pnpm --filter frontend-ph-healthcare lint
+
+      - name: Test Frontend
+        run: pnpm test:frontend
 
       - name: Build Frontend
         env:

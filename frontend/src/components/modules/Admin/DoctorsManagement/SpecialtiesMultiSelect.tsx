@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Badge } from "@/components/ui/badge";
@@ -21,8 +20,8 @@ interface SpecialtiesMultiSelectProps {
     onChange: (nextValue: string[]) => void;
     onBlur: () => void;
     isLoadingSpecialties?: boolean;
-    error?: any;
-    getErrorMessage: (error: any) => string;
+    error?: unknown;
+    getErrorMessage: (error: unknown) => string;
 }
 
 const SpecialtiesMultiSelect = ({
@@ -49,7 +48,7 @@ const SpecialtiesMultiSelect = ({
     return (
         <div className="space-y-2">
             <div className="flex items-center justify-between gap-3">
-                <Label className={cn(error && "text-destructive")}>
+                <Label className={cn(Boolean(error) && "text-destructive")}>
                     Specialties
                 </Label>
                 {selectedSpecialtyIds.length > 0 && (
@@ -76,7 +75,7 @@ const SpecialtiesMultiSelect = ({
                         variant="outline"
                         className={cn(
                             "w-full justify-between",
-                            error && "border-destructive",
+                            Boolean(error) && "border-destructive",
                         )}
                         disabled={
                             isLoadingSpecialties || specialties.length === 0

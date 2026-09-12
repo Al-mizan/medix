@@ -1,5 +1,7 @@
 import { addMinutes } from "date-fns";
+import status from "http-status";
 import { Prisma, Schedule } from "../../../generated/prisma/client";
+import AppError from "../../errorHelpers/AppError";
 import { IqueryParams } from "../../interface/query.interface";
 import { prisma } from "../../lib/prisma";
 import { QueryBuilder } from "../../utils/QueryBuilder";
@@ -141,6 +143,28 @@ const updateSchedule = async (id: string, payload: IUpdateSchedulePayload) => {
 }
 
 const deleteSchedule = async (id: string) => {
+    const schedule = await prisma.schedule.findUniqueOrThrow({
+        where: { id },
+        include: {
+            doctorSchedules: true,
+            appointments: true,
+        }
+    });
+
+    if (schedule.doctorSchedules && schedule.doctorSchedules.length > 0) {
+        throw new AppError(
+            status.BAD_REQUEST,
+            "Cannot delete a schedule that is already assigned to a doctor. Remove doctor schedule assignments first."
+        );
+    }
+
+    if (schedule.appointments && schedule.appointments.length > 0) {
+        throw new AppError(
+            status.BAD_REQUEST,
+            "Cannot delete a schedule that is associated with appointments."
+        );
+    }
+
     await prisma.schedule.delete({
         where: {
             id: id

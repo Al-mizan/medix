@@ -9,6 +9,11 @@ import { PatientValidation } from "./patient.validation";
 
 const router = Router();
 
+router.get("/my-profile",
+    checkAuth(Role.PATIENT),
+    PatientController.getMyProfile
+);
+
 router.patch("/update-my-profile",
     checkAuth(Role.PATIENT),
     multerUpload.fields([
@@ -18,6 +23,21 @@ router.patch("/update-my-profile",
     updateMyPatientProfileMiddleware,
     validateRequest(PatientValidation.updatePatientProfileZodSchema),
     PatientController.updateMyProfile
-)
+);
+
+router.get("/",
+    checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+    PatientController.getAllPatients
+);
+
+router.get("/:id",
+    checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+    PatientController.getPatientById
+);
+
+router.delete("/:id",
+    checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+    PatientController.deletePatient
+);
 
 export const PatientRoutes = router;

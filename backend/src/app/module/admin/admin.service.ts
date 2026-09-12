@@ -1,17 +1,40 @@
 import status from "http-status";
 import { Role, UserStatus } from "../../../generated/prisma/enums";
+import { Admin, Prisma } from "../../../generated/prisma/client";
 import AppError from "../../errorHelpers/AppError";
 import { IRequestUser } from "../../interface/requestUser.interface";
 import { prisma } from "../../lib/prisma";
 import { IChangeUserRolePayload, IChangeUserStatusPayload, IUpdateAdminPayload } from "./admin.interface";
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import { IqueryParams } from "../../interface/query.interface";
+import { adminFilterableFields, adminIncludeConfig, adminSearchableFields } from "./admin.constant";
 
-const getAllAdmins = async () => {
-    const admins = await prisma.admin.findMany({
-        include: {
-            user: true,
+const getAllAdmins = async (query: IqueryParams) => {
+    const queryBuilder = new QueryBuilder<Admin, Prisma.AdminWhereInput, Prisma.AdminInclude>(
+        prisma.admin,
+        query,
+        {
+            searchableFields: adminSearchableFields,
+            filterableFields: adminFilterableFields,
         }
-    })
-    return admins;
+    );
+
+    const result = await queryBuilder
+        .search()
+        .filter()
+        .where({
+            isDeleted: false,
+        })
+        .include({
+            user: true,
+        })
+        .dynamicInclude(adminIncludeConfig)
+        .paginate()
+        .sort()
+        .fields()
+        .execute();
+
+    return result;
 }
 
 const getAdminById = async (id: string) => {
@@ -26,17 +49,22 @@ const getAdminById = async (id: string) => {
     return admin;
 }
 
-const updateAdmin = async (id: string, payload: IUpdateAdminPayload) => {
-    //TODO: Validate who is updating the admin user. Only super admin can update admin user and only super admin can update super admin user but admin user cannot update super admin user
-
+const updateAdmin = async (id: string, payload: IUpdateAdminPayload, user: IRequestUser) => {
     const isAdminExist = await prisma.admin.findUnique({
         where: {
             id,
-        }
-    })
+        },
+        include: {
+            user: true,
+        },
+    });
 
     if (!isAdminExist) {
         throw new AppError(status.NOT_FOUND, "Admin Or Super Admin not found");
+    }
+
+    if (user.role === Role.ADMIN && isAdminExist.user.role === Role.SUPER_ADMIN) {
+        throw new AppError(status.FORBIDDEN, "Admin user cannot update super admin user");
     }
 
     const { admin } = payload;
@@ -48,28 +76,32 @@ const updateAdmin = async (id: string, payload: IUpdateAdminPayload) => {
         data: {
             ...admin,
         }
-    })
+    });
 
     return updatedAdmin;
 }
 
 //soft delete admin user by setting isDeleted to true and also delete the user session and account
 const deleteAdmin = async (id: string, user: IRequestUser) => {
-    //TODO: Validate who is deleting the admin user. Only super admin can delete admin user and only super admin can delete super admin user but admin user cannot delete super admin user
-
-
     const isAdminExist = await prisma.admin.findUnique({
         where: {
             id,
-        }
-    })
+        },
+        include: {
+            user: true,
+        },
+    });
 
     if (!isAdminExist) {
         throw new AppError(status.NOT_FOUND, "Admin Or Super Admin not found");
     }
 
-    if (isAdminExist.id === user.userId) {
+    if (isAdminExist.userId === user.userId) {
         throw new AppError(status.BAD_REQUEST, "You cannot delete yourself");
+    }
+
+    if (user.role === Role.ADMIN && isAdminExist.user.role === Role.SUPER_ADMIN) {
+        throw new AppError(status.FORBIDDEN, "Admin user cannot delete super admin user");
     }
 
     const result = await prisma.$transaction(async (tx) => {

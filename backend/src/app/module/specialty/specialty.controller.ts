@@ -4,6 +4,7 @@ import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
 import status from "http-status";
 import AppError from "../../errorHelpers/AppError";
+import { IqueryParams } from "../../interface/query.interface";
 
 
 const createSpecialty = catchAsync(
@@ -26,6 +27,7 @@ const createSpecialty = catchAsync(
             icon: fileUrl,
         };
         const result = await SpecialtyService.createSpecialty(payload);
+
         sendResponse(res, {
             httpStatusCode: 201,
             success: true,
@@ -37,12 +39,14 @@ const createSpecialty = catchAsync(
 
 const getAllSpecialties = catchAsync(
     async (req: Request, res: Response) => {
-        const specialties = await SpecialtyService.getAllSpecialties();
+        const query = req.query;
+        const result = await SpecialtyService.getAllSpecialties(query as IqueryParams);
         sendResponse(res, {
             httpStatusCode: status.OK,
             success: true,
             message: "Specialties fetched successfully",
-            data: specialties,
+            data: result.data,
+            meta: result.meta,
         });
     }
 );

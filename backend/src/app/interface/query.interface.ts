@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 export interface PrismaFindsManyArgs {
     where?: Record<string, unknown>;
     include?: Record<string, unknown>;
@@ -24,9 +22,9 @@ export interface PrismaCountArgs {
     [key: string]: unknown;
 }
 
-export interface PrismaModelDelegate {
-    findMany(args?: any): Promise<any[]>;
-    count(args?: any): Promise<number>;
+export interface PrismaModelDelegate<T = unknown> {
+    findMany(args?: unknown): Promise<T[]>;
+    count(args?: unknown): Promise<number>;
 }
 
 export interface IqueryParams {

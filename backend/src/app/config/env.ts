@@ -39,6 +39,7 @@ interface EnvConfig {
     },
     SUPER_ADMIN_EMAIL: string;
     SUPER_ADMIN_PASSWORD: string;
+    PAYMENT_CURRENCY: string;
     RAG: {
         GROQ_API_KEY?: string;
         HF_API_KEY?: string;
@@ -131,6 +132,7 @@ const loadEnvVariables = (): EnvConfig => {
         },
         SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
         SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
+        PAYMENT_CURRENCY: (process.env.PAYMENT_CURRENCY || 'bdt').toLowerCase(),
         RAG: {
             GROQ_API_KEY: process.env.GROQ_API_KEY,
             HF_API_KEY: process.env.HF_API_KEY,

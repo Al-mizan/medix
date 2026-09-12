@@ -1,6 +1,11 @@
+import { Patient, Prisma } from "../../../generated/prisma/client";
+import { UserStatus } from "../../../generated/prisma/enums";
 import { deleteFileFromCloudinary } from "../../config/cloudinary.config";
+import { IqueryParams } from "../../interface/query.interface";
 import { IRequestUser } from "../../interface/requestUser.interface";
 import { prisma } from "../../lib/prisma";
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import { patientFilterableFields, patientIncludeConfig, patientSearchableFields } from "./patient.constant";
 import { IUpdatePatientHealthDataPayload, IUpdatePatientProfilePayload } from "./patient.interface";
 import { convertToDateTime } from "./patient.utils";
 
@@ -107,6 +112,108 @@ const updateMyProfile = async (user: IRequestUser, payload: IUpdatePatientProfil
     return result;
 };
 
+const getMyProfile = async (user: IRequestUser) => {
+    const patient = await prisma.patient.findUniqueOrThrow({
+        where: {
+            email: user.email,
+        },
+        include: {
+            user: true,
+            patientHealthData: true,
+            medicalReports: true,
+        },
+    });
+    return patient;
+};
+
+const getAllPatients = async (query: IqueryParams) => {
+    const queryBuilder = new QueryBuilder<Patient, Prisma.PatientWhereInput, Prisma.PatientInclude>(
+        prisma.patient,
+        query,
+        {
+            searchableFields: patientSearchableFields,
+            filterableFields: patientFilterableFields,
+        }
+    );
+
+    const result = await queryBuilder
+        .search()
+        .filter()
+        .where({
+            isDeleted: false,
+        })
+        .include({
+            user: true,
+            patientHealthData: true,
+            medicalReports: true,
+        })
+        .dynamicInclude(patientIncludeConfig)
+        .paginate()
+        .sort()
+        .fields()
+        .execute();
+
+    return result;
+};
+
+const getPatientById = async (id: string) => {
+    const patient = await prisma.patient.findUniqueOrThrow({
+        where: {
+            id,
+            isDeleted: false,
+        },
+        include: {
+            user: true,
+            patientHealthData: true,
+            medicalReports: true,
+            appointments: {
+                include: {
+                    doctor: true,
+                    schedule: true,
+                }
+            },
+        },
+    });
+    return patient;
+};
+
+const deletePatient = async (id: string) => {
+    const patient = await prisma.patient.findUniqueOrThrow({
+        where: { id },
+    });
+
+    const result = await prisma.$transaction(async (tx) => {
+        const deletedPatient = await tx.patient.update({
+            where: { id },
+            data: {
+                isDeleted: true,
+                deletedAt: new Date(),
+            },
+        });
+
+        await tx.user.update({
+            where: { id: patient.userId },
+            data: {
+                isDeleted: true,
+                deletedAt: new Date(),
+                status: UserStatus.DELETED,
+            },
+        });
+
+        await tx.session.deleteMany({
+            where: { userId: patient.userId },
+        });
+
+        return deletedPatient;
+    });
+
+    return result;
+};
+
 export const PatientService = {
     updateMyProfile,
-}
+    getMyProfile,
+    getAllPatients,
+    getPatientById,
+    deletePatient,
+};

@@ -1,6 +1,28 @@
 import { IQueryConfig, IqueryParams, IQueryResult, PrismaCountArgs, PrismaFindsManyArgs, PrismaModelDelegate, PrismaNumberFilter, PrismaStringFilter, PrismaWhereConditions } from "../interface/query.interface";
 
-// T = Model Type
+/**
+ * Reusable fluent query builder for Prisma ORM models.
+ * Provides unified searching across relational fields, whitelisted filtering (exact, ranges, sets),
+ * dynamic pagination, sorting with nested relations, and relation inclusion.
+ *
+ * @typeParam T - The Prisma model entity type
+ * @typeParam TWhereInput - The model's Prisma `WhereInput` type
+ * @typeParam TInclude - The model's Prisma `Include` type
+ *
+ * @example
+ * ```typescript
+ * const result = await new QueryBuilder<Doctor, Prisma.DoctorWhereInput, Prisma.DoctorInclude>(
+ *   prisma.doctor,
+ *   req.query,
+ *   { searchableFields: ['name', 'user.email'], filterableFields: ['appointmentFee'] }
+ * )
+ *   .search()
+ *   .filter()
+ *   .paginate()
+ *   .sort()
+ *   .execute();
+ * ```
+ */
 export class QueryBuilder<
 T, 
 TWhereInput = Record<string, unknown>,
@@ -16,7 +38,13 @@ TInclude = Record<string, unknown>
     private sortOrder : 'asc' | 'desc' = 'desc';
     private selectFields: Record<string, boolean> | undefined;
 
-
+    /**
+     * Initializes a new QueryBuilder instance.
+     *
+     * @param model - The Prisma model delegate (`prisma.modelName`)
+     * @param queryParams - Incoming HTTP query parameters (`req.query`)
+     * @param config - Configuration options defining searchable and filterable fields
+     */
     constructor(
         private model : PrismaModelDelegate,
         private queryParams : IqueryParams,
@@ -35,6 +63,12 @@ TInclude = Record<string, unknown>
         }
     }
 
+    /**
+     * Constructs case-insensitive partial match search conditions across configured fields.
+     * Supports direct properties, 2-level relation paths (`user.name`), and 3-level nested collections (`specialties.specialty.title`).
+     *
+     * @returns The QueryBuilder instance for chaining
+     */
     search() : this {
         const {searchTerm} = this.queryParams;
         const { searchableFields} = this.config;
@@ -101,6 +135,12 @@ TInclude = Record<string, unknown>
     }
     // /doctors?searchTerm=john&page=1&sortBy=name&specialty=cardiology&appointmentFee[lt]=100 => {}
     // { specialty: 'cardiology', appointmentFee: { lt: '100' } }
+    /**
+     * Applies whitelisted filtering criteria from query parameters.
+     * Supports exact values, booleans, numeric casts, arrays (`in` filters), and range operators (`lt`, `gt`, `lte`, `gte`).
+     *
+     * @returns The QueryBuilder instance for chaining
+     */
     filter() : this {
 
         const { filterableFields } = this.config;
@@ -217,6 +257,12 @@ TInclude = Record<string, unknown>
         return this;
     }
 
+    /**
+     * Computes pagination parameters (`skip` and `take`) from `page` and `limit` query parameters.
+     * Defaults to page 1 and limit 10 if not provided.
+     *
+     * @returns The QueryBuilder instance for chaining
+     */
     paginate() : this {
         const page = Number(this.queryParams.page) || 1;
         const limit = Number(this.queryParams.limit) || 10;
@@ -231,6 +277,12 @@ TInclude = Record<string, unknown>
         return this;
     }
 
+    /**
+     * Configures ordering by sorting column and direction (`asc` or `desc`).
+     * Supports nested relation fields using dot notation (`user.name`).
+     *
+     * @returns The QueryBuilder instance for chaining
+     */
     sort () : this {
         const sortBy = this.queryParams.sortBy || 'createdAt';
         const sortOrder = this.queryParams.sortOrder === 'asc' ? 'asc' : 'desc';
@@ -307,6 +359,13 @@ TInclude = Record<string, unknown>
         return this;
     }
 
+    /**
+     * Dynamically enables relational includes based on client request query and whitelist config.
+     *
+     * @param includeConfig - Whitelisted relations map
+     * @param defaultInclude - List of relations to always include by default
+     * @returns The QueryBuilder instance for chaining
+     */
     dynamicInclude(
         includeConfig : Record<string, unknown>,
         defaultInclude ?: string[]
@@ -341,6 +400,12 @@ TInclude = Record<string, unknown>
         return this;
     }
 
+    /**
+     * Appends custom Prisma WHERE conditions via deep merge with existing conditions.
+     *
+     * @param condition - Prisma WhereInput conditions to merge
+     * @returns The QueryBuilder instance for chaining
+     */
     where(condition : TWhereInput) : this {
 
         this.query.where =  this.deepMerge(this.query.where as Record<string, unknown>, condition as Record<string, unknown>);
@@ -350,6 +415,11 @@ TInclude = Record<string, unknown>
         return this;
     }
 
+    /**
+     * Executes the built query against the Prisma model delegate in parallel (counting total records and fetching rows).
+     *
+     * @returns Promise resolving to paginated data and pagination metadata (`page`, `limit`, `total`, `totalPages`)
+     */
     async execute() : Promise<IQueryResult<T>> {
         const [total, data] = await Promise.all([
             this.model.count(this.countQuery as Parameters<typeof this.model.count>[0]),
@@ -370,6 +440,11 @@ TInclude = Record<string, unknown>
 
     }
 
+    /**
+     * Executes a count-only query applying all constructed search and filter conditions.
+     *
+     * @returns Total matching records count
+     */
     async count() : Promise<number> {
         return await this.model.count(this.countQuery as Parameters<typeof this.model.count>[0]);
     }

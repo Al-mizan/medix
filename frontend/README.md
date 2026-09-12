@@ -1,92 +1,113 @@
-# Healthcare — Frontend
+# Medix — Next.js 16 Healthcare Web Client
 
-Web client for the Healthcare platform: role-based dashboards and flows for **patients**, **doctors**, and **admins** (including super admin, normalized to admin routing in the app). It talks to a separate backend via HTTP using a configurable API base URL.
+The frontend client for the Medix Digital Healthcare Platform is built with **Next.js 16 (App Router)**, **React 19**, **Tailwind CSS v4**, and **Shadcn UI primitives**. It provides dedicated, role-tailored dashboards and workflows for **Patients**, **Doctors**, and **Administrators**.
 
-## Prerequisites
+---
 
-- [Bun](https://bun.sh/) (package scripts run the Next.js CLI with `bun --bun`)
+## 🏛️ Architecture & Principles
 
-## Quick start
+- **Next.js 16 App Router**: Leverages React Server Components (RSC) for initial page loads and SEO, keeping client boundaries (`'use client'`) confined to interactive UI leaves.
+- **Server & Client State Separation**:
+  - **Server State**: Managed and cached via **TanStack Query v5** (`@tanstack/react-query`) with automatic background revalidation and cache keys.
+  - **Form State**: Managed via **TanStack Form** (`@tanstack/react-form`) with **Zod** schema validation.
+- **Role-Based Routing & Session Sync**:
+  - `src/proxy.ts` inspects cookies on incoming requests, verifies JWT access tokens, and enforces RBAC redirects (`/admin/*`, `/doctor/*`, `/dashboard/*`).
+- **WebRTC Peer-to-Peer Telemedicine**:
+  - Real-time video/audio consultations using browser-native `RTCPeerConnection`.
+  - Signaling handled over Express WebSocket channels; NAT traversal powered by Google STUN and self-hosted Coturn TURN relays.
 
-```bash
-git clone <repository-url>
-cd frontend-healthcare
-bun install
+---
+
+## 📁 Directory Structure
+
+```text
+frontend/src/
+├── app/                              # Next.js App Router root
+│   ├── (commonLayout)/               # Public routes (Landing, Doctors, Login, Register)
+│   ├── (dashboardLayout)/            # Protected role-based workspaces
+│   │   ├── admin/                    # Administrator metrics, user management, specialties
+│   │   ├── doctor/                   # Doctor schedule manager, appointments, patient reviews
+│   │   └── dashboard/                # Patient portal (Appointments, Prescriptions, Payments)
+│   ├── api/                          # Next.js route handlers
+│   └── layout.tsx                    # Root application layout with theme & query providers
+├── components/
+│   ├── ui/                           # Reusable design primitives (Button, Badge, Card, Modal, etc.)
+│   ├── shared/                       # Cross-cutting UI widgets (DataTables, Navbar, Footer)
+│   └── modules/                      # Feature-specific components (Auth, Appointment, Consultation)
+├── hooks/                            # Custom React hooks (useServerManagedDataTable, useMobile)
+├── lib/                              # Axios instance, auth utilities, JWT decoding, token refresh
+├── providers/                        # QueryClientProvider, ThemeProvider
+├── services/                         # Type-safe API communication clients
+├── types/                            # Domain TypeScript definitions
+└── zod/                              # Client-side form validation schemas
 ```
 
-Create a local env file (see [Environment variables](#environment-variables)), then:
+---
 
+## 🚀 Getting Started
+
+### Prerequisites
+- **Node.js**: `>= 22.0.0`
+- **pnpm**: `>= 10.33.0`
+
+### Setup & Run
+From the monorepo root:
 ```bash
-bun run dev
-```
+# Install dependencies
+pnpm install
 
+# Start development server
+pnpm dev:frontend
+
+# Or directly from the frontend directory:
+cd frontend
+pnpm dev
+```
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Environment variables
+---
 
-Define these in `.env.local` (not committed). Example:
+## 🧪 Automated Testing
 
-```bash
-# Public: backend origin used by the browser and HTTP client (include protocol, no trailing slash unless your API expects it)
-NEXT_PUBLIC_API_BASE_URL=http://localhost:5000/api/v1
-
-# Server-side: secret used to verify access JWTs from cookies (must match what the API uses to sign tokens)
-JWT_ACCESS_SECRET=your-access-token-signing-secret
-```
-
-| Variable | Scope | Purpose |
-|----------|--------|---------|
-| `NEXT_PUBLIC_API_BASE_URL` | Client + server | Base URL for API requests (`src/lib/axios/httpClient.ts`, auth services, login). Required at runtime where used. |
-| `JWT_ACCESS_SECRET` | Server | Verifies `accessToken` cookies in `src/proxy.ts`. |
-
-## Scripts
-
-| Command | Description |
-|---------|-------------|
-| `bun run dev` | Start the development server |
-| `bun run build` | Production build |
-| `bun run start` | Run the production server (after `build`) |
-| `bun run lint` | Run ESLint |
-
-## Project structure
-
-| Path | Role |
-|------|------|
-| `src/app/` | Next.js App Router: layouts, pages, loading and error UI, server actions (e.g. `src/app/_actions/`) |
-| `src/app/(commonLayout)/` | Public-style routes (marketing, auth pages, etc.) |
-| `src/app/(dashboardLayout)/` | Authenticated shell: `admin/dashboard`, `doctor/dashboard`, patient `dashboard` routes, plus `(commonProtectedLayout)` (e.g. profile, change password) |
-| `src/components/ui/` | Reusable UI primitives (Radix-oriented, Tailwind) |
-| `src/components/shared/` | Cross-feature pieces (tables, forms, charts) |
-| `src/components/modules/` | Feature modules (Auth, Admin, Doctor, Patient, Consultation, Dashboard chrome) |
-| `src/services/` | API-facing modules (auth, appointments, doctors, schedules, dashboard) |
-| `src/lib/` | Axios client, auth/JWT/cookie helpers, navigation config, utilities |
-| `src/hooks/` | Client hooks (data tables, layout helpers) |
-| `src/providers/` | React providers (e.g. TanStack Query) |
-| `src/types/` | Shared TypeScript types |
-| `src/zod/` | Validation schemas |
-| `src/proxy.ts` | Request-level auth: JWT verification from cookies, role-based redirects, optional proactive refresh; exports a `matcher` compatible with Next.js middleware conventions |
-
-## Stack
-
-- **Framework:** [Next.js](https://nextjs.org/) 16 (App Router), **React** 19, **TypeScript**
-- **Styling:** Tailwind CSS 4
-- **Data & forms:** TanStack Query, TanStack Form, TanStack Table
-- **HTTP & validation:** Axios, Zod
-- **UI:** Radix primitives, Lucide icons, Sonner toasts, Recharts, Vaul drawer, etc.
-
-This repo’s Next.js version may differ from older docs. Contributors should follow **`AGENTS.md`** (and `CLAUDE.md`) for project-specific guidance, including checking in-repo Next.js docs when APIs behave unexpectedly.
-
-## Authentication and routing
-
-- Access and refresh tokens are stored in **cookies**. The app verifies the access token and derives the user **role** to enforce **admin**, **doctor**, and **patient** areas.
-- **Email verification** and **forced password change** flows redirect to `/verify-email` and `/reset-password` when required.
-- Central logic: `src/proxy.ts` (with `src/lib/authUtils.ts`, `src/lib/jwtUtils.ts`, `src/lib/tokenUtils.ts`, and `src/services/auth.services.ts`).
-
-## Build and deployment
+Frontend UI testing uses **Vitest**, **React Testing Library**, and **jsdom**:
 
 ```bash
-bun run build
-bun run start
+# Run all frontend tests
+pnpm test
+
+# Run tests in watch mode
+pnpm test:watch
 ```
 
-For hosted deployments, set the same environment variables in your host’s dashboard or secrets store. For a typical Vercel-style setup, see the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying).
+### Coverage Focus
+- Design system primitives (`Button`, `Badge`, `Card`) verify DOM rendering, data attributes, accessibility roles, and click event handlers.
+- Form components verify validation states, error messages, and submission callbacks.
+- Custom hooks verify state transitions and query invalidations.
+
+---
+
+## ⚙️ Environment Variables
+
+Configure these keys in `frontend/.env.local`:
+
+| Variable | Scope | Description |
+| :--- | :--- | :--- |
+| `NEXT_PUBLIC_API_BASE_URL` | Client + Server | Canonical URL to backend Express API (`http://localhost:5000/api/v1`) |
+| `JWT_ACCESS_SECRET` | Server only | Secret used by `src/proxy.ts` to verify JWT cookies on the server |
+
+---
+
+## 🛠️ Build & Production Deployment
+
+```bash
+# Generate production bundle
+pnpm build
+
+# Start production server
+pnpm start
+
+# Run ESLint
+pnpm lint
+```
+
+In containerized environments, `frontend/Dockerfile.prod` produces an optimized standalone Next.js image using Node 22 Alpine.

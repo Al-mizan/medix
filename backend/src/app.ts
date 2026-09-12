@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { toNodeHandler } from "better-auth/node";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -13,6 +12,8 @@ import qs from "qs";
 import { PaymentController } from "./app/module/payment/payment.controller";
 import cron from "node-cron";
 import { AppointmentService } from "./app/module/appointment/appointment.service";
+import swaggerUi from "swagger-ui-express";
+import { openapiSpec } from "./app/docs/openapi";
 
 const app: Application = express();
 
@@ -40,10 +41,18 @@ cron.schedule('*/25 * * * *', async () => {
     try {
         console.log('Running cron job to cancel unpaid appointments...');
         await AppointmentService.cancelUnpaidAppointments();
-    } catch (error: any) {
-        console.error('Error occurred while canceling unpaid appointments: ', error.message);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error('Error occurred while canceling unpaid appointments: ', message);
     }
 });
+
+// OpenAPI & Swagger Documentation
+app.get("/api/v1/openapi.json", (req: Request, res: Response) => {
+    res.status(200).json(openapiSpec);
+});
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openapiSpec));
 
 app.use("/api/v1", IndexRoutes);
 

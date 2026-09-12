@@ -1,0 +1,24 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "Medix Backend TypeScript API Reference",
+  "entryPoints": [
+    "src/app/utils/QueryBuilder.ts",
+    "src/app/middleware/checkAuth.ts",
+    "src/app/middleware/validateRequest.ts",
+    "src/app/middleware/globalErrorHandler.ts",
+    "src/app/errorHelpers/AppError.ts",
+    "src/app/shared/catchAsync.ts",
+    "src/app/shared/sendResponse.ts",
+    "src/app/module/appointment/appointment.service.ts",
+    "src/app/module/appointment/appointment.interface.ts",
+    "src/app/interface/query.interface.ts",
+    "src/app/interface/requestUser.interface.ts",
+    "src/generated/prisma/enums.ts"
+  ],
+  "out": "../docs/typedoc",
+  "tsconfig": "./tsconfig.json",
+  "readme": "none",
+  "cleanOutputDir": true,
+  "plugin": [],
+  "skipErrorChecking": true
+}

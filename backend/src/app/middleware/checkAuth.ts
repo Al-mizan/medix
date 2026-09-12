@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
 import { Role, UserStatus } from "../../generated/prisma/enums";
 import { cookieUtils } from "../utils/cookies";
@@ -8,6 +7,22 @@ import status from "http-status";
 import { jwtUtils } from "../utils/jwt";
 import { envVars } from '../config/env';
 
+/**
+ * Express middleware factory enforcing dual authentication and role-based authorization.
+ * Verifies BetterAuth active sessions, checks user active status in PostgreSQL, and validates
+ * signed JWT access tokens against allowed user roles.
+ *
+ * @param authRoles - Whitelisted roles permitted to access the guarded route. Empty array permits any authenticated user.
+ * @returns Express middleware function `(req, res, next)`
+ *
+ * @throws {AppError} 401 UNAUTHORIZED if session/token is missing, expired, or invalid
+ * @throws {AppError} 403 FORBIDDEN if user status is BLOCKED/DELETED or role is not authorized
+ *
+ * @example
+ * ```typescript
+ * router.post('/create-doctor', checkAuth(Role.ADMIN, Role.SUPER_ADMIN), UserController.createDoctor);
+ * ```
+ */
 export const checkAuth = (...authRoles: Role[]) => async (req: Request, res: Response, next: NextFunction) => {
     try {
         // session token verification
@@ -77,7 +92,7 @@ export const checkAuth = (...authRoles: Role[]) => async (req: Request, res: Res
 
 
         next();
-    } catch (error: any) {
+    } catch (error: unknown) {
         next(error);
     }
 };

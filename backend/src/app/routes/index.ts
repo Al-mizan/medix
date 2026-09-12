@@ -9,10 +9,10 @@ import { PaymentRoutes } from "../module/payment/payment.route";
 import { PrescriptionRoutes } from "../module/prescription/prescription.route";
 import { ReviewRoutes } from "../module/review/review.route";
 import { scheduleRoutes } from "../module/schedule/schedule.route";
-import { SpecialtyRoutes } from "../module/specialty/specialty.routes";
+import { SpecialtyRoutes } from "../module/specialty/specialty.route";
 import { StatsRoutes } from "../module/stats/stats.route";
 import { UserRoutes } from "../module/user/user.route";
-import { RagRoutes } from "../module/rag/rag.routes";
+import { RagRoutes } from "../module/rag/rag.route";
 
 const router = Router();
 

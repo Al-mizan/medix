@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Stripe from "stripe";
 import { PaymentStatus } from "../../../generated/prisma/enums";
+import { Prisma } from "../../../generated/prisma/client";
 import { uploadFileToCloudinary } from "../../config/cloudinary.config";
 import { prisma } from "../../lib/prisma";
 import { sendEmail } from "../../utils/email";
@@ -22,7 +22,7 @@ const handlerStripeWebhookEvent = async (event: Stripe.Event) => {
 
     switch (event.type) {
         case "checkout.session.completed": {
-            const session = event.data.object as any;
+            const session = event.data.object as Stripe.Checkout.Session;
 
             const appointmentId = session.metadata?.appointmentId;
             const paymentId = session.metadata?.paymentId;
@@ -99,7 +99,7 @@ const handlerStripeWebhookEvent = async (event: Stripe.Event) => {
                     },
                     data: {
                         status: session.payment_status === "paid" ? PaymentStatus.PAID : PaymentStatus.UNPAID,
-                        paymentGatewayData: session,
+                        paymentGatewayData: session as unknown as Prisma.InputJsonValue,
                         invoiceUrl: invoiceUrl, // Store invoice URL
                         stripeEventId: event.id // Store event ID for idempotency
                     }

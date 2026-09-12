@@ -37,12 +37,11 @@ export const doctorColumns: ColumnDef<IDoctor>[] = [
             }
 
             return (
-                // Todo - ekadhik specialty thakle badge ki design break kre? check krte hbe, sathe styling krte hbe
-                <div>
+                <div className="flex flex-wrap gap-1 max-w-[220px]">
                     {specialties.map(({ specialty }, id) => {
                         const title = specialty.title || "N/A";
                         return (
-                            <Badge variant={"secondary"} key={id}>
+                            <Badge variant={"secondary"} key={specialty.id || id} className="text-xs">
                                 {title}
                             </Badge>
                         );

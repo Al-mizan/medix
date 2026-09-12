@@ -1,5 +1,4 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { loginAction } from "@/app/(commonLayout)/(authRouteGroup)/login/_action";
 import AppField from "@/components/shared/form/AppField";
 import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
@@ -44,15 +43,15 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
         onSubmit: async ({ value }) => {
             setServerError(null);
             try {
-                const result = (await mutateAsync(value)) as any;
+                const result = await mutateAsync(value);
 
-                if (!result.success) {
+                if ("success" in result && !result.success) {
                     setServerError(result.message || "Login failed");
                     return;
                 }
-            } catch (error: any) {
-                console.log(`Login failed: ${error.message}`);
-                setServerError(`Login failed: ${error.message}`);
+            } catch (error: unknown) {
+                const message = error instanceof Error ? error.message : "Login failed";
+                setServerError(`Login failed: ${message}`);
             }
         },
     });
@@ -182,8 +181,8 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                     className="w-full"
                     onClick={() => {
                         const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-                        //TODO redirect path after login in frontend
-                        window.location.href = `${baseUrl}/auth/login/google`;
+                        const redirectParam = redirectPath ? `?redirect=${encodeURIComponent(redirectPath)}` : "";
+                        window.location.href = `${baseUrl}/auth/login/google${redirectParam}`;
                     }}
                 >
                     <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">

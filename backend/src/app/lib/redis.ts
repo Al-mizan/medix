@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient, RedisClientType } from "redis";
 import { envVars } from "../config/env";
 
@@ -85,7 +84,7 @@ class RedisService {
         }
     }
 
-    async set(key: string, value: any, ttlInSeconds: number): Promise<void> {
+    async set(key: string, value: unknown, ttlInSeconds: number): Promise<void> {
         try {
             const client = this.ensureConnection();
             const stringValue =
@@ -96,7 +95,7 @@ class RedisService {
         }
     }
 
-    async update(key: string, value: any, ttlInSeconds: number): Promise<void> {
+    async update(key: string, value: unknown, ttlInSeconds: number): Promise<void> {
         // Update is the same as set in Redis
         await this.set(key, value, ttlInSeconds);
     }

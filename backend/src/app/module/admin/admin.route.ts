@@ -14,10 +14,10 @@ router.get("/:id",
     checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
     AdminController.getAdminById);
 router.patch("/:id",
-    checkAuth(Role.SUPER_ADMIN),
+    checkAuth(Role.SUPER_ADMIN, Role.ADMIN),
     validateRequest(updateAdminZodSchema), AdminController.updateAdmin);
 router.delete("/:id",
-    checkAuth(Role.SUPER_ADMIN),
+    checkAuth(Role.SUPER_ADMIN, Role.ADMIN),
     AdminController.deleteAdmin);
 
 router.patch("/change-user-status",

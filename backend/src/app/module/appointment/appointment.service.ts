@@ -1,14 +1,17 @@
 import status from "http-status";
 // import { uuidv7 } from "zod/mini";
 import { v7 as uuidv7 } from "uuid";
-import { PaymentStatus, Role } from "../../../generated/prisma/enums";
+import { AppointmentStatus, PaymentStatus, Role } from "../../../generated/prisma/enums";
+import { Appointment, Prisma } from "../../../generated/prisma/client";
 import { envVars } from "../../config/env";
 import { stripe } from "../../config/stripe.config";
 import AppError from "../../errorHelpers/AppError";
 import { prisma } from "../../lib/prisma";
-import { AppointmentStatus } from './../../../generated/prisma/enums';
 import { IBookAppointmentPayload } from "./appointment.interface";
 import { IRequestUser } from "../../interface/requestUser.interface";
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import { IqueryParams } from "../../interface/query.interface";
+import { appointmentFilterableFields, appointmentIncludeConfig, appointmentSearchableFields } from "./appointment.constant";
 
 // Pay Now Book Appointment
 const bookAppointment = async (payload: IBookAppointmentPayload, user: IRequestUser) => {
@@ -64,9 +67,6 @@ const bookAppointment = async (payload: IBookAppointmentPayload, user: IRequestU
             }
         });
 
-        //TODO : Payment Integration will be here
-        // * done this todo
-
         const transactionId = String(uuidv7());
 
         const paymentData = await tx.payment.create({
@@ -83,7 +83,7 @@ const bookAppointment = async (payload: IBookAppointmentPayload, user: IRequestU
             line_items: [
                 {
                     price_data: {
-                        currency: "bdt",
+                        currency: envVars.PAYMENT_CURRENCY,
                         product_data: {
                             name: `Appointment with Dr. ${doctorData.name}`,
                         },
@@ -161,100 +161,155 @@ const getMyAppointments = async (user: IRequestUser) => {
 
 }
 
-// 1. Completed Or Cancelled Appointments should not be allowed to update status
-// 2. Doctors can only update Appoinment status from schedule to inprogress or inprogress to complted or schedule to cancelled.
-// 3. Patients can only cancel the scheduled appointment if it scheduled not completed or cancelled or inprogress. 
-// 4. Admin and Super admin can update to any status.
-
-const changeAppointmentStatus = async (appointmentId: string, appointmentStatus: AppointmentStatus, user: IRequestUser) => {
+/**
+ * Enforces role-based state machine transitions on appointment statuses.
+ * - Patients can only transition their own appointments from SCHEDULED to CANCELED (freeing doctor slot).
+ * - Doctors can only advance their own appointments SCHEDULED -> INPROGRESS -> COMPLETED.
+ * - Administrators can perform any status update.
+ * - Terminal statuses (COMPLETED, CANCELED) cannot be updated.
+ *
+ * @param appointmentId - Unique ID of the target appointment
+ * @param appointmentStatus - Requested target status
+ * @param user - Authenticated user identity and role
+ * @returns Promise resolving to the updated Appointment record
+ * @throws {AppError} 400 on invalid status or forbidden state machine transitions
+ * @throws {AppError} 403 when user modifies an appointment they do not own
+ */
+const changeAppointmentStatus = async (appointmentId: string, appointmentStatus: AppointmentStatus | { status: AppointmentStatus }, user: IRequestUser) => {
     const appointmentData = await prisma.appointment.findUniqueOrThrow({
         where: {
             id: appointmentId,
-            // status: AppointmentStatus.SCHEDULED
         },
         include: {
-            doctor: true
+            doctor: true,
+            patient: true,
         }
     });
 
-    // if (!appointmentData) {
-    //     throw new AppError(status.NOT_FOUND, "Appointment not found or already completed/cancelled");
-    // }
+    const newStatus = typeof appointmentStatus === 'string' ? appointmentStatus : appointmentStatus.status;
 
-    if (user?.role === Role.DOCTOR) {
-        if (!(user?.email === appointmentData.doctor.email))
-            throw new AppError(status.BAD_REQUEST, "This is not your appointment")
+    if (!newStatus || !Object.values(AppointmentStatus).includes(newStatus)) {
+        throw new AppError(status.BAD_REQUEST, `Invalid appointment status: ${newStatus}`);
     }
 
-    return await prisma.appointment.update({
-        where: {
-            id: appointmentId
-        },
-        data: {
-            status: appointmentStatus
-        }
-    })
+    if (appointmentData.status === AppointmentStatus.COMPLETED) {
+        throw new AppError(status.BAD_REQUEST, "Completed appointments cannot be updated");
+    }
 
+    if (appointmentData.status === AppointmentStatus.CANCELED) {
+        throw new AppError(status.BAD_REQUEST, "Canceled appointments cannot be updated");
+    }
+
+    if (user?.role === Role.PATIENT) {
+        if (user?.email !== appointmentData.patient.email) {
+            throw new AppError(status.FORBIDDEN, "You can only cancel your own appointments");
+        }
+
+        if (newStatus !== AppointmentStatus.CANCELED) {
+            throw new AppError(status.BAD_REQUEST, "Patients are only allowed to cancel appointments");
+        }
+
+        if (appointmentData.status !== AppointmentStatus.SCHEDULED) {
+            throw new AppError(status.BAD_REQUEST, "Appointments can only be canceled while in SCHEDULED status");
+        }
+    } else if (user?.role === Role.DOCTOR) {
+        if (user?.email !== appointmentData.doctor.email) {
+            throw new AppError(status.FORBIDDEN, "This is not your appointment");
+        }
+
+        const isValidDoctorTransition =
+            (appointmentData.status === AppointmentStatus.SCHEDULED && newStatus === AppointmentStatus.INPROGRESS) ||
+            (appointmentData.status === AppointmentStatus.INPROGRESS && newStatus === AppointmentStatus.COMPLETED);
+
+        if (!isValidDoctorTransition) {
+            throw new AppError(
+                status.BAD_REQUEST,
+                `Doctors can only transition appointments from SCHEDULED to INPROGRESS, or INPROGRESS to COMPLETED. Current status: ${appointmentData.status}, Requested status: ${newStatus}`
+            );
+        }
+    } else if (user?.role === Role.ADMIN || user?.role === Role.SUPER_ADMIN) {
+        // Admins and Super Admins can update to any valid status
+    } else {
+        throw new AppError(status.FORBIDDEN, "You are not authorized to update appointment status");
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+        const updated = await tx.appointment.update({
+            where: {
+                id: appointmentId,
+            },
+            data: {
+                status: newStatus,
+            }
+        });
+
+        if (newStatus === AppointmentStatus.CANCELED) {
+            await tx.doctorSchedules.update({
+                where: {
+                    doctorId_scheduleId: {
+                        doctorId: appointmentData.doctorId,
+                        scheduleId: appointmentData.scheduleId,
+                    }
+                },
+                data: {
+                    isBooked: false,
+                }
+            });
+        }
+
+        return updated;
+    });
+
+    return result;
 }
 
-// Todo: refactoring on include of doctor and patient data in appointment details, we can use query builder to get the data in single query instead of multiple queries in case of doctor and patient both
 const getMySingleAppointment = async (appointmentId: string, user: IRequestUser) => {
-
-    const patientData = await prisma.patient.findUnique({
+    const appointment = await prisma.appointment.findFirst({
         where: {
-            email: user?.email
-        }
+            id: appointmentId,
+            ...(user.role === Role.DOCTOR
+                ? { doctor: { email: user.email } }
+                : { patient: { email: user.email } }),
+        },
+        include: {
+            doctor: true,
+            patient: true,
+            schedule: true,
+        },
     });
-
-    const doctorData = await prisma.doctor.findUnique({
-        where: {
-            email: user?.email
-        }
-    });
-
-    let appointment;
-
-    if (patientData) {
-        appointment = await prisma.appointment.findFirst({
-            where: {
-                id: appointmentId,
-                patientId: patientData.id
-            },
-            include: {
-                doctor: true,
-                schedule: true
-            }
-        });
-    } else if (doctorData) {
-        appointment = await prisma.appointment.findFirst({
-            where: {
-                id: appointmentId,
-                doctorId: doctorData.id
-            },
-            include: {
-                patient: true,
-                schedule: true
-            }
-        });
-    }
 
     if (!appointment) {
         throw new AppError(status.NOT_FOUND, "Appointment not found");
     }
 
     return appointment;
-}
+};
 
-// Todo: integrate query builder
-const getAllAppointments = async () => {
-    const appointments = await prisma.appointment.findMany({
-        include: {
+const getAllAppointments = async (query: IqueryParams) => {
+    const queryBuilder = new QueryBuilder<Appointment, Prisma.AppointmentWhereInput, Prisma.AppointmentInclude>(
+        prisma.appointment,
+        query,
+        {
+            searchableFields: appointmentSearchableFields,
+            filterableFields: appointmentFilterableFields,
+        }
+    );
+
+    const result = await queryBuilder
+        .search()
+        .filter()
+        .include({
             doctor: true,
             patient: true,
-            schedule: true
-        }
-    });
-    return appointments;
+            schedule: true,
+        })
+        .dynamicInclude(appointmentIncludeConfig)
+        .paginate()
+        .sort()
+        .fields()
+        .execute();
+
+    return result;
 }
 
 const bookAppointmentWithPayLater = async (payload: IBookAppointmentPayload, user: IRequestUser) => {
@@ -370,7 +425,7 @@ const initiatePayment = async (appointmentId: string, user: IRequestUser) => {
         line_items: [
             {
                 price_data: {
-                    currency: "bdt",
+                    currency: envVars.PAYMENT_CURRENCY,
                     product_data: {
                         name: `Appointment with Dr. ${appointmentData.doctor.name}`,
                     },
