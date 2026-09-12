@@ -21,6 +21,7 @@ coverage/
 # Secrets and sensitive input files
 ci/github-secrets.input.env
 README.LOCAL-CICD-DEPLOYMENT.md
+scratch/
 
 # Logs and runtime files
 *.log
