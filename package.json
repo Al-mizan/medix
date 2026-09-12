@@ -1,0 +1,22 @@
+{
+  "name": "medix",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Medix - Digital Healthcare Platform Monorepo",
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "dev:backend": "pnpm --filter backend-ph-healthcare dev",
+    "dev:frontend": "pnpm --filter frontend-ph-healthcare dev",
+    "build:backend": "pnpm --filter backend-ph-healthcare build",
+    "build:frontend": "pnpm --filter frontend-ph-healthcare build",
+    "build": "pnpm --recursive run build",
+    "lint": "pnpm --recursive run lint",
+    "typecheck": "pnpm --recursive run typecheck",
+    "db:migrate": "pnpm --filter backend-ph-healthcare migrate",
+    "db:generate": "pnpm --filter backend-ph-healthcare generate",
+    "db:studio": "pnpm --filter backend-ph-healthcare studio",
+    "docker:dev": "docker compose -f docker-compose.dev.yaml up",
+    "docker:dev:down": "docker compose -f docker-compose.dev.yaml down",
+    "docker:prod:build": "docker compose -f docker-compose.prod.yaml build"
+  }
+}

@@ -1,0 +1,83 @@
+networks:
+    ph-net:
+        driver: bridge
+
+volumes:
+    ph-pg-data:
+    server-node-modules:
+    server-logs:
+    client-node-modules:
+
+services:
+    ph-client:
+        container_name: ph-client
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile.dev
+        restart: unless-stopped
+        depends_on:
+            ph-server:
+                condition: service_started # Don't wait for backend to be healthy since frontend can start without it
+        ports:
+            - "3000:3000"
+        networks:
+            - ph-net
+        volumes:
+            - ./frontend:/app
+            - client-node-modules:/app/node_modules
+        env_file:
+            - ./frontend/.env
+        working_dir: /app
+        command: sh -lc "CI=true pnpm install && pnpm exec next dev --webpack -H 0.0.0.0 -p 3000"
+
+    ph-server:
+        container_name: ph-server
+        build:
+            context: ./backend
+            dockerfile: Dockerfile.dev
+        restart: unless-stopped
+        depends_on:
+            ph-db:
+                condition: service_healthy # Wait until postgres is truly ready
+        ports:
+            - "5000:5000"
+        networks:
+            - ph-net
+        volumes:
+            # Bind mount — syncs your source code for hot reload
+            - ./backend:/app
+            # Named volume — protects node_modules from being wiped by bind mount
+            - server-node-modules:/app/node_modules
+            - server-logs:/app/logs
+        env_file:
+            - ./backend/.env
+        # environment:  (when host machine is in the windows/mac)
+        #     CHOKIDAR_USEPOLLIN: "1"
+        #     CHOKIDAR_INTERVAL: "300"
+        working_dir: /app
+        command: sh -lc "CI=true pnpm install && pnpm generate && pnpm prisma migrate deploy && pnpm dev"
+
+    ph-db:
+        image: postgres:16-alpine
+        container_name: ph-db
+        restart: unless-stopped
+        # ports:
+        #   - "5432:5432"              # Expose so you can connect via pgAdmin/DBeaver
+        networks:
+            - ph-net
+        volumes:
+            - ph-pg-data:/var/lib/postgresql/data
+
+            # Optional: auto-run SQL scripts on first startup
+            # - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=root@1234
+            - POSTGRES_DB=ph_health
+        healthcheck:
+            # Backend will only start after this passes
+            test: ["CMD-SHELL", "pg_isready -U postgres -d ph_health"]
+            interval: 5s # Check every 10 seconds
+            timeout: 5s # Fail if no response in 5 seconds
+            retries: 10 # Try 5 times before marking as unhealthy
+            start_period: 10s # Give postgres 10s to boot before checking
