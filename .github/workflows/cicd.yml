@@ -14,7 +14,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  quality:
+  backend-check:
+    name: Backend Check
     runs-on: ubuntu-latest
 
     steps:
@@ -34,16 +35,40 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm lint
+      - name: Lint Backend
+        run: pnpm --filter backend-ph-healthcare lint
 
-      - name: Generate Prisma client
+      - name: Generate Prisma Client
         run: pnpm db:generate
 
-      - name: Build server
+      - name: Build Backend
         run: pnpm build:backend
 
-      - name: Build client
+  frontend-check:
+    name: Frontend Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint Frontend
+        run: pnpm --filter frontend-ph-healthcare lint
+
+      - name: Build Frontend
         env:
           NEXT_PUBLIC_API_BASE_URL: ${{ secrets.CLIENT_PUBLIC_API_BASE_URL || 'https://medix-backend.onrender.com/api/v1' }}
         run: pnpm build:frontend
@@ -52,7 +77,7 @@ jobs:
     name: Trigger Render Redeployment
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    needs: quality
+    needs: [backend-check, frontend-check]
 
     steps:
       - name: Trigger Render Backend Deploy Hook
