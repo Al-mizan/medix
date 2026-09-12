@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
-import { type IDoctorDetails, type IDoctorScheduleItem } from "@/types/doctor.types"
+import { type IDoctorScheduleItem } from "@/types/doctor.types"
 import { useQuery } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { CalendarPlus, Clock3, Loader2 } from "lucide-react"
