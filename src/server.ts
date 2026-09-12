@@ -2,14 +2,14 @@ import { Server } from "http";
 import app from "./app";
 import { envVars } from "./app/config/env";
 import { seedSuperAdmin } from "./app/utils/seed";
-import { prisma } from "./app/lib/prisma";
+// import { prisma } from "./app/lib/prisma";
 import { redisService } from "./app/lib/redis";
 
 let server: Server;
 const bootstrap = async () => {
     try {
         // Create the vector extension if it doesn't exist in the database before running the migration
-        await prisma.$executeRaw`CREATE EXTENSION IF NOT EXISTS "vector" WITH SCHEMA public;`;
+        // await prisma.$executeRaw`CREATE EXTENSION IF NOT EXISTS "vector" WITH SCHEMA public;`;
         await seedSuperAdmin();
         await redisService.connect().catch((error) => {
             console.error("Failed to connect to Redis:", error);

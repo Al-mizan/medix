@@ -40,9 +40,13 @@ interface EnvConfig {
     SUPER_ADMIN_EMAIL: string;
     SUPER_ADMIN_PASSWORD: string;
     RAG: {
-        OPENROUTER_API_KEY: string;
-        OPENROUTER_EMBEDDING_MODEL: string;
-        OPENROUTER_LLM_MODEL: string;
+        GROQ_API_KEY?: string;
+        HF_API_KEY?: string;
+        GROQ_MODEL: string;
+        EMBEDDING_MODEL: string;
+        CHUNK_SIZE: number;
+        CHUNK_OVERLAP: number;
+        DOC_DIRS: string;
     }
 }
 
@@ -77,9 +81,10 @@ const loadEnvVariables = (): EnvConfig => {
         'STRIPE_WEBHOOK_SECRET',
         'SUPER_ADMIN_EMAIL',
         'SUPER_ADMIN_PASSWORD',
-        // 'OPENROUTER_API_KEY',
-        // 'OPENROUTER_EMBEDDING_MODEL',
-        // 'OPENROUTER_LLM_MODEL',
+        // 'GROQ_API_KEY',
+        // 'HF_API_KEY',
+        // 'RAG_GROQ_MODEL',
+        // 'RAG_EMBEDDING_MODEL',
     ]
 
     requireEnvVariable.forEach((variable) => {
@@ -125,9 +130,13 @@ const loadEnvVariables = (): EnvConfig => {
         SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
         SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
         RAG: {
-            OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY as string,
-            OPENROUTER_EMBEDDING_MODEL: process.env.OPENROUTER_EMBEDDING_MODEL as string,
-            OPENROUTER_LLM_MODEL: process.env.OPENROUTER_LLM_MODEL as string,
+            GROQ_API_KEY: process.env.GROQ_API_KEY,
+            HF_API_KEY: process.env.HF_API_KEY,
+            GROQ_MODEL: process.env.RAG_GROQ_MODEL || "llama-3.3-70b-versatile",
+            EMBEDDING_MODEL: process.env.RAG_EMBEDDING_MODEL || "sentence-transformers/all-MiniLM-L6-v2",
+            CHUNK_SIZE: Number(process.env.RAG_CHUNK_SIZE || 900),
+            CHUNK_OVERLAP: Number(process.env.RAG_CHUNK_OVERLAP || 120),
+            DOC_DIRS: process.env.RAG_DOC_DIRS || "Tasks",
         }
     }
 }

@@ -1,143 +1,162 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { Prisma } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import { EmbeddingService } from "./embedding.service";
 import { IndexingService } from "./indexing.service";
-import { LLMService } from "./llm.service";
+import { LlmService } from "./llm.service";
+import { RAG_DEFAULTS, RAG_DOC_DIRECTORIES } from "./rag.constant";
+import { IRagIngestRequest, IRagMatch, IRagQueryRequest } from "./rag.interface";
+import { RagUtils } from "./rag.utils";
 
-export class RAGService {
+const toVectorLiteral = (vector: number[]) => `[${vector.join(",")}]`;
+
+export class RagService {
     private embeddingService: EmbeddingService;
-    private llmService: LLMService;
-    private indexingService: IndexingService;
+    private llmService: LlmService;
 
     constructor() {
         this.embeddingService = new EmbeddingService();
-        this.indexingService = new IndexingService();
-        this.llmService = new LLMService();
+        this.llmService = new LlmService();
     }
 
-    async ingestDoctorsData() {
-        return this.indexingService.indexDoctorsData();
-    }
+    public async ingestDocument(payload: IRagIngestRequest) {
+        const chunkSize = payload.chunkSize || RAG_DEFAULTS.CHUNK_SIZE;
+        const chunkOverlap = payload.chunkOverlap || RAG_DEFAULTS.CHUNK_OVERLAP;
+        const chunks = RagUtils.splitIntoChunks(payload.content, chunkSize, chunkOverlap);
 
-    async retieveRelevantDocuments(
-        query: string,
-        limit: number = 5,
-        sourceType?: string,
-    ) {
-        try {
-            const queryEmbedding =
-                await this.embeddingService.generateEmbedding(query);
+        for (const chunk of chunks) {
+            const embedding = await this.embeddingService.generateEmbedding(chunk.content);
+            const vectorLiteral = toVectorLiteral(embedding);
 
-            const vectorLiteral = `[${queryEmbedding.join(",")}]`;
-
-            const results = await prisma.$queryRaw(Prisma.sql`
-          SELECT id, "chunkKey", "sourceType", "sourceId", "sourceLabel", content, metadata, embedding, "isDeleted", "deletedAt", "createdAt", "updatedAt", 1 - (embedding <=> CAST(${vectorLiteral} AS vector)) as similarity
-          FROM "document_embeddings"
-          WHERE "isDeleted" = false
-          ${sourceType ? Prisma.sql`AND "sourceType" = ${sourceType}` : Prisma.empty}
-          ORDER BY embedding <=> CAST(${vectorLiteral} AS vector)
-          Limit ${limit}
-          `);
-
-            return results;
-        } catch (error) {
-            console.log(error);
-            throw error;
+            await prisma.$executeRaw(Prisma.sql`
+                INSERT INTO "document_embeddings"
+                (
+                    "id",
+                    "chunkKey",
+                    "sourceType",
+                    "sourceId",
+                    "sourceLabel",
+                    "content",
+                    "metadata",
+                    "embedding",
+                    "updatedAt"
+                )
+                VALUES
+                (
+                    ${RagUtils.createRowId()},
+                    ${`${payload.sourceType}:${payload.sourceId}:${chunk.chunkKey}`},
+                    ${payload.sourceType},
+                    ${payload.sourceId},
+                    ${payload.sourceLabel || null},
+                    ${chunk.content},
+                    ${JSON.stringify(payload.metadata || {})}::jsonb,
+                    CAST(${vectorLiteral} AS vector),
+                    NOW()
+                )
+                ON CONFLICT ("chunkKey")
+                DO UPDATE SET
+                    "sourceType" = EXCLUDED."sourceType",
+                    "sourceId" = EXCLUDED."sourceId",
+                    "sourceLabel" = EXCLUDED."sourceLabel",
+                    "content" = EXCLUDED."content",
+                    "metadata" = EXCLUDED."metadata",
+                    "embedding" = EXCLUDED."embedding",
+                    "isDeleted" = false,
+                    "deletedAt" = null,
+                    "updatedAt" = NOW()
+            `);
         }
+
+        return {
+            sourceType: payload.sourceType,
+            sourceId: payload.sourceId,
+            chunksStored: chunks.length,
+        };
     }
 
-    async generateAnswer(
-        query: string,
-        limit: number = 5,
-        sourceType?: string,
-        asJson: boolean = false,
-    ) {
-        try {
-            const relevantDocs = await this.retieveRelevantDocuments(
-                query,
-                limit,
-                sourceType,
-            );
+    private async retrieveMatches(payload: IRagQueryRequest): Promise<IRagMatch[]> {
+        const topK = payload.topK || RAG_DEFAULTS.TOP_K;
+        const minSimilarity = payload.minSimilarity ?? RAG_DEFAULTS.MIN_SIMILARITY;
+        const queryEmbedding = await this.embeddingService.generateEmbedding(payload.query);
+        const queryVectorLiteral = toVectorLiteral(queryEmbedding);
 
-            // extract content from documents for context
-            const context = (relevantDocs as any)
-                .filter((doc: any) => doc.content)
-                .map((doc: any) => doc.content);
+        const sourceTypesCondition = payload.sourceTypes?.length
+            ? Prisma.sql`AND "sourceType" IN (${Prisma.join(payload.sourceTypes)})`
+            : Prisma.empty;
 
-            let answer = await this.llmService.generateResponse(
-                query,
-                context,
-                asJson,
-            );
-
-            let parsedAnswer: any = answer;
-            if (asJson) {
-                try {
-                    // If the model wrapped the JSON in markdown blocks, clean it up
-                    if (answer.startsWith("```json")) {
-                        answer = answer
-                            .replace(/```json\n?/, "")
-                            .replace(/```$/, "")
-                            .trim();
-                    } else if (answer.startsWith("```")) {
-                        answer = answer
-                            .replace(/```\n?/, "")
-                            .replace(/```$/, "")
-                            .trim();
-                    }
-                    parsedAnswer = JSON.parse(answer);
-                } catch (e) {
-                    console.error("Failed to parse LLM JSON response:", e);
-                    throw e;
-                }
-            }
-
-            return {
-                answer: parsedAnswer,
-                sources: (relevantDocs as any).map((doc: any) => ({
-                    id: doc.id,
-                    chunkKey: doc.chunkKey,
-                    sourceType: doc.sourceType,
-                    sourceId: doc.sourceId,
-                    sourceLabel: doc.sourceLabel,
-                    content: doc.content,
-                    similarity: doc.similarity,
-                })),
-                contextUsed: context.length > 0,
-            };
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    async getStats() {
-        try {
-            const totalDocuments = await prisma.$queryRaw(Prisma.sql`
-        SELECT COUNT(*) as count FROM "document_embeddings" WHERE "isDeleted" = false;
+        const rows = await prisma.$queryRaw<IRagMatch[]>(Prisma.sql`
+            SELECT
+                "id",
+                "sourceType",
+                "sourceId",
+                "sourceLabel",
+                "content",
+                "metadata",
+                (1 - ("embedding" <=> CAST(${queryVectorLiteral} AS vector))) AS "similarity"
+            FROM "document_embeddings"
+            WHERE "isDeleted" = false
+            ${sourceTypesCondition}
+            AND (1 - ("embedding" <=> CAST(${queryVectorLiteral} AS vector))) >= ${minSimilarity}
+            ORDER BY "embedding" <=> CAST(${queryVectorLiteral} AS vector)
+            LIMIT ${topK}
         `);
 
-            const sourceTypeCounts = await prisma.$queryRaw(Prisma.sql`
-        SELECT "sourceType", COUNT(*) as count FROM "document_embeddings" WHERE "isDeleted" = false GROUP BY "sourceType"
+        return rows;
+    }
+
+    public async queryKnowledge(payload: IRagQueryRequest) {
+        const matches = await this.retrieveMatches(payload);
+
+        if (!matches.length) {
+            return {
+                answer: "I do not have enough indexed context to answer this query yet.",
+                citations: [],
+                retrieval: {
+                    totalMatches: 0,
+                },
+            };
+        }
+
+        const context = RagUtils.buildPromptContext(matches);
+        const answer = await this.llmService.generateGroundedAnswer({
+            question: payload.query,
+            context,
+        });
+
+        return {
+            answer,
+            citations: RagUtils.buildCitations(matches),
+            retrieval: {
+                totalMatches: matches.length,
+            },
+        };
+    }
+
+    public async reindexKnowledge(payload: { includeDocs?: boolean; includeDb?: boolean; sourceTypes?: IRagQueryRequest["sourceTypes"] }) {
+        const indexingService = new IndexingService();
+
+        return indexingService.reindex({
+            includeDocs: payload.includeDocs,
+            includeDb: payload.includeDb,
+            sourceTypes: payload.sourceTypes,
+            docDirectories: RAG_DOC_DIRECTORIES,
+        });
+    }
+
+    public async getStats() {
+        const stats = await prisma.$queryRaw<Array<{ sourceType: string; count: bigint }>>(Prisma.sql`
+            SELECT "sourceType", COUNT(*)::bigint AS count
+            FROM "document_embeddings"
+            WHERE "isDeleted" = false
+            GROUP BY "sourceType"
+            ORDER BY "sourceType" ASC
         `);
 
-            return {
-                totalActiveDocuments: Number(
-                    (totalDocuments as any)[0]?.count ?? 0,
-                ),
-                sourceTypeBreakdown: (sourceTypeCounts as any).reduce(
-                    (acc: any, curr: any) => {
-                        acc[curr.sourceType] = Number(curr.count);
-                        return acc;
-                    },
-                    {},
-                ),
-                timestamp: new Date(),
-            };
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
+        return {
+            total: stats.reduce((acc, item) => acc + Number(item.count), 0),
+            bySourceType: stats.map((item) => ({
+                sourceType: item.sourceType,
+                count: Number(item.count),
+            })),
+        };
     }
 }
