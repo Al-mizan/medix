@@ -13,7 +13,7 @@ export type RouteConfig = {
 
 export const commonProtectedRoutes: RouteConfig = {
     exact: ["/my-profile", "/change-password"],
-    pattern: []
+    pattern: [/^\/consultation\/session\//]
 }
 
 export const doctorProtectedRoutes: RouteConfig = {

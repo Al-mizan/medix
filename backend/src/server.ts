@@ -1,9 +1,10 @@
-import { Server } from "http";
+import { Server, createServer } from "http";
 import app from "./app.js";
 import { envVars } from "./app/config/env";
 import { seedSuperAdmin } from "./app/utils/seed";
 // import { prisma } from "./app/lib/prisma";
 import { redisService } from "./app/lib/redis";
+import { initSocketIO } from "./app/lib/socket";
 
 let server: Server;
 const bootstrap = async () => {
@@ -14,7 +15,9 @@ const bootstrap = async () => {
         await redisService.connect().catch((error) => {
             console.error("Failed to connect to Redis:", error);
         });
-        server = app.listen(envVars.PORT, () => {
+        const httpServer = createServer(app);
+        initSocketIO(httpServer);
+        server = httpServer.listen(envVars.PORT, () => {
             console.log(
                 `Server is running on http://localhost:${envVars.PORT}`,
             );

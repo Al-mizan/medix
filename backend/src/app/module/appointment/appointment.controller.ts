@@ -92,6 +92,19 @@ const initiatePayment = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getAppointmentByVideoCallingId = catchAsync(async (req: Request, res: Response) => {
+    const videoCallingId = req.params.videoCallingId;
+    const user = req.user;
+    const appointment = await AppointmentService.getAppointmentByVideoCallingId(videoCallingId as string, user);
+
+    sendResponse(res, {
+        success: true,
+        httpStatusCode: status.OK,
+        message: 'Appointment retrieved successfully by videoCallingId',
+        data: appointment
+    });
+});
+
 export const AppointmentController = {
     bookAppointment,
     getMyAppointments,
@@ -100,4 +113,5 @@ export const AppointmentController = {
     getAllAppointments,
     bookAppointmentWithPayLater,
     initiatePayment,
+    getAppointmentByVideoCallingId,
 }

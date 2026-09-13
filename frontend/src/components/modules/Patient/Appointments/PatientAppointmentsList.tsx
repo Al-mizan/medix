@@ -24,6 +24,7 @@ import {
   Download,
   Loader2,
   Star,
+  Video,
 } from "lucide-react"
 import Link from "next/link"
 import { useMemo, useState } from "react"
@@ -215,6 +216,27 @@ const PatientAppointmentsList = ({
                   </Button>
 
                   <div className="flex flex-wrap items-center gap-2">
+                    {/* Video Call Button */}
+                    {appointment.paymentStatus === "PAID" &&
+                      appointment.videoCallingId &&
+                      (appointment.status === "INPROGRESS" || appointment.status === "SCHEDULED") && (
+                        <Button
+                          asChild
+                          size="sm"
+                          className={
+                            appointment.status === "INPROGRESS"
+                              ? "gap-1.5 bg-[#0B7285] hover:bg-[#095E70] text-white animate-pulse"
+                              : "gap-1.5 border-[#0B7285]/30 text-[#0B7285] hover:bg-[#0B7285]/10"
+                          }
+                          variant={appointment.status === "INPROGRESS" ? "default" : "outline"}
+                        >
+                          <Link href={`/consultation/session/${appointment.videoCallingId}`}>
+                            <Video className="size-4" />
+                            {appointment.status === "INPROGRESS" ? "Join Video Call" : "Pre-Call Setup"}
+                          </Link>
+                        </Button>
+                      )}
+
                     {appointment.paymentStatus === "PAID" && (
                       <Button
                         type="button"

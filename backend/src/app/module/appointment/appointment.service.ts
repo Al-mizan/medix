@@ -511,7 +511,54 @@ const cancelUnpaidAppointments = async () => {
     });
 }
 
+/**
+ * Retrieves appointment details by videoCallingId.
+ * Validates that the requesting user is the appointment's doctor, patient, or an admin.
+ */
+const getAppointmentByVideoCallingId = async (videoCallingId: string, user: IRequestUser) => {
+    const appointment = await prisma.appointment.findUniqueOrThrow({
+        where: {
+            videoCallingId,
+        },
+        include: {
+            doctor: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    profilePhoto: true,
+                    designation: true,
+                    qualification: true,
+                    userId: true,
+                },
+            },
+            patient: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    profilePhoto: true,
+                    userId: true,
+                },
+            },
+            schedule: true,
+            payment: true,
+            prescription: true,
+        },
+    });
 
+    if (user.role === Role.DOCTOR) {
+        if (appointment.doctor.userId !== user.userId && appointment.doctor.email !== user.email) {
+            throw new AppError(status.FORBIDDEN, "Unauthorized: You are not the doctor for this consultation.");
+        }
+    } else if (user.role === Role.PATIENT) {
+        if (appointment.patient.userId !== user.userId && appointment.patient.email !== user.email) {
+            throw new AppError(status.FORBIDDEN, "Unauthorized: You are not the patient for this consultation.");
+        }
+    }
+
+    return appointment;
+};
 
 export const AppointmentService = {
     bookAppointment,
@@ -522,4 +569,5 @@ export const AppointmentService = {
     bookAppointmentWithPayLater,
     initiatePayment,
     cancelUnpaidAppointments,
+    getAppointmentByVideoCallingId,
 }

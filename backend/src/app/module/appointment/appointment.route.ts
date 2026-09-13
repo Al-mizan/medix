@@ -36,4 +36,10 @@ router.post(
 
 router.post("/initiate-payment/:id", checkAuth(Role.PATIENT), AppointmentController.initiatePayment);
 
+router.get(
+    "/by-video-calling-id/:videoCallingId",
+    checkAuth(Role.PATIENT, Role.DOCTOR, Role.ADMIN, Role.SUPER_ADMIN),
+    AppointmentController.getAppointmentByVideoCallingId
+);
+
 export const AppointmentRoutes = router; 

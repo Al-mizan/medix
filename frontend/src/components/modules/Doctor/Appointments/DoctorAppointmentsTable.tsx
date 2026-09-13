@@ -368,7 +368,7 @@ const DoctorAppointmentsTable = ({ initialQueryString = "" }: DoctorAppointments
           const appointment = row.original
           const isEligible = appointment.status === "SCHEDULED" || appointment.status === "INPROGRESS"
 
-          if (!isEligible) {
+          if (!isEligible || !appointment.videoCallingId) {
             return <span className="text-xs text-muted-foreground">—</span>
           }
 
@@ -379,13 +379,13 @@ const DoctorAppointmentsTable = ({ initialQueryString = "" }: DoctorAppointments
               variant="outline"
               className={
                 appointment.status === "INPROGRESS"
-                  ? "h-8 border-[#E3A130]/40 bg-[#E3A130]/10 text-xs text-[#7A4A09] hover:bg-[#E3A130]/20"
+                  ? "h-8 border-[#0B7285] bg-[#0B7285]/10 text-xs text-[#0B7285] hover:bg-[#0B7285]/20 font-semibold animate-pulse"
                   : "h-8 border-[#0B7285]/30 text-xs text-[#0B7285] hover:bg-[#0B7285]/10"
               }
             >
-              <Link href={`/consultation/doctor/${appointment.id}`}>
+              <Link href={`/consultation/session/${appointment.videoCallingId}`}>
                 <Video className="mr-1.5 size-3.5" />
-                {appointment.status === "INPROGRESS" ? "Join Room" : "Open Call"}
+                {appointment.status === "INPROGRESS" ? "Join Room" : "Pre-Call Setup"}
               </Link>
             </Button>
           )

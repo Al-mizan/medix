@@ -18,7 +18,7 @@ import { IAdmin } from "@/types/admin.types";
 import { UserStatus } from "@/types/doctor.types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import {
     changeUserRoleAction,
@@ -113,41 +113,41 @@ const AdminsTable = ({
         mutationFn: changeUserRoleAction,
     });
 
-    const handleStatusChange = async (
-        admin: IAdmin,
-        nextStatus: UserStatus
-    ) => {
-        const result = await mutateStatus({
-            userId: admin.userId,
-            userStatus: nextStatus,
-        });
+    const handleStatusChange = useCallback(
+        async (admin: IAdmin, nextStatus: UserStatus) => {
+            const result = await mutateStatus({
+                userId: admin.userId,
+                userStatus: nextStatus,
+            });
 
-        if (!result.success) {
-            toast.error(result.message || "Failed to change user status");
-            return;
-        }
+            if (!result.success) {
+                toast.error(result.message || "Failed to change user status");
+                return;
+            }
 
-        toast.success("User status updated successfully");
-        await queryClient.invalidateQueries({ queryKey: ["admins"] });
-    };
+            toast.success("User status updated successfully");
+            await queryClient.invalidateQueries({ queryKey: ["admins"] });
+        },
+        [mutateStatus, queryClient]
+    );
 
-    const handleRoleChange = async (
-        admin: IAdmin,
-        nextRole: "ADMIN" | "SUPER_ADMIN"
-    ) => {
-        const result = await mutateRole({
-            userId: admin.userId,
-            role: nextRole,
-        });
+    const handleRoleChange = useCallback(
+        async (admin: IAdmin, nextRole: "ADMIN" | "SUPER_ADMIN") => {
+            const result = await mutateRole({
+                userId: admin.userId,
+                role: nextRole,
+            });
 
-        if (!result.success) {
-            toast.error(result.message || "Failed to change user role");
-            return;
-        }
+            if (!result.success) {
+                toast.error(result.message || "Failed to change user role");
+                return;
+            }
 
-        toast.success("User role updated successfully");
-        await queryClient.invalidateQueries({ queryKey: ["admins"] });
-    };
+            toast.success("User role updated successfully");
+            await queryClient.invalidateQueries({ queryKey: ["admins"] });
+        },
+        [mutateRole, queryClient]
+    );
 
     const admins = adminsDataResponse?.data ?? [];
     const meta: PaginationMeta | undefined = adminsDataResponse?.meta;
@@ -160,7 +160,7 @@ const AdminsTable = ({
             onStatusChange: handleStatusChange,
             onRoleChange: handleRoleChange,
         });
-    }, [currentUserId, currentUserRole]);
+    }, [currentUserId, currentUserRole, handleStatusChange, handleRoleChange]);
 
     const filterConfigs = useMemo<DataTableFilterConfig[]>(() => {
         return [

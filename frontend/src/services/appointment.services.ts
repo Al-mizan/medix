@@ -93,3 +93,14 @@ export const getMySingleAppointment = async (appointmentId: string) => {
     throw error
   }
 }
+
+export const getAppointmentByVideoCallingId = async (videoCallingId: string) => {
+  try {
+    return await httpClient.get<IAppointment>(
+      `/appointments/by-video-calling-id/${videoCallingId}`
+    )
+  } catch (error) {
+    console.log("Error fetching appointment by video calling ID:", error)
+    throw error
+  }
+}
