@@ -1,9 +1,11 @@
 import Stripe from "stripe";
-import { PaymentStatus } from "../../../generated/prisma/enums";
-import { Prisma } from "../../../generated/prisma/client";
+import { AppointmentStatus, PaymentStatus } from "../../../generated/prisma/enums";
+import { Payment, Prisma } from "../../../generated/prisma/client";
 import { uploadFileToCloudinary } from "../../config/cloudinary.config";
 import { prisma } from "../../lib/prisma";
 import { sendEmail } from "../../utils/email";
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import { paymentFilterableFields, paymentIncludeConfig, paymentSearchableFields } from "./payment.constant";
 import { generateInvoicePdf } from "./payment.utils";
 
 
@@ -146,16 +148,131 @@ const handlerStripeWebhookEvent = async (event: Stripe.Event) => {
         }
 
         case "checkout.session.expired": {
-            const session = event.data.object
+            const session = event.data.object as Stripe.Checkout.Session;
+            const appointmentId = session.metadata?.appointmentId;
+            const paymentId = session.metadata?.paymentId;
 
             console.log(`Checkout session ${session.id} expired. Marking associated payment as failed.`);
-            break;
 
+            if (!appointmentId) {
+                console.error("⚠️ Missing appointmentId in expired checkout session metadata");
+                return { message: "Missing appointmentId in metadata" };
+            }
+
+            const appointment = await prisma.appointment.findUnique({
+                where: { id: appointmentId },
+                include: { payment: true },
+            });
+
+            if (!appointment) {
+                console.error(`⚠️ Appointment ${appointmentId} not found.`);
+                return { message: "Appointment not found" };
+            }
+
+            await prisma.$transaction(async (tx) => {
+                if (appointment.payment?.id || paymentId) {
+                    await tx.payment.update({
+                        where: { id: appointment.payment?.id || paymentId },
+                        data: {
+                            status: PaymentStatus.FAILED,
+                            stripeEventId: event.id,
+                            paymentGatewayData: session as unknown as Prisma.InputJsonValue,
+                        },
+                    });
+                }
+
+                await tx.appointment.update({
+                    where: { id: appointment.id },
+                    data: {
+                        status: AppointmentStatus.CANCELED,
+                        paymentStatus: PaymentStatus.FAILED,
+                    },
+                });
+
+                await tx.doctorSchedules.update({
+                    where: {
+                        doctorId_scheduleId: {
+                            doctorId: appointment.doctorId,
+                            scheduleId: appointment.scheduleId,
+                        },
+                    },
+                    data: {
+                        isBooked: false,
+                    },
+                });
+            });
+
+            console.log(`✅ Canceled appointment ${appointmentId} and freed doctor schedule slot due to checkout session expiration.`);
+            break;
         }
+
         case "payment_intent.payment_failed": {
-            const session = event.data.object
+            const session = event.data.object as Stripe.PaymentIntent;
+            const appointmentId = session.metadata?.appointmentId;
+            const paymentId = session.metadata?.paymentId;
 
             console.log(`Payment intent ${session.id} failed. Marking associated payment as failed.`);
+
+            let targetAppointmentId = appointmentId;
+
+            if (!targetAppointmentId && paymentId) {
+                const p = await prisma.payment.findUnique({
+                    where: { id: paymentId },
+                });
+                if (p) {
+                    targetAppointmentId = p.appointmentId;
+                }
+            }
+
+            if (!targetAppointmentId) {
+                console.error("⚠️ Missing appointmentId in payment_intent.payment_failed metadata");
+                return { message: "Missing appointmentId in metadata" };
+            }
+
+            const appointment = await prisma.appointment.findUnique({
+                where: { id: targetAppointmentId },
+                include: { payment: true },
+            });
+
+            if (!appointment) {
+                console.error(`⚠️ Appointment ${targetAppointmentId} not found.`);
+                return { message: "Appointment not found" };
+            }
+
+            await prisma.$transaction(async (tx) => {
+                if (appointment.payment?.id || paymentId) {
+                    await tx.payment.update({
+                        where: { id: appointment.payment?.id || paymentId },
+                        data: {
+                            status: PaymentStatus.FAILED,
+                            stripeEventId: event.id,
+                            paymentGatewayData: session as unknown as Prisma.InputJsonValue,
+                        },
+                    });
+                }
+
+                await tx.appointment.update({
+                    where: { id: appointment.id },
+                    data: {
+                        status: AppointmentStatus.CANCELED,
+                        paymentStatus: PaymentStatus.FAILED,
+                    },
+                });
+
+                await tx.doctorSchedules.update({
+                    where: {
+                        doctorId_scheduleId: {
+                            doctorId: appointment.doctorId,
+                            scheduleId: appointment.scheduleId,
+                        },
+                    },
+                    data: {
+                        isBooked: false,
+                    },
+                });
+            });
+
+            console.log(`✅ Canceled appointment ${targetAppointmentId} and freed doctor schedule slot due to payment failure.`);
             break;
         }
         default:
@@ -165,6 +282,39 @@ const handlerStripeWebhookEvent = async (event: Stripe.Event) => {
     return { message: `Webhook Event ${event.id} processed successfully` }
 }
 
+const getAllPayments = async (query: Record<string, unknown>) => {
+    const queryBuilder = new QueryBuilder<Payment, Prisma.PaymentWhereInput, Prisma.PaymentInclude>(
+        prisma.payment,
+        query,
+        {
+            searchFields: paymentSearchableFields,
+            searchableFields: paymentSearchableFields,
+            filterableFields: paymentFilterableFields,
+        }
+    );
+
+    const result = await queryBuilder
+        .search()
+        .filter()
+        .include({
+            appointment: {
+                include: {
+                    patient: true,
+                    doctor: true,
+                    schedule: true,
+                },
+            },
+        })
+        .dynamicInclude(paymentIncludeConfig)
+        .paginate()
+        .sort()
+        .fields()
+        .execute();
+
+    return result;
+};
+
 export const PaymentService = {
-    handlerStripeWebhookEvent
+    handlerStripeWebhookEvent,
+    getAllPayments,
 }

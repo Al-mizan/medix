@@ -33,7 +33,7 @@ export const adminProtectedRoutes: RouteConfig = {
 
 export const patientProtectedRoutes: RouteConfig = {
     pattern: [/^\/dashboard/], // Matches any path that starts with /dashboard
-    exact: ["/payment/success"]
+    exact: ["/dashboard/payment/payment-success"]
 };
 
 export const isRouteMatches = (pathname: string, routes: RouteConfig) => {

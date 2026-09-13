@@ -443,6 +443,44 @@ const googleLoginSuccess = async (session : iSessionData) =>{
     }
 }
 
+const resendVerificationOTP = async (email: string) => {
+    const isUserExist = await prisma.user.findUnique({
+        where: {
+            email,
+        },
+        include: {
+            accounts: {
+                select: {
+                    providerId: true,
+                }
+            }
+        }
+    });
+
+    if (!isUserExist) {
+        throw new AppError(status.NOT_FOUND, "User not found");
+    }
+
+    if (isUserExist.isDeleted || isUserExist.status === UserStatus.DELETED) {
+        throw new AppError(status.NOT_FOUND, "User not found");
+    }
+
+    if (isUserExist.emailVerified) {
+        throw new AppError(status.BAD_REQUEST, "Email already verified");
+    }
+
+    if (isUserExist.accounts.some(account => account.providerId === "google")) {
+        throw new AppError(status.BAD_REQUEST, "Google login user cannot use verify email feature");
+    }
+
+    await auth.api.sendVerificationOTP({
+        body: {
+            email,
+            type: "email-verification",
+        }
+    });
+};
+
 export const AuthService = {
     registerPatient,
     loginUser,
@@ -451,6 +489,7 @@ export const AuthService = {
     changePassword,
     logoutUser,
     verifyEmail,
+    resendVerificationOTP,
     forgetPassword,
     resetPassword,
     googleLoginSuccess,

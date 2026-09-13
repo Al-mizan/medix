@@ -1,10 +1,11 @@
 import status from "http-status";
-import { UserStatus } from "../../../generated/prisma/enums";
+import { Role, UserStatus } from "../../../generated/prisma/enums";
 import AppError from "../../errorHelpers/AppError";
 import { prisma } from "../../lib/prisma";
 import { IUpdateDoctorPayload } from "./doctor.interface";
 import { QueryBuilder } from "../../utils/QueryBuilder";
 import { IqueryParams } from "../../interface/query.interface";
+import { IRequestUser } from "../../interface/requestUser.interface";
 import { doctorFilterableFields, doctorIncludeConfig, doctorSearchableFields } from "./doctor.constant";
 import { Doctor, Prisma } from "../../../generated/prisma/client";
 
@@ -61,7 +62,7 @@ const getDoctorById = async (id: string) => {
     return doctor;
 }
 
-const updateDoctor = async (id: string, payload: IUpdateDoctorPayload) => {
+const updateDoctor = async (id: string, payload: IUpdateDoctorPayload, user?: IRequestUser) => {
     const isDoctorExist = await prisma.doctor.findUnique({
         where: {
             id,
@@ -70,6 +71,10 @@ const updateDoctor = async (id: string, payload: IUpdateDoctorPayload) => {
 
     if (!isDoctorExist) {
         throw new AppError(status.NOT_FOUND, "Doctor not found");
+    }
+
+    if (user && user.role === Role.DOCTOR && isDoctorExist.userId !== user.userId) {
+        throw new AppError(status.FORBIDDEN, "You are only authorized to update your own profile");
     }
 
     const { doctor: doctorData, specialties } = payload;
@@ -84,6 +89,17 @@ const updateDoctor = async (id: string, payload: IUpdateDoctorPayload) => {
                     ...doctorData,
                 }
             })
+
+            if (doctorData.name) {
+                await tx.user.update({
+                    where: {
+                        id: isDoctorExist.userId,
+                    },
+                    data: {
+                        name: doctorData.name,
+                    }
+                });
+            }
         }
 
         if (specialties && specialties.length > 0) {

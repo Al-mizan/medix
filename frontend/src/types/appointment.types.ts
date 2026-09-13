@@ -1,3 +1,5 @@
+import type { IReview } from "./review.types";
+
 export type AppointmentStatus =
     | "SCHEDULED"
     | "INPROGRESS"
@@ -5,22 +7,33 @@ export type AppointmentStatus =
     | "CANCELED"
     | string;
 
-export type PaymentStatus = "PAID" | "UNPAID" | "FAILED" | string;
+export type PaymentStatus = "PAID" | "UNPAID" | "REFUNDED" | "FAILED" | string;
 
 export interface IAppointmentDoctor {
     id?: string;
     name?: string;
     email?: string;
-    profilePhoto?: string;
+    profilePhoto?: string | null;
+    contactNumber?: string | null;
+    address?: string | null;
     designation?: string;
     currentWorkingPlace?: string;
     appointmentFee?: number;
+    specialties?: Array<{
+        specialty?: {
+            id?: string;
+            title?: string;
+            icon?: string;
+        };
+    }>;
 }
 
 export interface IAppointmentPatient {
     id?: string;
     name?: string;
     email?: string;
+    profilePhoto?: string | null;
+    contactNumber?: string | null;
 }
 
 export interface IAppointmentSchedule {
@@ -37,6 +50,14 @@ export interface IAppointmentPayment {
     invoiceUrl?: string | null;
 }
 
+export interface IAppointmentPrescription {
+    id: string;
+    pdfUrl?: string | null;
+    instructions?: string;
+    followUpDate?: string | Date;
+    createdAt?: string | Date;
+}
+
 export interface IAppointment {
     id: string;
     doctorId?: string;
@@ -51,6 +72,8 @@ export interface IAppointment {
     patient?: IAppointmentPatient | null;
     schedule?: IAppointmentSchedule | null;
     payment?: IAppointmentPayment | null;
+    prescription?: IAppointmentPrescription | null;
+    review?: IReview | null;
 }
 
 export interface IBookAppointmentPayload {

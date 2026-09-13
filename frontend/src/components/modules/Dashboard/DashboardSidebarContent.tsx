@@ -1,5 +1,6 @@
 "use client";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { getIconComponent } from "@/lib/iconMapper";
@@ -78,11 +79,23 @@ const DashboardSidebarContent = ({
             {/* User Info At Bottom */}
             <div className="border-t px-3 py-4">
                 <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-sm font-semibold text-primary">
-                            {userInfo.name.charAt(0).toUpperCase()}
-                        </span>
-                    </div>
+                    <Avatar className="h-8 w-8">
+                        <AvatarImage
+                            src={
+                                userInfo.image ||
+                                userInfo.profilePhoto ||
+                                userInfo.patient?.profilePhoto ||
+                                userInfo.doctor?.profilePhoto ||
+                                userInfo.admin?.profilePhoto ||
+                                undefined
+                            }
+                            alt={userInfo.name}
+                            className="object-cover"
+                        />
+                        <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
+                            {userInfo.name ? userInfo.name.charAt(0).toUpperCase() : "U"}
+                        </AvatarFallback>
+                    </Avatar>
 
                     <div className="flex-1 overflow-hidden">
                         <p className="text-sm font-medium truncate">

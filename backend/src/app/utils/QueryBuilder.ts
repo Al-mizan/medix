@@ -71,7 +71,7 @@ TInclude = Record<string, unknown>
      */
     search() : this {
         const {searchTerm} = this.queryParams;
-        const { searchableFields} = this.config;
+        const searchableFields = this.config.searchableFields || this.config.searchFields;
         // doctorSearchableFields = ['user.name', 'user.email', 'specialties.specialty.title' , 'specialties.specialty.description']
         if(searchTerm && searchableFields && searchableFields.length > 0){
             const searchConditions : Record<string, unknown>[] = searchableFields.map((field) => {

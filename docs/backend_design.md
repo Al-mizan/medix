@@ -39,10 +39,10 @@ Client → Nginx → Express App
 │  - RBAC          │  - Schedules         │  - Health Metrics      │
 │  - Google OAuth  │  - Appointments      │  - Prescriptions       │
 ├──────────────────┴──────────────────────┼────────────────────────┤
-│       Financial & Transactions          │    AI Assistant / RAG   │
-│       - Stripe Webhooks                 │    - pgvector           │
-│       - Invoice Generation (PDFKit)     │    - Document Chunks    │
-│       - Payment Status Lifecycle        │    - Groq / HuggingFace │
+│       Financial & Transactions          │    AI Assistant / RAG  │
+│       - Stripe Webhooks                 │    - pgvector          │
+│       - Invoice Generation (PDFKit)     │    - Document Chunks   │
+│       - Payment Status Lifecycle        │    - Groq / HuggingFace│
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -505,7 +505,7 @@ Patient Browser                    Express Server                     Doctor Bro
      ├── getUserMedia() ───────────────►│                                   │
      │                                  │◄──────────────── getUserMedia() ──┤
      │                                  │                                   │
-     ├── Socket.IO connect ────────────►│◄──────────── Socket.IO connect ──┤
+     ├── Socket.IO connect ────────────►│◄──────────── Socket.IO connect ───┤
      │          (join room: appointmentId)           (join room: appointmentId)
      │                                  │                                   │
      │   ┌──────────────────────────────┤                                   │
@@ -515,14 +515,14 @@ Patient Browser                    Express Server                     Doctor Bro
      │                                  │                                   │
      ├── SDP Offer ────────────────────►│── relay SDP Offer ───────────────►│
      │                                  │                                   │
-     │◄─────────────── relay SDP Answer─│◄──────────────── SDP Answer ─────┤
+     │◄─────────────── relay SDP Answer─│◄──────────────── SDP Answer ──────┤
      │                                  │                                   │
-     ├── ICE Candidates ──────────────►│── relay ICE ─────────────────────►│
-     │◄─────────────── relay ICE ──────│◄──────────────── ICE Candidates ──┤
+     ├── ICE Candidates ───────────────►│── relay ICE ─────────────────────►│
+     │◄─────────────── relay ICE ───────│◄──────────────── ICE Candidates ──┤
      │                                  │                                   │
      │◄════════════ Direct P2P Media (STUN success) ═══════════════════════►│
      │                                  │                                   │
-     │◄═══════ Relayed Media via TURN (fallback ~15-20%) ═════════════════►│
+     │◄═══════ Relayed Media via TURN (fallback ~15-20%)═══════════════════►│
 ```
 
 ### 17.2 Components

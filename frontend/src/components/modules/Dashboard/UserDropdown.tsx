@@ -1,3 +1,7 @@
+"use client";
+
+import { logoutAction } from "@/app/_actions/auth.actions";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -8,25 +12,66 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UserInfo } from "@/types/user.types";
-import { Key, LogOut, User } from "lucide-react";
+import { Key, Loader2, LogOut, User } from "lucide-react";
 import Link from "next/link";
+import { useTransition } from "react";
+import { toast } from "sonner";
 
 interface UserDropdownProps {
     userInfo: UserInfo;
 }
 
 const UserDropdown = ({ userInfo }: UserDropdownProps) => {
+    const [isPending, startTransition] = useTransition();
+
+    const handleLogout = () => {
+        startTransition(async () => {
+            try {
+                await logoutAction();
+            } catch (error: unknown) {
+                // Ignore Next.js redirect error if thrown
+                if (
+                    error &&
+                    typeof error === "object" &&
+                    "digest" in error &&
+                    typeof (error as { digest: unknown }).digest === "string" &&
+                    (error as { digest: string }).digest.startsWith("NEXT_REDIRECT")
+                ) {
+                    return;
+                }
+
+                const message =
+                    error instanceof Error ? error.message : "Failed to log out";
+                toast.error(message);
+            }
+        });
+    };
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button
-                    variant={"outline"}
+                    variant={"ghost"}
                     size={"icon"}
-                    className="rounded-full"
+                    className="rounded-full p-0 size-8 hover:opacity-90 transition-opacity"
                 >
-                    <span className="text-sm font-semibold">
-                        {userInfo.name.charAt(0).toUpperCase()}
-                    </span>
+                    <Avatar className="size-8">
+                        <AvatarImage
+                            src={
+                                userInfo.image ||
+                                userInfo.profilePhoto ||
+                                userInfo.patient?.profilePhoto ||
+                                userInfo.doctor?.profilePhoto ||
+                                userInfo.admin?.profilePhoto ||
+                                undefined
+                            }
+                            alt={userInfo.name}
+                            className="object-cover"
+                        />
+                        <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
+                            {userInfo.name ? userInfo.name.charAt(0).toUpperCase() : "U"}
+                        </AvatarFallback>
+                    </Avatar>
                 </Button>
             </DropdownMenuTrigger>
 
@@ -47,14 +92,14 @@ const UserDropdown = ({ userInfo }: UserDropdownProps) => {
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem>
+                <DropdownMenuItem asChild>
                     <Link href={"/my-profile"}>
                         <User className="mr-2 h-4 w-4" />
                         My Profile
                     </Link>
                 </DropdownMenuItem>
 
-                <DropdownMenuItem>
+                <DropdownMenuItem asChild>
                     <Link href={"/change-password"}>
                         <Key className="mr-2 h-4 w-4" />
                         Change Password
@@ -64,10 +109,15 @@ const UserDropdown = ({ userInfo }: UserDropdownProps) => {
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem
-                    onClick={() => {}}
-                    className="cursor-pointer text-red-600"
+                    onClick={handleLogout}
+                    disabled={isPending}
+                    className="cursor-pointer text-red-600 focus:text-red-600"
                 >
-                    <LogOut className="mr-2 h-4 w-4" />
+                    {isPending ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                        <LogOut className="mr-2 h-4 w-4" />
+                    )}
                     Logout
                 </DropdownMenuItem>
             </DropdownMenuContent>

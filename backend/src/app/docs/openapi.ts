@@ -236,9 +236,9 @@ export const openapiSpec = {
         },
       },
     },
-    '/users/create-patient': {
+    '/auth/register': {
       post: {
-        tags: ['Users'],
+        tags: ['Auth'],
         summary: 'Register a new patient account',
         requestBody: {
           required: true,
@@ -280,9 +280,9 @@ export const openapiSpec = {
         },
       },
     },
-    '/users/my-profile': {
+    '/auth/me': {
       get: {
-        tags: ['Users'],
+        tags: ['Auth'],
         security: [{ bearerAuth: [] }],
         summary: 'Get currently authenticated user profile',
         responses: {
@@ -413,6 +413,25 @@ export const openapiSpec = {
         },
       },
     },
+    '/appointments/change-appointment-status/{id}': {
+      patch: {
+        tags: ['Appointments'],
+        security: [{ bearerAuth: [] }],
+        summary: 'Update appointment status (Strict state machine transitions)',
+        description:
+          'Patients can only cancel (`CANCELED`) their own `SCHEDULED` appointments (frees doctor slot). Doctors can only advance `SCHEDULED` -> `INPROGRESS` and `INPROGRESS` -> `COMPLETED`. Completed or Canceled appointments cannot be modified.',
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        requestBody: {
+          required: true,
+          content: { 'application/json': { schema: { $ref: '#/components/schemas/ChangeAppointmentStatusRequest' } } },
+        },
+        responses: {
+          200: { description: 'Appointment status transitioned successfully' },
+          400: { description: 'Invalid state machine transition' },
+          403: { description: 'Unauthorized to perform status change' },
+        },
+      },
+    },
     '/schedules': {
       get: {
         tags: ['Schedules'],
@@ -481,16 +500,16 @@ export const openapiSpec = {
         responses: { 201: { description: 'Review submitted' } },
       },
     },
-    '/payments/initiate-payment/{appointmentId}': {
+    '/appointments/initiate-payment/{id}': {
       post: {
         tags: ['Payments'],
         security: [{ bearerAuth: [] }],
         summary: 'Initiate Stripe payment session for appointment',
-        parameters: [{ name: 'appointmentId', in: 'path', required: true, schema: { type: 'string' } }],
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
         responses: { 200: { description: 'Stripe session created' } },
       },
     },
-    '/meta': {
+    '/stats': {
       get: {
         tags: ['Analytics & Meta'],
         security: [{ bearerAuth: [] }],
@@ -498,7 +517,7 @@ export const openapiSpec = {
         responses: { 200: { description: 'Dashboard analytics returned' } },
       },
     },
-    '/rag/chat': {
+    '/rag/query': {
       post: {
         tags: ['RAG & AI Assistant'],
         summary: 'Query healthcare knowledge base with conversational AI',
@@ -508,9 +527,15 @@ export const openapiSpec = {
             'application/json': {
               schema: {
                 type: 'object',
-                required: ['message'],
+                required: ['query'],
                 properties: {
-                  message: { type: 'string', example: 'What are the symptoms of hypertension?' },
+                  query: { type: 'string', example: 'What are the symptoms of hypertension?' },
+                  topK: { type: 'integer', example: 5 },
+                  minSimilarity: { type: 'number', example: 0.5 },
+                  sourceTypes: {
+                    type: 'array',
+                    items: { type: 'string', enum: ['SPECIALTY', 'DOCTOR', 'APPOINTMENT', 'DOCUMENT', 'SYSTEM'] },
+                  },
                 },
               },
             },

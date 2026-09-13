@@ -1,6 +1,7 @@
 "use server"
 
 import { httpClient } from "@/lib/axios/httpClient"
+import { type ApiResponse } from "@/types/api.types"
 import {
   type IAppointment,
   type IBookAppointmentPayload,
@@ -41,11 +42,45 @@ export const initiateAppointmentPayment = async (appointmentId: string) => {
   }
 }
 
-export const getMyAppointments = async () => {
+export const getMyAppointments = async (queryString?: string | unknown) => {
   try {
-    return await httpClient.get<IAppointment[]>("/appointments/my-appointments")
+    const qs = typeof queryString === "string" ? queryString : undefined
+    const endpoint = qs
+      ? `/appointments/my-appointments?${qs}`
+      : "/appointments/my-appointments"
+    return await httpClient.get<IAppointment[]>(endpoint)
   } catch (error) {
     console.log("Error fetching my appointments:", error)
+    throw error
+  }
+}
+
+export const getAllAppointments = async (
+  queryString?: string | unknown
+): Promise<ApiResponse<IAppointment[]>> => {
+  try {
+    const qs = typeof queryString === "string" ? queryString : undefined
+    const endpoint = qs
+      ? `/appointments/all-appointments?${qs}`
+      : "/appointments/all-appointments"
+    return await httpClient.get<IAppointment[]>(endpoint)
+  } catch (error) {
+    console.log("Error fetching all appointments:", error)
+    throw error
+  }
+}
+
+export const changeAppointmentStatus = async (
+  appointmentId: string,
+  payload: { status: string }
+) => {
+  try {
+    return await httpClient.patch<IAppointment>(
+      `/appointments/change-appointment-status/${appointmentId}`,
+      payload
+    )
+  } catch (error) {
+    console.log("Error updating appointment status:", error)
     throw error
   }
 }

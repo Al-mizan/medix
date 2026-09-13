@@ -10,6 +10,7 @@ export const patientFilterableFields = [
     'email',
     'contactNumber',
     'isDeleted',
+    'user.status',
 ];
 
 export const patientIncludeConfig = {

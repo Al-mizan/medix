@@ -31,7 +31,7 @@ export const getCommonNavItems = (role : UserRole) : NavSection[] => {
             items : [
                 {
                     title : "Change Password",
-                    href : "change-password",
+                    href : "/change-password",
                     icon : "Settings"
                 }
             ]
@@ -149,6 +149,11 @@ export const patientNavItems: NavSection[] = [
                 title: "Book Appointment",
                 href: "/dashboard/book-appointments",
                 icon: "ClipboardList",
+            },
+            {
+                title: "My Reviews",
+                href: "/dashboard/my-reviews",
+                icon: "Star",
             },
         ],
     },

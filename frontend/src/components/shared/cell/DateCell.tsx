@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 
 interface DateCellProps {
-    date: string | Date;
+    date?: string | Date | null;
     formatString?: string;
 }
 

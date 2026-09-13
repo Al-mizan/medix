@@ -100,23 +100,23 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                             <AppField
                                 field={field}
                                 label="Password"
-                                // type={showPassword ? "text" : "password"}
-                                type="text"
+                                type={showPassword ? "text" : "password"}
                                 placeholder="Enter your password"
-                                aria-label={
-                                    showPassword
-                                        ? "Hide password"
-                                        : "Show password"
-                                }
                                 className="cursor-pointer"
                                 append={
                                     <Button
                                         type="button"
+                                        aria-label={
+                                            showPassword
+                                                ? "Hide password"
+                                                : "Show password"
+                                        }
                                         onClick={() =>
                                             setShowPassword((value) => !value)
                                         }
                                         variant="ghost"
                                         size="icon"
+                                        className="pointer-events-auto"
                                     >
                                         {showPassword ? (
                                             <EyeOff

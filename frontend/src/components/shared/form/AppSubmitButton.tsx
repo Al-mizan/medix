@@ -5,7 +5,8 @@ import React from "react";
 
 type AppSubmitButtonProps = {
     isPending: boolean;
-    children: React.ReactNode;
+    children?: React.ReactNode;
+    label?: string;
     pendingLabel?: string;
     className?: string;
     disabled?: boolean;
@@ -14,11 +15,13 @@ type AppSubmitButtonProps = {
 const AppSubmitButton = ({
     isPending,
     children,
+    label,
     pendingLabel = "Submitting...",
     className,
     disabled = false,
 }: AppSubmitButtonProps) => {
     const isDisabled = disabled || isPending;
+    const content = children ?? label;
 
     return (
         <Button
@@ -29,10 +32,10 @@ const AppSubmitButton = ({
             {isPending ? (
                 <>
                     <Loader2 className="animate-spin" aria-hidden="true" />
-                    {pendingLabel ? pendingLabel : children}
+                    {pendingLabel ? pendingLabel : content}
                 </>
             ) : (
-                children
+                content
             )}
         </Button>
     );

@@ -40,6 +40,7 @@ export interface IqueryParams {
 
 export interface IQueryConfig {
     searchableFields?: string[],
+    searchFields?: string[],
     filterableFields?: string[],
 }
 

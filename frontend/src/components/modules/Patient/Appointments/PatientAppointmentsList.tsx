@@ -12,13 +12,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { getMySingleAppointment } from "@/services/appointment.services"
 import { type IAppointment } from "@/types/appointment.types"
 import { useMutation } from "@tanstack/react-query"
 import { format } from "date-fns"
-import { AlertCircle, CalendarClock, CircleDollarSign, CreditCard } from "lucide-react"
+import {
+  AlertCircle,
+  CalendarClock,
+  CircleDollarSign,
+  CreditCard,
+  Download,
+  Loader2,
+  Star,
+} from "lucide-react"
 import Link from "next/link"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { toast } from "sonner"
+import ReviewDialog from "./ReviewDialog"
 
 interface PatientAppointmentsListProps {
   appointments: IAppointment[]
@@ -44,9 +54,34 @@ const PatientAppointmentsList = ({
   feedbackType,
   feedbackMessage,
 }: PatientAppointmentsListProps) => {
+  const [reviewAppointment, setReviewAppointment] = useState<IAppointment | null>(null)
+  const [downloadingInvoiceId, setDownloadingInvoiceId] = useState<string | null>(null)
+
   const initiatePaymentMutation = useMutation({
     mutationFn: initiateAppointmentPaymentAction,
   })
+
+  const handleDownloadInvoice = async (appointment: IAppointment) => {
+    if (appointment.payment?.invoiceUrl) {
+      window.open(appointment.payment.invoiceUrl, "_blank", "noopener,noreferrer")
+      return
+    }
+
+    try {
+      setDownloadingInvoiceId(appointment.id)
+      const res = await getMySingleAppointment(appointment.id)
+      const invoiceUrl = res?.data?.payment?.invoiceUrl
+      if (invoiceUrl) {
+        window.open(invoiceUrl, "_blank", "noopener,noreferrer")
+      } else {
+        toast.info("Invoice receipt is being generated or not yet available.")
+      }
+    } catch {
+      toast.error("Failed to retrieve invoice. Please try again.")
+    } finally {
+      setDownloadingInvoiceId(null)
+    }
+  }
 
   const sortedAppointments = useMemo(() => {
     return [...appointments].sort((left, right) => {
@@ -121,6 +156,10 @@ const PatientAppointmentsList = ({
           {sortedAppointments.map((appointment) => {
             const canPayNow =
               appointment.paymentStatus !== "PAID" && appointment.status !== "CANCELED"
+            const canLeaveReview =
+              appointment.status === "COMPLETED" &&
+              appointment.paymentStatus === "PAID" &&
+              !appointment.review
 
             return (
               <Card key={appointment.id} className="gap-4">
@@ -168,33 +207,85 @@ const PatientAppointmentsList = ({
                   </div>
                 </CardContent>
 
-                <CardFooter className="justify-between gap-3">
-                  <Button asChild variant="outline">
+                <CardFooter className="flex flex-wrap items-center justify-between gap-3">
+                  <Button asChild variant="outline" size="sm">
                     <Link href={`/consultation/doctor/${appointment.doctorId || appointment.doctor?.id || ""}`}>
                       View Doctor
                     </Link>
                   </Button>
 
-                  {canPayNow ? (
-                    <Button
-                      type="button"
-                      onClick={() => void handlePayNow(appointment.id)}
-                      disabled={initiatePaymentMutation.isPending}
-                    >
-                      <CreditCard className="size-4" />
-                      {initiatePaymentMutation.isPending ? "Redirecting..." : "Pay Now"}
-                    </Button>
-                  ) : (
-                    <Button type="button" variant="secondary" disabled>
-                      {appointment.paymentStatus === "PAID" ? "Paid" : "Unavailable"}
-                    </Button>
-                  )}
+                  <div className="flex flex-wrap items-center gap-2">
+                    {appointment.paymentStatus === "PAID" && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => void handleDownloadInvoice(appointment)}
+                        disabled={downloadingInvoiceId === appointment.id}
+                        className="gap-1.5"
+                      >
+                        {downloadingInvoiceId === appointment.id ? (
+                          <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                          <Download className="size-4" />
+                        )}
+                        Download Invoice
+                      </Button>
+                    )}
+
+                    {canLeaveReview && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={() => setReviewAppointment(appointment)}
+                        className="gap-1.5 bg-[#D9542E] hover:bg-[#B8431F] text-white"
+                      >
+                        <Star className="size-4 fill-amber-300 text-amber-300" />
+                        Leave Review
+                      </Button>
+                    )}
+
+                    {appointment.review && (
+                      <Badge
+                        variant="outline"
+                        className="gap-1 border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-800 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300"
+                      >
+                        <Star className="size-3 fill-amber-400 text-amber-400" />
+                        Reviewed ({appointment.review.rating}★)
+                      </Badge>
+                    )}
+
+                    {canPayNow ? (
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={() => void handlePayNow(appointment.id)}
+                        disabled={initiatePaymentMutation.isPending}
+                        className="gap-1.5"
+                      >
+                        <CreditCard className="size-4" />
+                        {initiatePaymentMutation.isPending ? "Redirecting..." : "Pay Now"}
+                      </Button>
+                    ) : appointment.paymentStatus !== "PAID" ? (
+                      <Button type="button" variant="secondary" size="sm" disabled>
+                        Unavailable
+                      </Button>
+                    ) : null}
+                  </div>
                 </CardFooter>
               </Card>
             )
           })}
         </div>
       )}
+
+      <ReviewDialog
+        open={!!reviewAppointment}
+        onOpenChange={(open) => {
+          if (!open) setReviewAppointment(null)
+        }}
+        appointment={reviewAppointment}
+      />
     </div>
   )
 }

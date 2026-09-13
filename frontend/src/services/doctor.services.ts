@@ -5,7 +5,7 @@ import { ICreateDoctorPayload, IDoctor, IDoctorDetails, IUpdateDoctorPayload } f
 import { ISpecialty } from "@/types/specialty.types";
 
 
-export const getDoctors = async (queryString : string) => {
+export const getDoctors = async (queryString?: string) => {
     try {
         const doctors = await httpClient.get<IDoctor[]>(queryString ? `/doctors?${queryString}` : "/doctors");
         return doctors;

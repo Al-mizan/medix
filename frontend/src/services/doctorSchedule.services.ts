@@ -1,6 +1,7 @@
 "use server"
 
 import { httpClient } from "@/lib/axios/httpClient"
+import { type ApiResponse } from "@/types/api.types"
 import {
     type ICreateDoctorSchedulePayload,
     type IDoctorSchedule,
@@ -16,6 +17,19 @@ export const getMyDoctorSchedules = async (queryString: string) => {
     )
   } catch (error) {
     console.log("Error fetching doctor schedules:", error)
+    throw error
+  }
+}
+
+export const getAllDoctorSchedules = async (
+  queryString?: string | unknown
+): Promise<ApiResponse<IDoctorSchedule[]>> => {
+  try {
+    const qs = typeof queryString === "string" ? queryString : undefined
+    const endpoint = qs ? `/doctor-schedules?${qs}` : "/doctor-schedules"
+    return await httpClient.get<IDoctorSchedule[]>(endpoint)
+  } catch (error) {
+    console.log("Error fetching all doctor schedules:", error)
     throw error
   }
 }

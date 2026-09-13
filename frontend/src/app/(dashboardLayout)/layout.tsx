@@ -1,5 +1,6 @@
 import DashboardNavbar from "@/components/modules/Dashboard/DashboardNavbar";
 import DashboardSidebar from "@/components/modules/Dashboard/DashboardSidebar";
+import AskMedixAIButton from "@/components/modules/AI/AskMedixAIButton";
 import React from "react";
 
 export const dynamic = "force-dynamic";
@@ -22,8 +23,12 @@ const RootDashboardLayout = async ({
                     <div>{children}</div>
                 </main>
             </div>
+
+            {/* Floating RAG AI Assistant Button (TICK-018) */}
+            <AskMedixAIButton />
         </div>
     );
 };
 
 export default RootDashboardLayout;
+

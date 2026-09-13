@@ -31,3 +31,18 @@ export interface IAdminDashboardData {
     barChartData: BarChartData[];
     pieChartData: PieChartData[];
 }
+
+export interface IDoctorDashboardData {
+    reviewCount: number;
+    patientCount: number;
+    appointmentCount: number;
+    totalRevenue: number;
+    appointmentStatusDistribution: PieChartData[];
+}
+
+export interface IPatientDashboardData {
+    appointmentCount: number;
+    reviewCount: number;
+    appointmentStatusDistribution: PieChartData[];
+}
+
