@@ -43,14 +43,20 @@ const axiosInstance = async () => {
         .join("; ");
     // eg Cookie: "accessToken=abc123; refreshToken=def456"
 
+    const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        Cookie: cookieHeader,
+    };
+
+    if (accessToken) {
+        headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+
     const instance = axios.create({
         baseURL: API_BASE_URL,
         timeout: 30000,
-        headers: {
-            'Content-Type': 'application/json',
-            Cookie: cookieHeader
-        }
-    })
+        headers,
+    });
 
     return instance;
 }

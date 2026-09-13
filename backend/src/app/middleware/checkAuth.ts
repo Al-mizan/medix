@@ -28,7 +28,7 @@ export const checkAuth = (...authRoles: Role[]) => async (req: Request, res: Res
         // session token verification
         const sessionToken = cookieUtils.getCookie(req, "better-auth.session_token");
         if (!sessionToken) {
-            throw new Error("Unauthorized: No session token provided");
+            throw new AppError(status.UNAUTHORIZED, "Unauthorized: No session token provided");
         }
         const sessionExists = await prisma.session.findFirst({
             where: {
@@ -41,55 +41,60 @@ export const checkAuth = (...authRoles: Role[]) => async (req: Request, res: Res
                 user: true,
             }
         });
-        if (sessionExists && sessionExists.user) {
-            const user = sessionExists.user;
-            const now = new Date();
-            const expiresAt = new Date(sessionExists.expiresAt);
-            const createdAt = new Date(sessionExists.createdAt);
 
-            const sessionLifeTime = expiresAt.getTime() - createdAt.getTime();
-            const timeRemaining = expiresAt.getTime() - now.getTime();
-            const percentageTimeRemaining = (timeRemaining / sessionLifeTime) * 100;
-
-            if (percentageTimeRemaining < 20) {
-                res.setHeader("X-Session-Refresh", "true");
-                res.setHeader("X-Session-Expires-At", expiresAt.toISOString());
-                res.setHeader("X-Time-Remaining", timeRemaining.toString());
-
-                console.log("Session Expiring Soon!!!")
-            }
-
-            if (user.status === UserStatus.BLOCKED || user.status === UserStatus.DELETED) {
-                throw new AppError(status.FORBIDDEN, "Unauthorized: User is not active");
-            }
-            if (user.isDeleted) {
-                throw new AppError(status.FORBIDDEN, "Unauthorized: User is deleted");
-            }
-            if (authRoles.length > 0 && !authRoles.includes(user.role as Role)) {
-                throw new AppError(status.FORBIDDEN, "Unauthorized: You don't have permission to access this resource");
-            }
-
-            req.user = {
-                userId: user.id,
-                email: user.email,
-                role: user.role as Role,
-            }
-
+        if (!sessionExists || !sessionExists.user) {
+            throw new AppError(status.UNAUTHORIZED, "Unauthorized: Invalid or expired session");
         }
 
-        // access token verification
-        const accessToken = cookieUtils.getCookie(req, "accessToken");
+        const user = sessionExists.user;
+        const now = new Date();
+        const expiresAt = new Date(sessionExists.expiresAt);
+        const createdAt = new Date(sessionExists.createdAt);
+
+        const sessionLifeTime = expiresAt.getTime() - createdAt.getTime();
+        const timeRemaining = expiresAt.getTime() - now.getTime();
+        const percentageTimeRemaining = (timeRemaining / sessionLifeTime) * 100;
+
+        if (percentageTimeRemaining < 20) {
+            res.setHeader("X-Session-Refresh", "true");
+            res.setHeader("X-Session-Expires-At", expiresAt.toISOString());
+            res.setHeader("X-Time-Remaining", timeRemaining.toString());
+
+            console.log("Session Expiring Soon!!!");
+        }
+
+        if (user.status === UserStatus.BLOCKED || user.status === UserStatus.DELETED) {
+            throw new AppError(status.FORBIDDEN, "Unauthorized: User is not active");
+        }
+        if (user.isDeleted) {
+            throw new AppError(status.FORBIDDEN, "Unauthorized: User is deleted");
+        }
+        if (authRoles.length > 0 && !authRoles.includes(user.role as Role)) {
+            throw new AppError(status.FORBIDDEN, "Unauthorized: You don't have permission to access this resource");
+        }
+
+        req.user = {
+            userId: user.id,
+            email: user.email,
+            role: user.role as Role,
+        };
+
+        // access token verification (from cookie or Authorization header)
+        let accessToken = cookieUtils.getCookie(req, "accessToken");
+        if (!accessToken && req.headers.authorization?.startsWith("Bearer ")) {
+            accessToken = req.headers.authorization.split(" ")[1];
+        }
+
         if (!accessToken) {
             throw new AppError(status.UNAUTHORIZED, "Unauthorized: No access token provided");
         }
         const verifiedToken = jwtUtils.verifyToken(accessToken, envVars.ACCESS_TOKEN_SECRET);
-        if (!verifiedToken.success) {
+        if (!verifiedToken.success || !verifiedToken.data) {
             throw new AppError(status.UNAUTHORIZED, "Unauthorized: Invalid access token");
         }
-        if (authRoles.length > 0 && !authRoles.includes(verifiedToken.data!.role as Role)) {
+        if (authRoles.length > 0 && !authRoles.includes(verifiedToken.data.role as Role)) {
             throw new AppError(status.FORBIDDEN, "Unauthorized: You don't have permission to access this resource");
         }
-
 
         next();
     } catch (error: unknown) {

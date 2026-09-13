@@ -11,11 +11,19 @@ if (!BASE_API_URL) {
 
 export async function getNewTokensWithRefreshToken(refreshToken: string): Promise<boolean> {
     try {
+        const cookieStore = await cookies();
+        const sessionToken = cookieStore.get("better-auth.session_token")?.value;
+
+        const cookieParts = [`refreshToken=${refreshToken}`];
+        if (sessionToken) {
+            cookieParts.push(`better-auth.session_token=${sessionToken}`);
+        }
+
         const res = await fetch(`${BASE_API_URL}/auth/refresh-token`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Cookie: `refreshToken=${refreshToken}`
+                Cookie: cookieParts.join("; ")
             }
         });
 
@@ -50,21 +58,30 @@ export async function getUserInfo() {
     try {
         const cookieStore = await cookies();
         const accessToken = cookieStore.get("accessToken")?.value;
-        const sessionToken = cookieStore.get("better-auth.session_token")?.value
+        const sessionToken = cookieStore.get("better-auth.session_token")?.value;
 
         if (!accessToken) {
             return null;
+        }
+
+        const cookieParts = [`accessToken=${accessToken}`];
+        if (sessionToken) {
+            cookieParts.push(`better-auth.session_token=${sessionToken}`);
         }
 
         const res = await fetch(`${BASE_API_URL}/auth/me`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                Cookie: `accessToken=${accessToken}; better-auth.session_token=${sessionToken}`
+                Authorization: `Bearer ${accessToken}`,
+                Cookie: cookieParts.join("; ")
             }
         });
 
         if (!res.ok) {
+            if (res.status === 401) {
+                return null;
+            }
             console.error("Failed to fetch user info:", res.status, res.statusText);
             return null;
         }
