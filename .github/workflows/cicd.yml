@@ -82,7 +82,7 @@ jobs:
 
       - name: Build Frontend
         env:
-          NEXT_PUBLIC_API_BASE_URL: ${{ secrets.CLIENT_PUBLIC_API_BASE_URL || 'https://medix-backend.onrender.com/api/v1' }}
+          NEXT_PUBLIC_API_BASE_URL: ${{ secrets.CLIENT_PUBLIC_API_BASE_URL || 'https://medix-api.onrender.com/api/v1' }}
         run: pnpm build:frontend
 
   publish-backend-docker:
@@ -142,7 +142,7 @@ jobs:
           file: ./frontend/Dockerfile.prod
           push: true
           build-args: |
-            NEXT_PUBLIC_API_BASE_URL=${{ secrets.CLIENT_PUBLIC_API_BASE_URL || 'https://medix-backend.onrender.com/api/v1' }}
+            NEXT_PUBLIC_API_BASE_URL=${{ secrets.CLIENT_PUBLIC_API_BASE_URL || 'https://medix-api.onrender.com/api/v1' }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/medix-frontend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/medix-frontend:${{ github.sha }}

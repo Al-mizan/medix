@@ -46,9 +46,9 @@ STRIPE_WEBHOOK_SECRET=$(get_env "STRIPE_WEBHOOK_SECRET")
 SUPER_ADMIN_EMAIL=$(get_env "SUPER_ADMIN_EMAIL")
 SUPER_ADMIN_PASSWORD=$(get_env "SUPER_ADMIN_PASSWORD")
 
-FRONTEND_URL="https://medix-frontend.onrender.com"
-BETTER_AUTH_URL="https://medix-backend.onrender.com"
-GOOGLE_CALLBACK_URL="https://medix-backend.onrender.com/api/v1/auth/google/callback"
+FRONTEND_URL="https://medix-app.onrender.com"
+BETTER_AUTH_URL="https://medix-api.onrender.com"
+GOOGLE_CALLBACK_URL="https://medix-api.onrender.com/api/v1/auth/google/callback"
 
 mkdir -p "$REPO_ROOT/scratch"
 OUTPUT_FILE="$REPO_ROOT/scratch/render_backend_env_ready.txt"

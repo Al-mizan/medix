@@ -20,7 +20,7 @@ export const openapiSpec = {
       description: 'Local Development Server',
     },
     {
-      url: 'https://medix-backend.onrender.com/api/v1',
+      url: 'https://medix-api.onrender.com/api/v1',
       description: 'Production Server (Render)',
     },
   ],

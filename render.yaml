@@ -3,7 +3,7 @@ services:
   # Backend API Service (Express + Prisma + pgvector)
   # ==========================================
   - type: web
-    name: medix-backend
+    name: medix-api
     runtime: docker
     dockerfilePath: ./backend/Dockerfile.prod
     dockerContext: ./backend
@@ -27,7 +27,10 @@ services:
       - key: BETTER_AUTH_SECRET
         generateValue: true
       - key: BETTER_AUTH_URL
-        value: https://medix-backend.onrender.com
+        fromService:
+          type: web
+          name: medix-api
+          envVarKey: RENDER_EXTERNAL_URL
       - key: ACCESS_TOKEN_SECRET
         generateValue: true
       - key: REFRESH_TOKEN_SECRET
@@ -40,9 +43,12 @@ services:
         value: 15m
       - key: BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE
         value: 1d
-      # CORS & Frontend Origins
+      # CORS & Frontend Origins (Dynamically bound to frontend URL)
       - key: FRONTEND_URL
-        value: https://medix-frontend.onrender.com
+        fromService:
+          type: web
+          name: medix-app
+          envVarKey: RENDER_EXTERNAL_URL
       # Email Service (SMTP)
       - key: EMAIL_SENDER_SMTP_USER
         sync: false
@@ -60,7 +66,7 @@ services:
       - key: GOOGLE_CLIENT_SECRET
         sync: false
       - key: GOOGLE_CALLBACK_URL
-        value: https://medix-backend.onrender.com/api/v1/auth/google/callback
+        value: https://medix-api.onrender.com/api/v1/auth/google/callback
       # Media & Storage (Cloudinary)
       - key: CLOUDINARY_CLOUD_NAME
         sync: false
@@ -83,7 +89,7 @@ services:
   # Frontend Application (Next.js 16 Standalone)
   # ==========================================
   - type: web
-    name: medix-frontend
+    name: medix-app
     runtime: docker
     dockerfilePath: ./frontend/Dockerfile.prod
     dockerContext: ./frontend
@@ -94,16 +100,16 @@ services:
     healthCheckPath: /
     envVars:
       - key: NEXT_PUBLIC_API_BASE_URL
-        value: https://medix-backend.onrender.com/api/v1
+        value: https://medix-api.onrender.com/api/v1
       - key: NODE_ENV
         value: production
       - key: JWT_ACCESS_SECRET
         fromService:
-          name: medix-backend
+          name: medix-api
           type: web
           envVarKey: ACCESS_TOKEN_SECRET
       - key: ACCESS_TOKEN_SECRET
         fromService:
-          name: medix-backend
+          name: medix-api
           type: web
           envVarKey: ACCESS_TOKEN_SECRET
