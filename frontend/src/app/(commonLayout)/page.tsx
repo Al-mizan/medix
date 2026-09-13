@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   dehydrate,
   HydrationBoundary,
@@ -14,6 +15,12 @@ import {
 } from "@/components/modules/Landing";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Modern Healthcare, Seamlessly Connected",
+  description:
+    "Connect with board-certified physicians, schedule video consultations in seconds, and experience proactive care guided by intelligent clinical assistance.",
+};
 
 export default async function HomePage() {
   const queryClient = new QueryClient();

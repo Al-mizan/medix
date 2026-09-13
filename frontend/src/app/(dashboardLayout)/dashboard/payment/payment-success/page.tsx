@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,6 +11,11 @@ import {
 } from "@/components/ui/card"
 import { CheckCircle2, Calendar, ArrowRight, Home } from "lucide-react"
 import Link from "next/link"
+
+export const metadata: Metadata = {
+  title: "Payment Confirmed & Appointment Scheduled",
+  description: "Your consultation fee has been processed and your appointment is confirmed.",
+}
 
 interface PaymentSuccessPageProps {
   searchParams: Promise<{

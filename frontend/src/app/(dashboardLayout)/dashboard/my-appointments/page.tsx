@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import PatientAppointmentsList from "@/components/modules/Patient/Appointments/PatientAppointmentsList"
 import { getMyAppointments } from "@/services/appointment.services"
+
+export const metadata: Metadata = {
+  title: "My Appointments & Video Consultations",
+  description: "View upcoming doctor appointments, session status, and join video consultations.",
+};
 
 const getFeedbackState = (status?: string, error?: string) => {
   if (error === "payment_cancelled") {

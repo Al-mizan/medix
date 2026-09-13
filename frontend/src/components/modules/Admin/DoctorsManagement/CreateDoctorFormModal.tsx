@@ -1,7 +1,6 @@
 "use client";
 
-import { createDoctorAction } from "@/app/(dashboardLayout)/admin/dashboard/doctors-management/_action";
-import AppField from "@/components/shared/form/AppField";
+import { useState } from "react";
 import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,140 +12,32 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { Gender } from "@/types/doctor.types";
 import { type ISpecialty } from "@/types/specialty.types";
-import {
-    createDoctorFormZodSchema,
-    type ICreateDoctorFormValues,
-} from "@/zod/doctor.validation";
-import { useForm } from "@tanstack/react-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createDoctorFormZodSchema } from "@/zod/doctor.validation";
 import { Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
-import { toast } from "sonner";
 import SpecialtiesMultiSelect from "./SpecialtiesMultiSelect";
+import DoctorIdentityFields from "./DoctorIdentityFields";
+import DoctorProfessionalFields from "./DoctorProfessionalFields";
+import DoctorAddressField from "./DoctorAddressField";
+import { useCreateDoctorForm, getErrorMessage } from "./useCreateDoctorForm";
 
 interface CreateDoctorFormModalProps {
     specialties: ISpecialty[];
     isLoadingSpecialties?: boolean;
 }
 
-const defaultValues: ICreateDoctorFormValues = {
-    password: "",
-    name: "",
-    email: "",
-    contactNumber: "",
-    address: "",
-    registrationNumber: "",
-    experience: "",
-    gender: Gender.MALE,
-    appointmentFee: "",
-    qualification: "",
-    currentWorkingPlace: "",
-    designation: "",
-    specialties: [],
-};
-
-const getErrorMessage = (error: unknown): string => {
-    if (typeof error === "string") {
-        return error;
-    }
-
-    if (error && typeof error === "object" && "message" in error) {
-        return String(error.message);
-    }
-
-    return "Invalid input";
-};
-
-const FieldMessage = ({ error }: { error: unknown }) => {
-    if (!error) {
-        return null;
-    }
-
-    return <p className="text-sm text-destructive">{getErrorMessage(error)}</p>;
-};
-
 const CreateDoctorFormModal = ({
     specialties,
     isLoadingSpecialties = false,
 }: CreateDoctorFormModalProps) => {
     const [open, setOpen] = useState(false);
-    const queryClient = useQueryClient();
-    const router = useRouter();
-
-    const { mutateAsync, isPending } = useMutation({
-        mutationFn: createDoctorAction,
+    const { form, isPending, handleOpenChange } = useCreateDoctorForm({
+        onSuccess: () => setOpen(false),
     });
-
-    const form = useForm({
-        defaultValues,
-        onSubmit: async ({ value }) => {
-            const payload = {
-                password: value.password,
-                doctor: {
-                    name: value.name,
-                    email: value.email,
-                    contactNumber: value.contactNumber,
-                    address: value.address,
-                    registrationNumber: value.registrationNumber,
-                    experience: value.experience
-                        ? Number(value.experience)
-                        : undefined,
-                    gender: value.gender,
-                    appointmentFee: Number(value.appointmentFee),
-                    qualification: value.qualification,
-                    currentWorkingPlace: value.currentWorkingPlace,
-                    designation: value.designation,
-                },
-                specialties: value.specialties,
-            } as const;
-
-            const result = await mutateAsync(payload);
-
-            if (!result.success) {
-                toast.error(result.message || "Failed to create doctor");
-                return;
-            }
-
-            toast.success(result.message || "Doctor created successfully");
-            setOpen(false);
-            form.reset();
-
-            void queryClient.invalidateQueries({ queryKey: ["doctors"] });
-            void queryClient.refetchQueries({
-                queryKey: ["doctors"],
-                type: "active",
-            });
-            router.refresh();
-        },
-    });
-
-    const handleOpenChange = useCallback(
-        (nextOpen: boolean) => {
-            setOpen(nextOpen);
-
-            if (!nextOpen) {
-                form.reset();
-            }
-        },
-        [form],
-    );
 
     return (
-        <Dialog open={open} onOpenChange={handleOpenChange}>
+        <Dialog open={open} onOpenChange={(next) => handleOpenChange(next, setOpen)}>
             <DialogTrigger asChild>
                 <Button type="button" className="ml-auto shrink-0">
                     <Plus className="size-4" />
@@ -162,8 +53,7 @@ const CreateDoctorFormModal = ({
                 <DialogHeader className="border-b px-6 py-5 pr-14">
                     <DialogTitle>Create Doctor</DialogTitle>
                     <DialogDescription>
-                        Add a new doctor profile with account credentials and
-                        specialties.
+                        Add a new doctor profile with account credentials and specialties.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -181,300 +71,25 @@ const CreateDoctorFormModal = ({
                             className="space-y-5"
                         >
                             <div className="grid gap-4 md:grid-cols-2">
-                                <form.Field
-                                    name="name"
-                                    validators={{
-                                        onChange:
-                                            createDoctorFormZodSchema.shape
-                                                .name,
-                                    }}
-                                >
-                                    {(field) => (
-                                        <AppField
-                                            field={field}
-                                            label="Full Name"
-                                            placeholder="Enter doctor name"
-                                        />
-                                    )}
-                                </form.Field>
-
-                                <form.Field
-                                    name="email"
-                                    validators={{
-                                        onChange:
-                                            createDoctorFormZodSchema.shape
-                                                .email,
-                                    }}
-                                >
-                                    {(field) => (
-                                        <AppField
-                                            field={field}
-                                            label="Email"
-                                            type="email"
-                                            placeholder="doctor@example.com"
-                                        />
-                                    )}
-                                </form.Field>
-
-                                <form.Field
-                                    name="password"
-                                    validators={{
-                                        onChange:
-                                            createDoctorFormZodSchema.shape
-                                                .password,
-                                    }}
-                                >
-                                    {(field) => (
-                                        <AppField
-                                            field={field}
-                                            label="Password"
-                                            type="password"
-                                            placeholder="Enter temporary password"
-                                        />
-                                    )}
-                                </form.Field>
-
-                                <form.Field
-                                    name="contactNumber"
-                                    validators={{
-                                        onChange:
-                                            createDoctorFormZodSchema.shape
-                                                .contactNumber,
-                                    }}
-                                >
-                                    {(field) => (
-                                        <AppField
-                                            field={field}
-                                            label="Contact Number"
-                                            placeholder="Enter contact number"
-                                        />
-                                    )}
-                                </form.Field>
-
-                                <form.Field
-                                    name="registrationNumber"
-                                    validators={{
-                                        onChange:
-                                            createDoctorFormZodSchema.shape
-                                                .registrationNumber,
-                                    }}
-                                >
-                                    {(field) => (
-                                        <AppField
-                                            field={field}
-                                            label="Registration Number"
-                                            placeholder="Enter registration number"
-                                        />
-                                    )}
-                                </form.Field>
-
-                                <form.Field
-                                    name="experience"
-                                    validators={{
-                                        onChange:
-                                            createDoctorFormZodSchema.shape
-                                                .experience,
-                                    }}
-                                >
-                                    {(field) => (
-                                        <AppField
-                                            field={field}
-                                            label="Experience"
-                                            type="number"
-                                            placeholder="Years of experience"
-                                        />
-                                    )}
-                                </form.Field>
-
-                                <form.Field
-                                    name="appointmentFee"
-                                    validators={{
-                                        onChange:
-                                            createDoctorFormZodSchema.shape
-                                                .appointmentFee,
-                                    }}
-                                >
-                                    {(field) => (
-                                        <AppField
-                                            field={field}
-                                            label="Appointment Fee"
-                                            type="number"
-                                            placeholder="Enter appointment fee"
-                                        />
-                                    )}
-                                </form.Field>
-
-                                <form.Field
-                                    name="qualification"
-                                    validators={{
-                                        onChange:
-                                            createDoctorFormZodSchema.shape
-                                                .qualification,
-                                    }}
-                                >
-                                    {(field) => (
-                                        <AppField
-                                            field={field}
-                                            label="Qualification"
-                                            placeholder="e.g. MBBS, FCPS"
-                                        />
-                                    )}
-                                </form.Field>
-
-                                <form.Field
-                                    name="currentWorkingPlace"
-                                    validators={{
-                                        onChange:
-                                            createDoctorFormZodSchema.shape
-                                                .currentWorkingPlace,
-                                    }}
-                                >
-                                    {(field) => (
-                                        <AppField
-                                            field={field}
-                                            label="Current Working Place"
-                                            placeholder="Enter current workplace"
-                                        />
-                                    )}
-                                </form.Field>
-
-                                <form.Field
-                                    name="designation"
-                                    validators={{
-                                        onChange:
-                                            createDoctorFormZodSchema.shape
-                                                .designation,
-                                    }}
-                                >
-                                    {(field) => (
-                                        <AppField
-                                            field={field}
-                                            label="Designation"
-                                            placeholder="Enter designation"
-                                        />
-                                    )}
-                                </form.Field>
-
-                                <form.Field
-                                    name="gender"
-                                    validators={{
-                                        onChange:
-                                            createDoctorFormZodSchema.shape
-                                                .gender,
-                                    }}
-                                >
-                                    {(field) => {
-                                        const firstError =
-                                            field.state.meta.isTouched &&
-                                            field.state.meta.errors.length > 0
-                                                ? field.state.meta.errors[0]
-                                                : null;
-
-                                        return (
-                                            <div className="space-y-1.5">
-                                                <Label
-                                                    htmlFor="doctor-gender"
-                                                    className={cn(
-                                                        firstError &&
-                                                            "text-destructive",
-                                                    )}
-                                                >
-                                                    Gender
-                                                </Label>
-                                                <Select
-                                                    value={field.state.value}
-                                                    onValueChange={(value) => {
-                                                        field.handleChange(
-                                                            value as ICreateDoctorFormValues["gender"],
-                                                        );
-                                                        field.handleBlur();
-                                                    }}
-                                                >
-                                                    <SelectTrigger
-                                                        id="doctor-gender"
-                                                        className={cn(
-                                                            "w-full",
-                                                            firstError &&
-                                                                "border-destructive",
-                                                        )}
-                                                    >
-                                                        <SelectValue placeholder="Select gender" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="MALE">
-                                                            Male
-                                                        </SelectItem>
-                                                        <SelectItem value="FEMALE">
-                                                            Female
-                                                        </SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                                <FieldMessage
-                                                    error={firstError}
-                                                />
-                                            </div>
-                                        );
-                                    }}
-                                </form.Field>
-
-                                <form.Field
-                                    name="address"
-                                    validators={{
-                                        onChange:
-                                            createDoctorFormZodSchema.shape
-                                                .address,
-                                    }}
-                                >
-                                    {(field) => {
-                                        const firstError =
-                                            field.state.meta.isTouched &&
-                                            field.state.meta.errors.length > 0
-                                                ? field.state.meta.errors[0]
-                                                : null;
-
-                                        return (
-                                            <div className="space-y-1.5 md:col-span-2">
-                                                <Label
-                                                    htmlFor={field.name}
-                                                    className={cn(
-                                                        firstError &&
-                                                            "text-destructive",
-                                                    )}
-                                                >
-                                                    Address
-                                                </Label>
-                                                <Textarea
-                                                    id={field.name}
-                                                    name={field.name}
-                                                    value={field.state.value}
-                                                    placeholder="Enter doctor address"
-                                                    onBlur={field.handleBlur}
-                                                    onChange={(event) =>
-                                                        field.handleChange(
-                                                            event.target.value,
-                                                        )
-                                                    }
-                                                    aria-invalid={!!firstError}
-                                                    className={cn(
-                                                        firstError &&
-                                                            "border-destructive",
-                                                    )}
-                                                />
-                                                <FieldMessage
-                                                    error={firstError}
-                                                />
-                                            </div>
-                                        );
-                                    }}
-                                </form.Field>
+                                <DoctorIdentityFields
+                                    form={form}
+                                    schema={createDoctorFormZodSchema}
+                                    includeAuthFields
+                                />
+                                <DoctorProfessionalFields
+                                    form={form}
+                                    schema={createDoctorFormZodSchema}
+                                />
+                                <DoctorAddressField
+                                    form={form}
+                                    schema={createDoctorFormZodSchema}
+                                />
                             </div>
 
                             <form.Field
                                 name="specialties"
                                 validators={{
-                                    onChange:
-                                        createDoctorFormZodSchema.shape
-                                            .specialties,
+                                    onChange: createDoctorFormZodSchema.shape.specialties,
                                 }}
                             >
                                 {(field) => {
@@ -487,14 +102,10 @@ const CreateDoctorFormModal = ({
                                     return (
                                         <SpecialtiesMultiSelect
                                             specialties={specialties}
-                                            selectedSpecialtyIds={
-                                                field.state.value
-                                            }
+                                            selectedSpecialtyIds={field.state.value}
                                             onChange={field.handleChange}
                                             onBlur={field.handleBlur}
-                                            isLoadingSpecialties={
-                                                isLoadingSpecialties
-                                            }
+                                            isLoadingSpecialties={isLoadingSpecialties}
                                             error={firstError}
                                             getErrorMessage={getErrorMessage}
                                         />
@@ -515,22 +126,14 @@ const CreateDoctorFormModal = ({
 
                                 <form.Subscribe
                                     selector={(state) =>
-                                        [
-                                            state.canSubmit,
-                                            state.isSubmitting,
-                                        ] as const
+                                        [state.canSubmit, state.isSubmitting] as const
                                     }
                                 >
                                     {([canSubmit, isSubmitting]) => (
                                         <AppSubmitButton
-                                            isPending={
-                                                isSubmitting || isPending
-                                            }
+                                            isPending={isSubmitting || isPending}
                                             pendingLabel="Creating doctor..."
-                                            disabled={
-                                                !canSubmit ||
-                                                isLoadingSpecialties
-                                            }
+                                            disabled={!canSubmit || isLoadingSpecialties}
                                             className="w-auto min-w-36"
                                         >
                                             Create Doctor

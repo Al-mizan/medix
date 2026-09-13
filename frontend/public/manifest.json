@@ -1,0 +1,22 @@
+{
+  "name": "Medix Digital Healthcare",
+  "short_name": "Medix",
+  "description": "Modern, accessible, and intelligent healthcare infrastructure connecting patients with verified specialists and AI-guided clinical workflows.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0B7285",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

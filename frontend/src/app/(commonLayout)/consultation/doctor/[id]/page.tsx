@@ -1,4 +1,4 @@
-
+import type { Metadata } from "next";
 import BookAppointmentModal from "@/components/modules/Patient/Appointments/BookAppointmentModal"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -8,6 +8,31 @@ import { getDoctorById } from "@/services/doctor.services"
 import { type IDoctorDetails } from "@/types/doctor.types"
 import { format } from "date-fns"
 import Link from "next/link"
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  try {
+    const res = await getDoctorById(id);
+    const doctor = res?.data as IDoctorDetails | undefined;
+    if (doctor?.name) {
+      return {
+        title: `${doctor.name} - ${doctor.designation || "Medical Specialist"}`,
+        description: `Consult with ${doctor.name}, ${doctor.qualification || ""}. Schedule video and in-clinic consultations on Medix.`,
+      };
+    }
+  } catch {
+    // fallback
+  }
+
+  return {
+    title: "Doctor Profile & Appointment Booking",
+    description: "Book an appointment with a verified healthcare specialist on Medix.",
+  };
+}
 
 const formatDateTime = (value?: string | Date | null) => {
   if (!value) {

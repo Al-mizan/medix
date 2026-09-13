@@ -1,12 +1,7 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
     Table,
     TableBody,
@@ -26,21 +21,18 @@ import {
     SortingState,
     useReactTable,
 } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { useEffect, useState } from "react";
-import DataTableFilters, {
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
+import {
     DataTableFilterConfig,
     DataTableFilterValue,
     DataTableFilterValues,
 } from "./DataTableFilters";
 import DataTablePagination from "./DataTablePagination";
-import DataTableSearch from "./DataTableSearch";
+import DataTableLoadingOverlay from "./DataTableLoadingOverlay";
+import DataTableToolbar from "./DataTableToolbar";
+import { createActionsColumn, DataTableActions } from "./DataTableActionsColumn";
 
-interface DataTableActions<TData> {
-    onView?: (data: TData) => void;
-    onEdit?: (data: TData) => void;
-    onDelete?: (data: TData) => void;
-}
+export type { DataTableActions };
 
 interface DataTableProps<TData> {
     data: TData[];
@@ -95,72 +87,13 @@ const DataTable = <TData,>({
     }, []);
 
     const hydratedIsLoading = hasHydrated ? Boolean(isLoading) : false;
-    const showLoadingOverlay = hydratedIsLoading;
 
-    const tableColumns: ColumnDef<TData>[] = actions
-        ? [
-              ...columns,
+    const tableColumns: ColumnDef<TData>[] = useMemo(() => {
+        if (!actions) return columns;
+        return [...columns, createActionsColumn(actions)];
+    }, [columns, actions]);
 
-              // Action column
-              {
-                  id: "actions", // Unique id for the column
-                  // ekhane accessorKey or cell value nai, karon amra custom cell renderer use korbo jeita action buttons show korbe and aita database a nai
-                  header: "Actions",
-                  enableSorting: false,
-                  cell: ({ row }) => {
-                      const rowData = row.original;
-
-                      return (
-                          <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                  <Button
-                                      variant={"ghost"}
-                                      className="h-8 w-8 p-0"
-                                  >
-                                      <span className="sr-only">Open Menu</span>
-                                      <MoreHorizontal className="h-4 w-4" />
-                                  </Button>
-                              </DropdownMenuTrigger>
-
-                              <DropdownMenuContent align="end">
-                                  {actions.onView && (
-                                      <DropdownMenuItem
-                                          onClick={() =>
-                                              actions.onView?.(rowData)
-                                          }
-                                      >
-                                          View
-                                      </DropdownMenuItem>
-                                  )}
-
-                                  {actions.onEdit && (
-                                      <DropdownMenuItem
-                                          onClick={() =>
-                                              actions.onEdit?.(rowData)
-                                          }
-                                      >
-                                          Edit
-                                      </DropdownMenuItem>
-                                  )}
-
-                                  {actions.onDelete && (
-                                      <DropdownMenuItem
-                                          onClick={() =>
-                                              actions.onDelete?.(rowData)
-                                          }
-                                      >
-                                          Delete
-                                      </DropdownMenuItem>
-                                  )}
-                              </DropdownMenuContent>
-                          </DropdownMenu>
-                      );
-                  },
-              },
-          ]
-        : columns;
-
-    // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Table is intentionally used here and React Compiler already skips memoization for this hook.
+    // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Table is intentionally used here
     const table = useReactTable({
         data,
         columns: tableColumns,
@@ -176,71 +109,31 @@ const DataTable = <TData,>({
         },
         onSortingChange: sorting
             ? (updater) => {
-                  const currentSortingState = sorting.state;
-
-                  const nextSortingState =
-                      typeof updater === "function"
-                          ? updater(currentSortingState)
-                          : updater;
-
-                  sorting.onSortingChange(nextSortingState);
+                  const current = sorting.state;
+                  const next = typeof updater === "function" ? updater(current) : updater;
+                  sorting.onSortingChange(next);
               }
             : undefined,
         onPaginationChange: pagination
             ? (updater) => {
-                  const currentPaginationState = pagination.state;
-                  const nextPaginationState =
-                      typeof updater === "function"
-                          ? updater(currentPaginationState)
-                          : updater;
-
-                  pagination.onPaginationChange(nextPaginationState);
+                  const current = pagination.state;
+                  const next = typeof updater === "function" ? updater(current) : updater;
+                  pagination.onPaginationChange(next);
               }
             : undefined,
     });
+
     return (
         <div className="relative">
-            {showLoadingOverlay && (
-                <div className="absolute inset-0 bg-background/50 backdrop-blur-sm z-10 flex items-center justify-center">
-                    <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-                        <span className="text-sm text-muted-foreground">
-                            Loading...
-                        </span>
-                    </div>
-                </div>
-            )}
+            {hydratedIsLoading && <DataTableLoadingOverlay />}
 
-            {(search || filters || toolbarAction) && (
-                <div className="mb-4 flex flex-wrap items-start gap-3">
-                    {search && (
-                        <DataTableSearch
-                            key={search.initialValue ?? ""}
-                            initialValue={search.initialValue}
-                            placeholder={search.placeholder}
-                            debounceMs={search.debounceMs}
-                            onDebouncedChange={search.onDebouncedChange}
-                            isLoading={hydratedIsLoading}
-                        />
-                    )}
+            <DataTableToolbar
+                search={search}
+                filters={filters}
+                toolbarAction={toolbarAction}
+                isLoading={hydratedIsLoading}
+            />
 
-                    {filters && (
-                        <DataTableFilters
-                            filters={filters.configs}
-                            values={filters.values}
-                            onFilterChange={filters.onFilterChange}
-                            onClearAll={filters.onClearAll}
-                            isLoading={hydratedIsLoading}
-                        />
-                    )}
-
-                    {toolbarAction && (
-                        <div className="ml-auto shrink-0">{toolbarAction}</div>
-                    )}
-                </div>
-            )}
-
-            {/* // Table */}
             <div className="rounded-lg border">
                 <Table>
                     <TableHeader>
@@ -250,21 +143,17 @@ const DataTable = <TData,>({
                                     <TableHead key={header.id}>
                                         {header.isPlaceholder ? null : header.column.getCanSort() ? (
                                             <Button
-                                                variant={"ghost"}
+                                                variant="ghost"
                                                 className="h-auto cursor-pointer p-0 font-semibold hover:bg-transparent hover:text-inherit focus-visible:ring-0"
                                                 onClick={header.column.getToggleSortingHandler()}
                                             >
                                                 {flexRender(
-                                                    header.column.columnDef
-                                                        .header,
+                                                    header.column.columnDef.header,
                                                     header.getContext(),
                                                 )}
-
-                                                {header.column.getIsSorted() ===
-                                                "asc" ? (
+                                                {header.column.getIsSorted() === "asc" ? (
                                                     <ArrowUp className="ml-1 h-4 w-4" />
-                                                ) : header.column.getIsSorted() ===
-                                                  "desc" ? (
+                                                ) : header.column.getIsSorted() === "desc" ? (
                                                     <ArrowDown className="ml-1 h-4 w-4" />
                                                 ) : (
                                                     <ArrowUpDown className="ml-1 h-4 w-4 opacity-50" />

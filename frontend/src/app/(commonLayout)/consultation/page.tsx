@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import DoctorsList from "@/components/modules/Consultation/DoctorsList";
 import { getAllSpecialties, getDoctors } from "@/services/doctor.services";
 import { getUserInfo } from "@/services/auth.services";
@@ -6,6 +7,12 @@ import {
     HydrationBoundary,
     QueryClient,
 } from "@tanstack/react-query";
+
+export const metadata: Metadata = {
+    title: "Find Doctors & Telemedicine Specialists",
+    description:
+        "Browse certified physicians across specialties, compare consultation fees and ratings, and schedule video consultations online.",
+};
 
 const SPECIALTIES_FILTER_KEY = "specialties.specialty.title";
 const APPOINTMENT_FEE_FILTER_KEY = "appointmentFee";

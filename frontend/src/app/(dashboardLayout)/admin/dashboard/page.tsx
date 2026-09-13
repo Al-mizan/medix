@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import AdminDashboardContent from "@/components/modules/Dashboard/AdminDashboardContent";
 import { getDashboardData } from "@/services/dashboard.services";
 import { ApiResponse } from "@/types/api.types";
@@ -7,6 +8,12 @@ import {
     HydrationBoundary,
     QueryClient,
 } from "@tanstack/react-query";
+
+export const metadata: Metadata = {
+    title: "System Administration & Platform Metrics",
+    description:
+        "System governance, clinical operations metrics, and user management.",
+};
 
 const AdminDashboardPage = async () => {
     const queryClient = new QueryClient();

@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import DoctorDashboardContent from "@/components/modules/Doctor/Dashboard/DoctorDashboardContent"
 import { getMyAppointments } from "@/services/appointment.services"
 import { getDoctorDashboardData } from "@/services/dashboard.services"
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query"
 
 export const dynamic = "force-dynamic"
+
+export const metadata: Metadata = {
+  title: "Clinician Workspace & Appointments",
+  description:
+    "Manage clinical consultations, upcoming patient appointments, and issued prescriptions.",
+};
 
 const DoctorDashboardPage = async () => {
   const queryClient = new QueryClient()
