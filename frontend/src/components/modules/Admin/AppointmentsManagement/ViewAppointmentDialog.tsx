@@ -12,7 +12,6 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { IAppointment } from "@/types/appointment.types";
 import { format } from "date-fns";
 import {

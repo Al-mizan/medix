@@ -19,20 +19,20 @@ export default function LandingFooterLinks() {
             </Link>
           </li>
           <li>
-            <a
+            <Link
               href="/#specialties"
               className="hover:text-primary transition-colors"
             >
               Medical Specialties
-            </a>
+            </Link>
           </li>
           <li>
-            <a
+            <Link
               href="/#why-choose"
               className="hover:text-primary transition-colors"
             >
               AI Assistant
-            </a>
+            </Link>
           </li>
           <li>
             <Link

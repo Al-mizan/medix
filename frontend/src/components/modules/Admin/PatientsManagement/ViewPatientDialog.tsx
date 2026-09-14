@@ -16,9 +16,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { type IPatient } from "@/types/patient.types";
 import {
-    Activity,
-    AlertCircle,
-    Calendar,
     ExternalLink,
     FileText,
     HeartPulse,

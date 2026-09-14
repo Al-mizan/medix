@@ -2,7 +2,7 @@
 
 import { deletePatient, getPatientById } from "@/services/adminPatient.services";
 import { type ApiErrorResponse, type ApiResponse } from "@/types/api.types";
-import { type IPatient, type IPatientDetails } from "@/types/patient.types";
+import { type IPatientDetails } from "@/types/patient.types";
 
 const getActionErrorMessage = (error: unknown, fallbackMessage: string) => {
     if (

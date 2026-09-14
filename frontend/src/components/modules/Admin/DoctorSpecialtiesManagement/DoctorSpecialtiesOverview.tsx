@@ -11,7 +11,6 @@ import { ISpecialty } from "@/types/specialty.types";
 import { useQuery } from "@tanstack/react-query";
 import {
     Award,
-    CheckCircle,
     LayoutGrid,
     Search,
     Stethoscope,
@@ -36,8 +35,8 @@ export const DoctorSpecialtiesOverview = () => {
         queryFn: () => getSpecialties("limit=100"),
     });
 
-    const doctors: IDoctor[] = doctorsResponse?.data ?? [];
-    const specialties: ISpecialty[] = specialtiesResponse?.data ?? [];
+    const doctors: IDoctor[] = useMemo(() => doctorsResponse?.data ?? [], [doctorsResponse?.data]);
+    const specialties: ISpecialty[] = useMemo(() => specialtiesResponse?.data ?? [], [specialtiesResponse?.data]);
 
     // Map specialties to associated doctors
     const specialtyDoctorMap = useMemo(() => {

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, ArrowRight, Menu, X, LayoutDashboard } from "lucide-react";
+import { Activity, ArrowRight, Menu, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { getDefaultDashboardRoute } from "@/lib/authUtils";
