@@ -82,7 +82,10 @@ const DoctorPrescriptionsTable = ({
   }
 
   // Filter & Paginate
-  const rawPrescriptions = prescriptionsResponse?.data ?? []
+  const rawPrescriptions = useMemo(
+    () => prescriptionsResponse?.data ?? [],
+    [prescriptionsResponse?.data],
+  )
 
   const filteredPrescriptions = useMemo(() => {
     let result = rawPrescriptions

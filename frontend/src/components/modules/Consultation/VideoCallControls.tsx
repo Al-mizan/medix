@@ -31,6 +31,7 @@ export default function VideoCallControls({
             : "bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700"
         }`}
         title={isMicMuted ? "Unmute Microphone" : "Mute Microphone"}
+        aria-label={isMicMuted ? "Unmute Microphone" : "Mute Microphone"}
       >
         {isMicMuted ? <MicOff className="size-5" /> : <Mic className="size-5" />}
       </Button>
@@ -47,6 +48,7 @@ export default function VideoCallControls({
             : "bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700"
         }`}
         title={isVideoOff ? "Turn Video On" : "Turn Video Off"}
+        aria-label={isVideoOff ? "Turn Video On" : "Turn Video Off"}
       >
         {isVideoOff ? <VideoOff className="size-5" /> : <Video className="size-5" />}
       </Button>
@@ -58,6 +60,7 @@ export default function VideoCallControls({
         onClick={onEndCall}
         className="size-12 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-600/30 transition-transform active:scale-95"
         title="End Consultation"
+        aria-label="End Consultation"
       >
         <PhoneOff className="size-5" />
       </Button>

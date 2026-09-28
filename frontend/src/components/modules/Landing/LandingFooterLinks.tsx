@@ -1,60 +1,60 @@
 import Link from "next/link";
-import { Shield } from "lucide-react";
+import { ShieldCheck, FileCheck2 } from "lucide-react";
 
 export default function LandingFooterLinks() {
   return (
     <>
-      {/* Column 1: Platform */}
+      {/* Column 1: Clinical Platform */}
       <div className="space-y-3">
         <h3 className="text-xs font-bold uppercase tracking-wider text-text-muted">
-          Platform
+          Clinical Platform
         </h3>
-        <ul className="space-y-2.5 text-sm text-text-secondary">
+        <ul className="space-y-2.5 text-xs sm:text-sm text-text-secondary">
           <li>
             <Link
               href="/consultation"
-              className="hover:text-primary transition-colors"
+              className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded"
             >
-              Find Doctors
+              Find Board Specialists
             </Link>
           </li>
           <li>
             <Link
               href="/#specialties"
-              className="hover:text-primary transition-colors"
+              className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded"
             >
-              Medical Specialties
+              Medical Departments
             </Link>
           </li>
           <li>
             <Link
-              href="/#why-choose"
-              className="hover:text-primary transition-colors"
+              href="/#care-continuum"
+              className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded"
             >
-              AI Assistant
+              The Care Continuum
             </Link>
           </li>
           <li>
             <Link
-              href="/consultation"
-              className="hover:text-primary transition-colors"
+              href="/#clinical-standards"
+              className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded"
             >
-              Book Consultation
+              Clinical Quality Standards
             </Link>
           </li>
         </ul>
       </div>
 
-      {/* Column 2: Patients */}
+      {/* Column 2: Patient Portal */}
       <div className="space-y-3">
         <h3 className="text-xs font-bold uppercase tracking-wider text-text-muted">
-          Patients
+          Patient Portal
         </h3>
-        <ul className="space-y-2.5 text-sm text-text-secondary">
+        <ul className="space-y-2.5 text-xs sm:text-sm text-text-secondary">
           <li>
             <Link
               href="/login"
-              className="hover:text-primary transition-colors"
+              className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded"
             >
               Patient Sign In
             </Link>
@@ -62,23 +62,23 @@ export default function LandingFooterLinks() {
           <li>
             <Link
               href="/register"
-              className="hover:text-primary transition-colors"
+              className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded"
             >
-              Create Account
+              Create Medical Account
             </Link>
           </li>
           <li>
             <Link
               href="/dashboard"
-              className="hover:text-primary transition-colors"
+              className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded"
             >
-              Health Records
+              Health Records (EHR)
             </Link>
           </li>
           <li>
             <Link
-              href="/consultation"
-              className="hover:text-primary transition-colors"
+              href="/dashboard/my-prescriptions"
+              className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded font-medium"
             >
               Prescriptions & PDF
             </Link>
@@ -86,38 +86,35 @@ export default function LandingFooterLinks() {
         </ul>
       </div>
 
-      {/* Column 3: Legal & Trust */}
+      {/* Column 3: Legal & Trust Governance */}
       <div className="space-y-3">
         <h3 className="text-xs font-bold uppercase tracking-wider text-text-muted">
-          Legal & Trust
+          Governance & Trust
         </h3>
-        <ul className="space-y-2.5 text-sm text-text-secondary">
+        <ul className="space-y-2.5 text-xs sm:text-sm text-text-secondary">
           <li>
             <Link
               href="/privacy"
-              className="hover:text-primary transition-colors"
+              className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded"
             >
-              Privacy Policy
+              Privacy Policy & HIPAA
             </Link>
           </li>
           <li>
             <Link
               href="/terms"
-              className="hover:text-primary transition-colors"
+              className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded"
             >
-              Terms of Service
+              Terms of Medical Service
             </Link>
           </li>
-          <li>
-            <span className="flex items-center gap-1.5 text-text-muted cursor-not-allowed">
-              <Shield className="size-3.5 text-secondary" />
-              HIPAA Compliant
-            </span>
+          <li className="flex items-center gap-1.5 text-text-secondary font-medium">
+            <ShieldCheck className="size-4 text-secondary shrink-0" />
+            <span>BMDC Verified Prescribers</span>
           </li>
-          <li>
-            <span className="text-text-muted cursor-not-allowed">
-              Medical Disclaimer
-            </span>
+          <li className="flex items-center gap-1.5 text-text-muted text-xs">
+            <FileCheck2 className="size-3.5 text-primary shrink-0" />
+            <span>Cryptographic Rx Protocol</span>
           </li>
         </ul>
       </div>

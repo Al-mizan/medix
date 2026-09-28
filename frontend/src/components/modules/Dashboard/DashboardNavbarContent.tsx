@@ -43,7 +43,12 @@ const DashboardNavbarContent = ({
             {/* Mobile Menu Toggle Button And Menu */}
             <Sheet open={isOpen && isMobile} onOpenChange={setIsOpen}>
                 <SheetTrigger asChild className="md:hidden">
-                    <Button variant={"outline"} size={"icon"}>
+                    <Button
+                        variant={"outline"}
+                        size={"icon"}
+                        aria-label="Open navigation menu"
+                        className="min-h-[44px] min-w-[44px]"
+                    >
                         <Menu className="h-5 w-5" />
                     </Button>
                 </SheetTrigger>

@@ -38,7 +38,7 @@ export default function PatientPrescriptionsList({
         staleTime: 30 * 1000,
     });
 
-    const prescriptions: IPrescription[] = response?.data || [];
+    const prescriptions: IPrescription[] = useMemo(() => response?.data || [], [response?.data]);
 
     // Filter and Sort
     const filteredPrescriptions = useMemo(() => {

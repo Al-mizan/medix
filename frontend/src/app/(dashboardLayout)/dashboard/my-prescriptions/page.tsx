@@ -45,7 +45,7 @@ export default async function MyPrescriptionsPage({
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <div className="mx-auto max-w-6xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="flex flex-col gap-2 border-b border-[#E3E6EB] pb-5">
                     <div className="flex items-center gap-2 text-xs font-medium text-[#0B7285] mb-1">

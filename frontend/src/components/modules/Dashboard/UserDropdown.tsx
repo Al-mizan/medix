@@ -53,23 +53,24 @@ const UserDropdown = ({ userInfo }: UserDropdownProps) => {
                 <Button
                     variant={"ghost"}
                     size={"icon"}
-                    className="rounded-full p-0 size-8 hover:opacity-90 transition-opacity"
+                    aria-label="User profile menu"
+                    className="rounded-full p-0 min-h-[44px] min-w-[44px] sm:min-h-8 sm:min-w-8 sm:size-8 hover:opacity-90 transition-opacity"
                 >
                     <Avatar className="size-8">
                         <AvatarImage
                             src={
-                                userInfo.image ||
-                                userInfo.profilePhoto ||
-                                userInfo.patient?.profilePhoto ||
-                                userInfo.doctor?.profilePhoto ||
-                                userInfo.admin?.profilePhoto ||
+                                userInfo?.image ||
+                                userInfo?.profilePhoto ||
+                                userInfo?.patient?.profilePhoto ||
+                                userInfo?.doctor?.profilePhoto ||
+                                userInfo?.admin?.profilePhoto ||
                                 undefined
                             }
-                            alt={userInfo.name}
+                            alt={userInfo?.name || "User"}
                             className="object-cover"
                         />
                         <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
-                            {userInfo.name ? userInfo.name.charAt(0).toUpperCase() : "U"}
+                            {userInfo?.name ? userInfo.name.charAt(0).toUpperCase() : "U"}
                         </AvatarFallback>
                     </Avatar>
                 </Button>
@@ -78,14 +79,14 @@ const UserDropdown = ({ userInfo }: UserDropdownProps) => {
             <DropdownMenuContent align={"end"} className="w-56">
                 <DropdownMenuLabel>
                     <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium">{userInfo.name}</p>
+                        <p className="text-sm font-medium">{userInfo?.name || "User"}</p>
 
                         <p className="text-xs text-muted-foreground">
-                            {userInfo.email}
+                            {userInfo?.email || ""}
                         </p>
 
                         <p className="text-xs text-primary capitalize">
-                            {userInfo.role.toLowerCase().replace("_", " ")}
+                            {userInfo?.role ? userInfo.role.toLowerCase().replace("_", " ") : ""}
                         </p>
                     </div>
                 </DropdownMenuLabel>

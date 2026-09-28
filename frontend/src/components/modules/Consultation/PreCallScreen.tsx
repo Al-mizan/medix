@@ -2,7 +2,7 @@
 
 import React, { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { Play, Clock, RefreshCw, User, Calendar, CreditCard, LayoutDashboard, Loader2, AlertCircle, CheckCircle2 } from "lucide-react"
+import { Play, Clock, RefreshCw, Calendar, LayoutDashboard, Loader2, AlertCircle, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"

@@ -30,7 +30,7 @@ const StatsCard = ({
             </CardHeader>
 
             <CardContent className="space-y-1">
-                <div className="text-2xl font-bold">{value}</div>
+                <div className="text-2xl font-bold tabular-nums tracking-tight">{value}</div>
                 {description && (
                     <p className="text-xs font-medium text-muted-foreground">
                         {description}

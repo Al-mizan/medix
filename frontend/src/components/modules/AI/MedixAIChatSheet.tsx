@@ -55,6 +55,24 @@ const MEDICAL_PROMPT_STARTERS = [
   },
 ];
 
+function createChatMessage(
+  role: "user" | "assistant",
+  content: string,
+  extra?: Partial<IChatMessage>
+): IChatMessage {
+  const id =
+    typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : `${role}-${Math.random().toString(36).slice(2, 9)}`;
+  return {
+    id,
+    role,
+    content,
+    createdAt: new Date().toISOString(),
+    ...extra,
+  };
+}
+
 export function MedixAIChatSheet({ open, onOpenChange }: MedixAIChatSheetProps) {
   const [messages, setMessages] = useState<IChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -103,13 +121,10 @@ export function MedixAIChatSheet({ open, onOpenChange }: MedixAIChatSheetProps) 
         "Medix AI service is temporarily unavailable. Please try again.";
       toast.error(errorMsg);
 
-      const fallbackMessage: IChatMessage = {
-        id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
-        role: "assistant",
-        content:
-          "I apologize, but I encountered an error retrieving information from the clinical knowledge base. Please check your connection or try again in a moment.",
-        createdAt: new Date().toISOString(),
-      };
+      const fallbackMessage = createChatMessage(
+        "assistant",
+        "I apologize, but I encountered an error retrieving information from the clinical knowledge base. Please check your connection or try again in a moment."
+      );
       setMessages((prev) => [...prev, fallbackMessage]);
     },
   });
@@ -118,12 +133,7 @@ export function MedixAIChatSheet({ open, onOpenChange }: MedixAIChatSheetProps) 
     const trimmed = (textToSend ?? input).trim();
     if (!trimmed || queryMutation.isPending) return;
 
-    const userMessage: IChatMessage = {
-      id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
-      role: "user",
-      content: trimmed,
-      createdAt: new Date().toISOString(),
-    };
+    const userMessage = createChatMessage("user", trimmed);
 
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
@@ -206,7 +216,7 @@ export function MedixAIChatSheet({ open, onOpenChange }: MedixAIChatSheetProps) 
                       key={starter.text}
                       type="button"
                       onClick={() => handleSend(starter.text)}
-                      className="group flex items-start gap-3 rounded-xl border border-border/80 bg-surface/60 p-3 transition-all hover:border-[#5B4FCF]/40 hover:bg-[#ECEAFB]/50 hover:shadow-xs dark:hover:bg-[#2B2467]/30"
+                      className="group flex items-start gap-3 rounded-xl border border-border/80 bg-surface/60 p-3 min-h-[44px] cursor-pointer text-left transition-all hover:border-[#5B4FCF]/40 hover:bg-[#ECEAFB]/50 hover:shadow-xs dark:hover:bg-[#2B2467]/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B4FCF]/50"
                     >
                       <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg bg-[#5B4FCF]/10 text-[#5B4FCF] group-hover:bg-[#5B4FCF] group-hover:text-white transition-colors dark:bg-[#5B4FCF]/20 dark:text-[#DAD6FA]">
                         <Icon className="size-3.5" />
@@ -273,7 +283,7 @@ export function MedixAIChatSheet({ open, onOpenChange }: MedixAIChatSheetProps) 
               size="icon"
               disabled={!input.trim() || queryMutation.isPending}
               onClick={() => handleSend()}
-              className="size-8 shrink-0 rounded-xl bg-[#5B4FCF] text-white hover:bg-[#4A3FB8] disabled:opacity-30 transition-all shadow-xs"
+              className="size-8 min-h-[44px] min-w-[44px] sm:min-h-8 sm:min-w-8 shrink-0 rounded-xl bg-[#5B4FCF] text-white hover:bg-[#4A3FB8] disabled:opacity-30 transition-all shadow-xs"
               aria-label="Send query"
             >
               <Send className="size-4" />

@@ -76,7 +76,10 @@ export const PatientReviewsList = () => {
     queryFn: () => getMyReviews(),
   })
 
-  const reviews = (reviewsResponse as ApiResponse<IReview[]>)?.data ?? []
+  const reviews = useMemo(
+    () => (reviewsResponse as ApiResponse<IReview[]>)?.data ?? [],
+    [reviewsResponse],
+  )
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteReview(id),

@@ -55,7 +55,7 @@ const AppField = ({
 
             <div className="relative">
                 {prepend && (
-                    <div className="absolute inset-y-0 left-0 items-center pl-3 pointer-events-none z-10">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
                         {prepend}
                     </div>
                 )}
@@ -82,21 +82,21 @@ const AppField = ({
                 />
 
                 {append && (
-                    <div className="absolute inset-y-0 right-0 items-center pr-3 pointer-events-none z-10">
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none z-10">
                         {append}
                     </div>
                 )}
-
-                {hasError && (
-                    <p
-                        id={`${field.name}-error`}
-                        role="alert"
-                        className="text-sm text-destructive"
-                    >
-                        {firstError}
-                    </p>
-                )}
             </div>
+
+            {hasError && (
+                <p
+                    id={`${field.name}-error`}
+                    role="alert"
+                    className="text-xs text-destructive mt-1 font-medium"
+                >
+                    {firstError}
+                </p>
+            )}
         </div>
     );
 };

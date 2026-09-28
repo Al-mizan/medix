@@ -31,7 +31,8 @@ export function createActionsColumn<TData>(
                     <DropdownMenuTrigger asChild>
                         <Button
                             variant="ghost"
-                            className="h-8 w-8 p-0"
+                            aria-label="Open menu"
+                            className="h-8 w-8 p-0 min-h-[44px] min-w-[44px] sm:min-h-8 sm:min-w-8"
                         >
                             <span className="sr-only">Open Menu</span>
                             <MoreHorizontal className="h-4 w-4" />

@@ -7,6 +7,8 @@ import status from "http-status";
 import { jwtUtils } from "../utils/jwt";
 import { envVars } from '../config/env';
 
+import { auth } from "../lib/auth";
+
 /**
  * Express middleware factory enforcing dual authentication and role-based authorization.
  * Verifies BetterAuth active sessions, checks user active status in PostgreSQL, and validates
@@ -30,9 +32,15 @@ export const checkAuth = (...authRoles: Role[]) => async (req: Request, res: Res
         if (!sessionToken) {
             throw new AppError(status.UNAUTHORIZED, "Unauthorized: No session token provided");
         }
-        const sessionExists = await prisma.session.findFirst({
+
+        // Better-Auth signed cookies are formatted as "<token>.<signature>"
+        // If cookie has a signature or cookie-parser prefix, extract the raw session token
+        const cleanToken = sessionToken.startsWith("s:") ? sessionToken.slice(2) : sessionToken;
+        const rawToken = cleanToken.includes(".") ? cleanToken.split(".")[0] : cleanToken;
+
+        let sessionExists = await prisma.session.findFirst({
             where: {
-                token: sessionToken,
+                token: { in: [sessionToken, cleanToken, rawToken] },
                 expiresAt: {
                     gt: new Date(),
                 },
@@ -41,6 +49,33 @@ export const checkAuth = (...authRoles: Role[]) => async (req: Request, res: Res
                 user: true,
             }
         });
+
+        // Fallback to BetterAuth getSession if direct Prisma token lookup missed
+        if (!sessionExists || !sessionExists.user) {
+            try {
+                const requestHeaders = new Headers();
+                for (const [key, value] of Object.entries(req.headers)) {
+                    if (Array.isArray(value)) {
+                        value.forEach((v) => requestHeaders.append(key, v));
+                    } else if (value !== undefined) {
+                        requestHeaders.set(key, value);
+                    }
+                }
+                const authSession = await auth.api.getSession({
+                    headers: requestHeaders,
+                });
+                if (authSession?.session && authSession?.user) {
+                    sessionExists = {
+                        ...authSession.session,
+                        ipAddress: authSession.session.ipAddress ?? null,
+                        userAgent: authSession.session.userAgent ?? null,
+                        user: authSession.user as NonNullable<typeof sessionExists>["user"],
+                    };
+                }
+            } catch {
+                // Ignore fallback error
+            }
+        }
 
         if (!sessionExists || !sessionExists.user) {
             throw new AppError(status.UNAUTHORIZED, "Unauthorized: Invalid or expired session");

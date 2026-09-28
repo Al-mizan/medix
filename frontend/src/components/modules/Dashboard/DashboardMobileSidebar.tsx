@@ -57,7 +57,7 @@ const DashboardMobileSidebar = ({
                                             href={item.href}
                                             key={id}
                                             className={cn(
-                                                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all",
+                                                "flex items-center gap-3 rounded-lg px-3.5 py-2.5 min-h-[44px] text-sm font-medium transition-all focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none",
                                                 isActive
                                                     ? "bg-primary text-primary-foreground"
                                                     : "text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -86,29 +86,29 @@ const DashboardMobileSidebar = ({
                     <Avatar className="h-8 w-8">
                         <AvatarImage
                             src={
-                                userInfo.image ||
-                                userInfo.profilePhoto ||
-                                userInfo.patient?.profilePhoto ||
-                                userInfo.doctor?.profilePhoto ||
-                                userInfo.admin?.profilePhoto ||
+                                userInfo?.image ||
+                                userInfo?.profilePhoto ||
+                                userInfo?.patient?.profilePhoto ||
+                                userInfo?.doctor?.profilePhoto ||
+                                userInfo?.admin?.profilePhoto ||
                                 undefined
                             }
-                            alt={userInfo.name}
+                            alt={userInfo?.name || "User"}
                             className="object-cover"
                         />
                         <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
-                            {userInfo.name ? userInfo.name.charAt(0).toUpperCase() : "U"}
+                            {userInfo?.name ? userInfo.name.charAt(0).toUpperCase() : "U"}
                         </AvatarFallback>
                     </Avatar>
 
                     <div className="flex-1 overflow-hidden">
                         <p className="text-sm font-medium truncate">
-                            {userInfo.name}
+                            {userInfo?.name || "User"}
                         </p>
                         <p className="text-xs text-muted-foreground capitalize">
-                            {userInfo.role
-                                .toLocaleLowerCase()
-                                .replace("_", " ")}
+                            {userInfo?.role
+                                ? userInfo.role.toLocaleLowerCase().replace("_", " ")
+                                : "Member"}
                         </p>
                     </div>
                 </div>

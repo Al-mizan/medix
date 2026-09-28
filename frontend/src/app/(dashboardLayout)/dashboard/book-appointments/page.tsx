@@ -17,7 +17,7 @@ const BookAppointmentsPage = async ({
 
   if (!doctorId || !scheduleId) {
     return (
-      <section className="mx-auto max-w-5xl space-y-4 px-4 py-6 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl space-y-4 px-4 py-6 sm:px-6 lg:px-8">
         <Alert variant="destructive">
           <AlertCircle className="size-4" />
           <AlertTitle>Appointment details missing</AlertTitle>
@@ -44,7 +44,7 @@ const BookAppointmentsPage = async ({
 
   if (!doctorDetails) {
     return (
-      <section className="mx-auto max-w-5xl space-y-4 px-4 py-6 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl space-y-4 px-4 py-6 sm:px-6 lg:px-8">
         <Alert variant="destructive">
           <AlertCircle className="size-4" />
           <AlertTitle>Doctor details unavailable</AlertTitle>
@@ -75,7 +75,7 @@ const BookAppointmentsPage = async ({
   })
 
   return (
-    <section className="px-4 py-6 sm:px-6 lg:px-8">
+    <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       <AppointmentBookingConfirmation
         doctorId={doctorId}
         scheduleId={scheduleId}

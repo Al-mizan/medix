@@ -32,13 +32,13 @@ export default function PrivacyPolicyPage() {
             <Lock className="size-5 text-primary" />
             Our Clinical Privacy Commitment
           </h2>
-          <p className="text-sm text-text-secondary leading-relaxed">
+          <p className="text-sm text-text-secondary leading-relaxed text-justify">
             At Medix Healthcare Technologies (&quot;Medix&quot;, &quot;we&quot;, &quot;our&quot;, or &quot;us&quot;), protecting the confidentiality, integrity, and security of your personal health data is fundamental to our clinical mission. This Privacy Policy details how we handle Protected Health Information (PHI), consultation records, biometric metrics, and financial transactions across our digital health platform.
           </p>
         </div>
 
         {/* Policy Sections */}
-        <div className="space-y-10 text-sm sm:text-base leading-relaxed text-text-secondary">
+        <div className="space-y-10 text-sm sm:text-base leading-relaxed text-text-secondary text-justify">
           {/* Section 1 */}
           <section className="space-y-3">
             <h3 className="text-xl font-bold text-foreground flex items-center gap-2">

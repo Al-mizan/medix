@@ -34,7 +34,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { Plus, Trash2 } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { toast } from "sonner"
 
 interface CreatePrescriptionModalProps {
@@ -60,6 +60,7 @@ const CreatePrescriptionModal = ({
   const urlAppointmentId = searchParams.get("appointmentId") || ""
   const defaultSelectedId = initialAppointmentId || urlAppointmentId
 
+  const [prevUrlAppointmentId, setPrevUrlAppointmentId] = useState(urlAppointmentId)
   const [open, setOpen] = useState(Boolean(defaultSelectedId))
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<string>(defaultSelectedId)
   const [followUpDate, setFollowUpDate] = useState<string>("")
@@ -67,12 +68,13 @@ const CreatePrescriptionModal = ({
   const [medications, setMedications] = useState<IMedicationItem[]>([{ ...emptyMedication }])
 
   // Sync state if url appointmentId changes
-  useEffect(() => {
+  if (prevUrlAppointmentId !== urlAppointmentId) {
+    setPrevUrlAppointmentId(urlAppointmentId)
     if (urlAppointmentId) {
       setSelectedAppointmentId(urlAppointmentId)
       setOpen(true)
     }
-  }, [urlAppointmentId])
+  }
 
   // Query appointments and existing prescriptions
   const { data: appointmentsResponse, isLoading: isLoadingAppointments } = useQuery({
@@ -85,8 +87,14 @@ const CreatePrescriptionModal = ({
     queryFn: () => getMyPrescriptions(),
   })
 
-  const appointments = (appointmentsResponse as ApiResponse<IAppointment[]>)?.data ?? []
-  const prescriptions = (prescriptionsResponse as ApiResponse<IPrescription[]>)?.data ?? []
+  const appointments = useMemo(
+    () => (appointmentsResponse as ApiResponse<IAppointment[]>)?.data ?? [],
+    [appointmentsResponse]
+  )
+  const prescriptions = useMemo(
+    () => (prescriptionsResponse as ApiResponse<IPrescription[]>)?.data ?? [],
+    [prescriptionsResponse]
+  )
 
   // Completed appointments without an existing prescription
   const eligibleAppointments = useMemo(() => {
@@ -342,6 +350,7 @@ const CreatePrescriptionModal = ({
                         type="button"
                         variant="ghost"
                         size="icon"
+                        aria-label="Remove medication"
                         onClick={() => handleRemoveMedication(index)}
                         className="size-8 self-end text-destructive hover:bg-destructive/10 sm:self-center"
                         title="Remove medication"

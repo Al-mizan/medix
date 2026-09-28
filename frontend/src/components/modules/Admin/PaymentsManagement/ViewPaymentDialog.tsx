@@ -17,15 +17,11 @@ import { format } from "date-fns";
 import {
     Calendar,
     Check,
-    Clock,
     Copy,
     CreditCard,
-    DollarSign,
     ExternalLink,
     FileText,
-    Mail,
     Stethoscope,
-    Tag,
     User,
 } from "lucide-react";
 import { useState } from "react";

@@ -197,6 +197,7 @@ const CreateSpecialtyModal = () => {
                                     type="button"
                                     variant="destructive"
                                     size="icon"
+                                    aria-label="Remove icon preview"
                                     className="absolute -top-2 -right-2 h-5 w-5 rounded-full"
                                     onClick={handleRemoveFile}
                                 >

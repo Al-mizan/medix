@@ -233,7 +233,7 @@ export const getDoctorAppointmentsColumns = ({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="size-8">
+              <Button variant="ghost" size="icon" aria-label="Appointment actions" className="size-8">
                 <MoreHorizontal className="size-4" />
                 <span className="sr-only">Open menu</span>
               </Button>

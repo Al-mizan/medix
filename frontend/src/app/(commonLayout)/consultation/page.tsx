@@ -84,11 +84,13 @@ const ConsultationPage = async ({
     });
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <DoctorsList
-                initialQueryString={queryString}
-                isAuthenticated={Boolean(currentUser)}
-                viewerRole={currentUser?.role ?? null}
-            />
+            <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <DoctorsList
+                    initialQueryString={queryString}
+                    isAuthenticated={Boolean(currentUser)}
+                    viewerRole={currentUser?.role ?? null}
+                />
+            </div>
         </HydrationBoundary>
     );
 };

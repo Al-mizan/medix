@@ -2,7 +2,7 @@
 
 import { PaginationState, SortingState } from "@tanstack/react-table";
 import { ReadonlyURLSearchParams, usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
+import { useCallback, useMemo, useState, useTransition } from "react";
 
 interface UseServerManagedDataTableParams {
   searchParams: ReadonlyURLSearchParams;
@@ -67,16 +67,21 @@ export const useServerManagedDataTable = ({
     return [{ id: sortBy, desc: sortOrder === "desc" }];
   }, [searchParams]);
 
+  const [prevSorting, setPrevSorting] = useState<SortingState>(sortingStateFromUrl);
   const [optimisticSortingState, setOptimisticSortingState] = useState<SortingState>(sortingStateFromUrl);
+
+  if (prevSorting !== sortingStateFromUrl) {
+    setPrevSorting(sortingStateFromUrl);
+    setOptimisticSortingState(sortingStateFromUrl);
+  }
+
+  const [prevPagination, setPrevPagination] = useState<PaginationState>(paginationStateFromUrl);
   const [optimisticPaginationState, setOptimisticPaginationState] = useState<PaginationState>(paginationStateFromUrl);
 
-  useEffect(() => {
-    setOptimisticSortingState(sortingStateFromUrl);
-  }, [sortingStateFromUrl]);
-
-  useEffect(() => {
+  if (prevPagination !== paginationStateFromUrl) {
+    setPrevPagination(paginationStateFromUrl);
     setOptimisticPaginationState(paginationStateFromUrl);
-  }, [paginationStateFromUrl]);
+  }
 
   const updateUrlAndRefresh = useCallback((params: URLSearchParams) => {
     const nextQuery = params.toString();

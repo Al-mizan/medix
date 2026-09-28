@@ -14,7 +14,6 @@ export const specialtyColumns: ColumnDef<ISpecialty>[] = [
         cell: ({ row }) => {
             const icon = row.original.icon;
             const title = row.original.title;
-            const initials = title ? title.slice(0, 2).toUpperCase() : "SP";
 
             return (
                 <Avatar className="h-10 w-10 rounded-md border bg-muted/30">

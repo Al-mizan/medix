@@ -85,16 +85,24 @@ const NotificationDropdown = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant={"outline"} size={"icon"} className="relative">
+                <Button
+                    variant={"outline"}
+                    size={"icon"}
+                    aria-label="Notifications"
+                    className="relative min-h-[44px] min-w-[44px] sm:min-h-9 sm:min-w-9"
+                >
                     <Bell className="h-5 w-5" />
-                    <Badge
-                        className="absolute -top-1 -right-1 h-5 w-5 rounded full p-0 flex items-center justify-center"
-                        variant={"destructive"}
-                    >
-                        <span className="text-[10px">
-                            {unreadCount > 9 ? "9+" : unreadCount}
-                        </span>
-                    </Badge>
+                    {unreadCount > 0 && (
+                        <Badge
+                            className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center pointer-events-none"
+                            variant={"destructive"}
+                            aria-label={`${unreadCount} unread notifications`}
+                        >
+                            <span className="text-[10px] font-medium leading-none">
+                                {unreadCount > 9 ? "9+" : unreadCount}
+                            </span>
+                        </Badge>
+                    )}
                 </Button>
             </DropdownMenuTrigger>
 

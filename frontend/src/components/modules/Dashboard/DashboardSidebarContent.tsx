@@ -82,29 +82,29 @@ const DashboardSidebarContent = ({
                     <Avatar className="h-8 w-8">
                         <AvatarImage
                             src={
-                                userInfo.image ||
-                                userInfo.profilePhoto ||
-                                userInfo.patient?.profilePhoto ||
-                                userInfo.doctor?.profilePhoto ||
-                                userInfo.admin?.profilePhoto ||
+                                userInfo?.image ||
+                                userInfo?.profilePhoto ||
+                                userInfo?.patient?.profilePhoto ||
+                                userInfo?.doctor?.profilePhoto ||
+                                userInfo?.admin?.profilePhoto ||
                                 undefined
                             }
-                            alt={userInfo.name}
+                            alt={userInfo?.name || "User"}
                             className="object-cover"
                         />
                         <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
-                            {userInfo.name ? userInfo.name.charAt(0).toUpperCase() : "U"}
+                            {userInfo?.name ? userInfo.name.charAt(0).toUpperCase() : "U"}
                         </AvatarFallback>
                     </Avatar>
 
                     <div className="flex-1 overflow-hidden">
                         <p className="text-sm font-medium truncate">
-                            {userInfo.name}
+                            {userInfo?.name || "User"}
                         </p>
                         <p className="text-xs text-muted-foreground capitalize">
-                            {userInfo.role
-                                .toLocaleLowerCase()
-                                .replace("_", " ")}
+                            {userInfo?.role
+                                ? userInfo.role.toLocaleLowerCase().replace("_", " ")
+                                : "Member"}
                         </p>
                     </div>
                 </div>

@@ -150,9 +150,12 @@ const getMe = async (user: IRequestUser) => {
 };
 
 const getNewToken = async (refreshToken: string, sessionToken: string) => {
-    const isSessionTokenExist = await prisma.session.findUnique({
+    const cleanToken = sessionToken.startsWith("s:") ? sessionToken.slice(2) : sessionToken;
+    const rawToken = cleanToken.includes(".") ? cleanToken.split(".")[0] : cleanToken;
+
+    const isSessionTokenExist = await prisma.session.findFirst({
         where: {
-            token: sessionToken,
+            token: { in: [sessionToken, cleanToken, rawToken] },
         },
         include: {
             user: true,
@@ -191,13 +194,11 @@ const getNewToken = async (refreshToken: string, sessionToken: string) => {
         emailVerified: data.emailVerified,
     });
 
-    const { token } = await prisma.session.update({
+    await prisma.session.update({
         where: {
-            token: sessionToken,
+            id: isSessionTokenExist.id,
         },
         data: {
-            token: sessionToken,
-            // refreshToken: newRefreshToken,
             expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // session should have the same expiration as the refresh token, but since better-auth.session_token is automatically refreshed by better-auth when the user is active, we can set a long expiration here and rely on better-auth to handle the actual expiration and refreshing of the token based on user activity
             updatedAt: new Date(),
         }
@@ -206,7 +207,7 @@ const getNewToken = async (refreshToken: string, sessionToken: string) => {
     return {
         accessToken: newAccessToken,
         refreshToken: newRefreshToken,
-        sessionToken: token,
+        sessionToken: isSessionTokenExist.token,
     }
 };
 
@@ -420,21 +421,38 @@ const googleLoginSuccess = async (session : iSessionData) =>{
                 userId : session.user.id,
                 name : session.user.name,
                 email : session.user.email,
+                profilePhoto: session.user.image,
             }
-        
+        })
+    } else if (!isPatientExists.profilePhoto && session.user.image) {
+        await prisma.patient.update({
+            where: {
+                id: isPatientExists.id,
+            },
+            data: {
+                profilePhoto: session.user.image,
+            }
         })
     }
 
     const accessToken = tokenUtils.getAccessToken({
         userId: session.user.id,
-        role: session.user.role,
         name: session.user.name,
+        email: session.user.email,
+        role: session.user.role,
+        status: session.user.status,
+        isDeleted: session.user.isDeleted,
+        emailVerified: session.user.emailVerified,
     });
 
     const refreshToken = tokenUtils.getRefreshToken({
         userId: session.user.id,
-        role: session.user.role,
         name: session.user.name,
+        email: session.user.email,
+        role: session.user.role,
+        status: session.user.status,
+        isDeleted: session.user.isDeleted,
+        emailVerified: session.user.emailVerified,
     });
 
     return {

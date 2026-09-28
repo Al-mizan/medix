@@ -7,6 +7,7 @@ const eslintConfig = defineConfig([
   ...nextTs,
   {
     rules: {
+      "@next/next/no-img-element": "error",
       "react-hooks/purity": "warn",
       "react-hooks/set-state-in-effect": "warn",
       "@typescript-eslint/no-unused-vars": "warn",

@@ -17,9 +17,9 @@ import {
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Modern Healthcare, Seamlessly Connected",
+  title: "Medix - Modern Clinical Healthcare, Seamlessly Connected",
   description:
-    "Connect with board-certified physicians, schedule video consultations in seconds, and experience proactive care guided by intelligent clinical assistance.",
+    "Connect with board-certified physicians in under 8 minutes. Schedule encrypted video consultations, access accredited clinical triage, and receive verifiable digital prescriptions.",
 };
 
 export default async function HomePage() {

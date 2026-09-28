@@ -32,13 +32,13 @@ export default function TermsOfServicePage() {
             <AlertCircle className="size-5 shrink-0" />
             <span>Emergency Medical Care Notice</span>
           </div>
-          <p className="text-sm leading-relaxed text-tint-danger-text">
+          <p className="text-sm leading-relaxed text-tint-danger-text text-justify">
             <strong>MEDIX IS NOT AN EMERGENCY DISPATCH SERVICE.</strong> If you or someone under your care is experiencing severe chest pain, shortness of breath, acute hemorrhage, suspected stroke, severe allergic reaction, or any life-threatening condition, immediately dial your local emergency services (e.g., <strong>999</strong> or <strong>911</strong>) or proceed immediately to the nearest hospital emergency room.
           </p>
         </div>
 
         {/* Terms Sections */}
-        <div className="space-y-10 text-sm sm:text-base leading-relaxed text-text-secondary">
+        <div className="space-y-10 text-sm sm:text-base leading-relaxed text-text-secondary text-justify">
           {/* Section 1 */}
           <section className="space-y-3">
             <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
@@ -67,7 +67,7 @@ export default function TermsOfServicePage() {
                 <CheckCircle2 className="size-5 text-secondary shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-foreground">Cancellation &gt; 2 Hours Before Scheduled Slot:</strong>
-                  <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
+                  <p className="text-xs sm:text-sm text-text-secondary mt-0.5 text-justify">
                     Patients may cancel an appointment up to 2 hours prior to the scheduled start time to receive a <strong>100% automated refund</strong> credited back through Stripe to the original payment method.
                   </p>
                 </div>
@@ -77,7 +77,7 @@ export default function TermsOfServicePage() {
                 <AlertCircle className="size-5 text-warning shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-foreground">Cancellation &lt; 2 Hours or Patient No-Show:</strong>
-                  <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
+                  <p className="text-xs sm:text-sm text-text-secondary mt-0.5 text-justify">
                     Cancellations initiated within 2 hours of the appointment or failure to join the consultation room within 15 minutes of the start time are non-refundable, as the physician&apos;s schedule was reserved.
                   </p>
                 </div>
@@ -87,7 +87,7 @@ export default function TermsOfServicePage() {
                 <DollarSign className="size-5 text-primary shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-foreground">Clinician Cancellation or Platform Unavailability:</strong>
-                  <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
+                  <p className="text-xs sm:text-sm text-text-secondary mt-0.5 text-justify">
                     If a doctor cancels an appointment or is unable to attend due to unforeseen circumstances, the patient is entitled to an immediate priority reschedule or an unconditional full refund.
                   </p>
                 </div>

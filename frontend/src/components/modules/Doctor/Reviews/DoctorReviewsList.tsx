@@ -55,7 +55,10 @@ const DoctorReviewsList = () => {
     queryFn: () => getMyReviews(),
   })
 
-  const reviews = (reviewsResponse as ApiResponse<IReview[]>)?.data ?? []
+  const reviews = useMemo(
+    () => (reviewsResponse as ApiResponse<IReview[]>)?.data ?? [],
+    [reviewsResponse]
+  )
 
   // Metrics computation
   const totalReviews = reviews.length
@@ -111,7 +114,7 @@ const DoctorReviewsList = () => {
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-extrabold tracking-tight text-foreground">
+              <span className="text-4xl font-extrabold tracking-tight font-mono tabular-nums text-foreground">
                 {averageRating}
               </span>
               <span className="text-sm font-medium text-muted-foreground">/ 5.0</span>
@@ -145,7 +148,7 @@ const DoctorReviewsList = () => {
                       style={{ width: `${percentage}%` }}
                     />
                   </div>
-                  <span className="w-10 text-right text-muted-foreground">{count}</span>
+                  <span className="w-10 text-right text-muted-foreground font-mono tabular-nums">{count}</span>
                 </div>
               )
             })}

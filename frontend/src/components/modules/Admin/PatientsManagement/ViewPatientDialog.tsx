@@ -22,7 +22,6 @@ import {
     Mail,
     MapPin,
     Phone,
-    ShieldAlert,
 } from "lucide-react";
 
 interface ViewPatientDialogProps {

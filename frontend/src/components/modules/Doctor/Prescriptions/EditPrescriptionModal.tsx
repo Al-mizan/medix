@@ -24,7 +24,7 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Plus, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 
 interface EditPrescriptionModalProps {
@@ -48,17 +48,39 @@ const EditPrescriptionModal = ({
   const router = useRouter()
   const queryClient = useQueryClient()
 
-  const [followUpDate, setFollowUpDate] = useState<string>("")
-  const [generalInstructions, setGeneralInstructions] = useState<string>("")
-  const [medications, setMedications] = useState<IMedicationItem[]>([{ ...emptyMedication }])
+  const [prevPrescription, setPrevPrescription] = useState<IPrescription | null>(prescription)
+  const [followUpDate, setFollowUpDate] = useState<string>(() => {
+    if (prescription?.followUpDate) {
+      const dateObj = new Date(prescription.followUpDate)
+      return !Number.isNaN(dateObj.getTime()) ? dateObj.toISOString().split("T")[0] : ""
+    }
+    return ""
+  })
+  const [generalInstructions, setGeneralInstructions] = useState<string>(() => {
+    if (prescription?.instructions) {
+      const { instructions: parsedNotes } = parsePrescriptionInstructions(prescription.instructions)
+      return parsedNotes || ""
+    }
+    return ""
+  })
+  const [medications, setMedications] = useState<IMedicationItem[]>(() => {
+    if (prescription?.instructions) {
+      const { medications: parsedMeds } = parsePrescriptionInstructions(prescription.instructions)
+      if (parsedMeds.length > 0) return parsedMeds
+    }
+    return [{ ...emptyMedication }]
+  })
 
-  // Populate data when prescription changes
-  useEffect(() => {
+  // Sync state when prescription prop changes
+  if (prevPrescription !== prescription) {
+    setPrevPrescription(prescription)
     if (prescription) {
       if (prescription.followUpDate) {
         const dateObj = new Date(prescription.followUpDate)
         if (!Number.isNaN(dateObj.getTime())) {
           setFollowUpDate(dateObj.toISOString().split("T")[0])
+        } else {
+          setFollowUpDate("")
         }
       } else {
         setFollowUpDate("")
@@ -75,7 +97,7 @@ const EditPrescriptionModal = ({
 
       setGeneralInstructions(parsedNotes || "")
     }
-  }, [prescription])
+  }
 
   const { mutateAsync: updatePrescriptionMutation, isPending } = useMutation({
     mutationFn: ({
@@ -246,6 +268,7 @@ const EditPrescriptionModal = ({
                         type="button"
                         variant="ghost"
                         size="icon"
+                        aria-label="Remove medication"
                         onClick={() => handleRemoveMedication(index)}
                         className="size-8 self-end text-destructive hover:bg-destructive/10 sm:self-center"
                         title="Remove medication"

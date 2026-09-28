@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -92,75 +92,81 @@ const DoctorAppointmentsTable = ({
       changeDoctorAppointmentStatusAction(id, { status }),
   });
 
-  const handleStatusTransition = async (
-    appointment: IAppointment,
-    targetStatus: AppointmentStatus,
-  ) => {
-    if (appointment.status === "COMPLETED" || appointment.status === "CANCELED") {
-      toast.error(`Cannot modify appointment with status ${appointment.status}`);
-      return;
-    }
-
-    if (appointment.status === "SCHEDULED" && targetStatus === "COMPLETED") {
-      toast.error(
-        "Cannot skip directly from SCHEDULED to COMPLETED. Start consultation first.",
-      );
-      return;
-    }
-
-    const isValidTransition =
-      (appointment.status === "SCHEDULED" && targetStatus === "INPROGRESS") ||
-      (appointment.status === "INPROGRESS" && targetStatus === "COMPLETED");
-
-    if (!isValidTransition) {
-      toast.error(
-        `Invalid status transition from ${appointment.status} to ${targetStatus}.`,
-      );
-      return;
-    }
-
-    try {
-      setPendingAppointmentId(appointment.id);
-      const result = await updateStatusMutation({
-        id: appointment.id,
-        status: targetStatus,
-      });
-
-      if (!result.success) {
-        toast.error(result.message || "Failed to update appointment status");
+  const handleStatusTransition = useCallback(
+    async (
+      appointment: IAppointment,
+      targetStatus: AppointmentStatus,
+    ) => {
+      if (appointment.status === "COMPLETED" || appointment.status === "CANCELED") {
+        toast.error(`Cannot modify appointment with status ${appointment.status}`);
         return;
       }
 
-      void queryClient.invalidateQueries({ queryKey: ["my-appointments"] });
-      void queryClient.invalidateQueries({ queryKey: ["doctor-dashboard-data"] });
-
-      if (targetStatus === "INPROGRESS") {
-        toast.success("Consultation started!", {
-          description: "Status is now INPROGRESS. You can join the video call room.",
-        });
-      } else if (targetStatus === "COMPLETED") {
-        toast.success("Consultation marked as COMPLETED!", {
-          description: "Would you like to write a prescription now?",
-          action: {
-            label: "Create Prescription",
-            onClick: () =>
-              router.push(
-                `/doctor/dashboard/prescriptions?appointmentId=${appointment.id}`,
-              ),
-          },
-        });
-        setCompletedAppointmentPrompt(appointment);
+      if (appointment.status === "SCHEDULED" && targetStatus === "COMPLETED") {
+        toast.error(
+          "Cannot skip directly from SCHEDULED to COMPLETED. Start consultation first.",
+        );
+        return;
       }
 
-      router.refresh();
-    } catch {
-      toast.error("An unexpected error occurred while updating status");
-    } finally {
-      setPendingAppointmentId(null);
-    }
-  };
+      const isValidTransition =
+        (appointment.status === "SCHEDULED" && targetStatus === "INPROGRESS") ||
+        (appointment.status === "INPROGRESS" && targetStatus === "COMPLETED");
 
-  const rawAppointments = appointmentsResponse?.data ?? [];
+      if (!isValidTransition) {
+        toast.error(
+          `Invalid status transition from ${appointment.status} to ${targetStatus}.`,
+        );
+        return;
+      }
+
+      try {
+        setPendingAppointmentId(appointment.id);
+        const result = await updateStatusMutation({
+          id: appointment.id,
+          status: targetStatus,
+        });
+
+        if (!result.success) {
+          toast.error(result.message || "Failed to update appointment status");
+          return;
+        }
+
+        void queryClient.invalidateQueries({ queryKey: ["my-appointments"] });
+        void queryClient.invalidateQueries({ queryKey: ["doctor-dashboard-data"] });
+
+        if (targetStatus === "INPROGRESS") {
+          toast.success("Consultation started!", {
+            description: "Status is now INPROGRESS. You can join the video call room.",
+          });
+        } else if (targetStatus === "COMPLETED") {
+          toast.success("Consultation marked as COMPLETED!", {
+            description: "Would you like to write a prescription now?",
+            action: {
+              label: "Create Prescription",
+              onClick: () =>
+                router.push(
+                  `/doctor/dashboard/prescriptions?appointmentId=${appointment.id}`,
+                ),
+            },
+          });
+          setCompletedAppointmentPrompt(appointment);
+        }
+
+        router.refresh();
+      } catch {
+        toast.error("An unexpected error occurred while updating status");
+      } finally {
+        setPendingAppointmentId(null);
+      }
+    },
+    [updateStatusMutation, queryClient, router],
+  );
+
+  const rawAppointments = useMemo(
+    () => appointmentsResponse?.data ?? [],
+    [appointmentsResponse?.data],
+  );
 
   const filteredAppointments = useMemo(() => {
     let result = rawAppointments;
@@ -244,7 +250,7 @@ const DoctorAppointmentsTable = ({
         onStatusTransition: handleStatusTransition,
         onViewDetails: (apt) => setViewingAppointment(apt),
       }),
-    [pendingAppointmentId],
+    [pendingAppointmentId, handleStatusTransition],
   );
 
   const scheduledCount = rawAppointments.filter((a) => a.status === "SCHEDULED").length;

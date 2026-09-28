@@ -86,6 +86,7 @@ const DataTablePagination = <TData,>({
                 <Button
                     variant="outline"
                     size="sm"
+                    aria-label="Previous page"
                     onClick={() => table.previousPage()}
                     disabled={!table.getCanPreviousPage() || isLoading}
                 >
@@ -100,6 +101,7 @@ const DataTablePagination = <TData,>({
                                 key="start-ellipsis"
                                 variant="ghost"
                                 size="sm"
+                                aria-label="Jump backward 5 pages"
                                 className="min-w-9 px-2"
                                 onClick={() =>
                                     table.setPageIndex(jumpBackwardTarget - 1)
@@ -117,6 +119,7 @@ const DataTablePagination = <TData,>({
                                 key="end-ellipsis"
                                 variant="ghost"
                                 size="sm"
+                                aria-label="Jump forward 5 pages"
                                 className="min-w-9 px-2"
                                 onClick={() =>
                                     table.setPageIndex(jumpForwardTarget - 1)
@@ -134,8 +137,10 @@ const DataTablePagination = <TData,>({
                             key={item}
                             variant={isActive ? "default" : "outline"}
                             size="sm"
+                            aria-label={`Page ${item}`}
+                            aria-current={isActive ? "page" : undefined}
                             className={cn(
-                                "min-w-9",
+                                "min-w-9 tabular-nums",
                                 isActive && "pointer-events-none",
                             )}
                             onClick={() => table.setPageIndex(item - 1)}
@@ -149,6 +154,7 @@ const DataTablePagination = <TData,>({
                 <Button
                     variant="outline"
                     size="sm"
+                    aria-label="Next page"
                     onClick={() => table.nextPage()}
                     disabled={!table.getCanNextPage() || isLoading}
                 >

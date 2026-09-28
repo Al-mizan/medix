@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Cookie, ShieldCheck, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,20 +8,29 @@ import { Button } from "@/components/ui/button";
 export const CONSENT_KEY = "medix_cookie_consent";
 export const CONSENT_EVENT = "medix_consent_granted";
 
-export default function CookieConsentBanner() {
-  const [isVisible, setIsVisible] = useState(false);
+const subscribeToConsent = (callback: () => void) => {
+  if (typeof window === "undefined") return () => {};
+  window.addEventListener(CONSENT_EVENT, callback);
+  return () => window.removeEventListener(CONSENT_EVENT, callback);
+};
 
-  useEffect(() => {
-    try {
-      const consent = localStorage.getItem(CONSENT_KEY);
-      if (!consent) {
-        setIsVisible(true);
-      }
-    } catch {
-      // Handle local storage disabled/sandboxed environments gracefully
-      setIsVisible(false);
-    }
-  }, []);
+const getConsentSnapshot = () => {
+  try {
+    return localStorage.getItem(CONSENT_KEY) !== null;
+  } catch {
+    return true;
+  }
+};
+
+const getServerConsentSnapshot = () => true;
+
+export default function CookieConsentBanner() {
+  const hasSavedConsent = useSyncExternalStore(
+    subscribeToConsent,
+    getConsentSnapshot,
+    getServerConsentSnapshot,
+  );
+  const [dismissed, setDismissed] = useState(false);
 
   const handleConsent = (level: "accepted" | "essential") => {
     try {
@@ -32,10 +41,10 @@ export default function CookieConsentBanner() {
     } catch (e) {
       console.warn("Unable to save cookie preferences:", e);
     }
-    setIsVisible(false);
+    setDismissed(true);
   };
 
-  if (!isVisible) return null;
+  if (hasSavedConsent || dismissed) return null;
 
   return (
     <div
