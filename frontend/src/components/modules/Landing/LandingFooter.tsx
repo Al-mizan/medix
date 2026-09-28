@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Activity, AlertCircle } from "lucide-react";
+import { Activity, AlertCircle, CreditCard, ShieldCheck, UserCheck } from "lucide-react";
 import LandingFooterLinks from "./LandingFooterLinks";
 import LandingFooterSocial from "./LandingFooterSocial";
 
@@ -58,6 +58,12 @@ export default function LandingFooter() {
                 <span>Level 4, Silicon Care Tower, Gulshan, Dhaka 1212</span>
               </p>
               <p className="flex items-center gap-2">
+                <span className="font-semibold text-foreground">Support:</span>
+                <a href="mailto:support@medix.health" className="text-primary hover:underline font-medium">
+                  support@medix.health
+                </a>
+              </p>
+              <p className="flex items-center gap-2">
                 <span className="font-semibold text-foreground">Clinical Desk:</span>
                 <a href="mailto:clinical@medix.health" className="text-primary hover:underline font-medium">
                   clinical@medix.health
@@ -80,6 +86,24 @@ export default function LandingFooter() {
 
           {/* Navigation Links Columns */}
           <LandingFooterLinks />
+        </div>
+      </div>
+
+      {/* Compliance & Trust Badges Strip */}
+      <div className="border-t border-border/60 bg-muted/30 px-4 py-4">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center sm:justify-between gap-4 text-xs text-text-secondary">
+          <div className="flex items-center gap-2 font-medium">
+            <ShieldCheck className="size-4 text-primary shrink-0" />
+            <span>HIPAA Aligned &bull; 256-Bit Encrypted Health Records</span>
+          </div>
+          <div className="flex items-center gap-2 font-medium">
+            <UserCheck className="size-4 text-secondary shrink-0" />
+            <span>100% BMDC Verified Medical Practitioners</span>
+          </div>
+          <div className="flex items-center gap-2 font-medium">
+            <CreditCard className="size-4 text-primary shrink-0" />
+            <span>Stripe Verified &bull; PCI-DSS Level 1 Secure Payments</span>
+          </div>
         </div>
       </div>
 

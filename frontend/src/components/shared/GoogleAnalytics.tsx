@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import Script from "next/script";
-import { CONSENT_EVENT, CONSENT_KEY } from "./CookieConsentBanner";
+import { CONSENT_EVENT, CONSENT_KEY, getConsentCookie } from "./CookieConsentBanner";
 
 const subscribeToConsent = (callback: () => void) => {
   if (typeof window === "undefined") return () => {};
@@ -10,9 +10,12 @@ const subscribeToConsent = (callback: () => void) => {
   return () => window.removeEventListener(CONSENT_EVENT, callback);
 };
 
-const getConsentSnapshot = () => {
+export const getConsentSnapshot = () => {
   try {
-    return localStorage.getItem(CONSENT_KEY) === "accepted";
+    const local = localStorage.getItem(CONSENT_KEY);
+    if (local !== null) return local === "accepted";
+    const cookie = getConsentCookie(CONSENT_KEY);
+    return cookie === "accepted";
   } catch {
     return false;
   }

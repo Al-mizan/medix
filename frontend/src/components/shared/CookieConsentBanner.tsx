@@ -8,15 +8,56 @@ import { Button } from "@/components/ui/button";
 export const CONSENT_KEY = "medix_cookie_consent";
 export const CONSENT_EVENT = "medix_consent_granted";
 
+export const getConsentCookie = (name: string = CONSENT_KEY): string | null => {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp("(?:^|;\\s*)" + name + "=([^;]*)"));
+  return match ? decodeURIComponent(match[1]) : null;
+};
+
+export const setPersistentConsentCookie = (level: "accepted" | "essential") => {
+  if (typeof document === "undefined") return;
+  const isSecure = typeof window !== "undefined" && window.location.protocol === "https:";
+  const secureFlag = isSecure ? "; Secure" : "";
+  // 1 year = 365 days = 31536000 seconds
+  document.cookie = `${CONSENT_KEY}=${encodeURIComponent(level)}; path=/; max-age=31536000; SameSite=Lax${secureFlag}`;
+};
+
+export const clearAnalyticsCookies = () => {
+  if (typeof document === "undefined") return;
+  const cookies = document.cookie.split(";");
+  const hostname = typeof window !== "undefined" ? window.location.hostname : "";
+  const domainParts = hostname.split(".");
+  const domains = [
+    "",
+    hostname,
+    `.${hostname}`,
+    domainParts.length > 1 ? `.${domainParts.slice(-2).join(".")}` : "",
+  ].filter(Boolean);
+
+  for (const cookie of cookies) {
+    const eqPos = cookie.indexOf("=");
+    const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+    if (name.startsWith("_ga") || name.startsWith("_gid") || name.startsWith("_gat")) {
+      for (const domain of domains) {
+        const domainAttr = domain ? `; domain=${domain}` : "";
+        document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT${domainAttr}`;
+      }
+    }
+  }
+};
+
 const subscribeToConsent = (callback: () => void) => {
   if (typeof window === "undefined") return () => {};
   window.addEventListener(CONSENT_EVENT, callback);
   return () => window.removeEventListener(CONSENT_EVENT, callback);
 };
 
-const getConsentSnapshot = () => {
+export const getConsentSnapshot = () => {
   try {
-    return localStorage.getItem(CONSENT_KEY) !== null;
+    const local = localStorage.getItem(CONSENT_KEY);
+    if (local !== null) return true;
+    const cookie = getConsentCookie(CONSENT_KEY);
+    return cookie !== null;
   } catch {
     return true;
   }
@@ -35,9 +76,11 @@ export default function CookieConsentBanner() {
   const handleConsent = (level: "accepted" | "essential") => {
     try {
       localStorage.setItem(CONSENT_KEY, level);
-      if (level === "accepted") {
-        window.dispatchEvent(new CustomEvent(CONSENT_EVENT, { detail: { level } }));
+      setPersistentConsentCookie(level);
+      if (level === "essential") {
+        clearAnalyticsCookies();
       }
+      window.dispatchEvent(new CustomEvent(CONSENT_EVENT, { detail: { level } }));
     } catch (e) {
       console.warn("Unable to save cookie preferences:", e);
     }
