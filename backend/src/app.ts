@@ -14,6 +14,8 @@ import cron from "node-cron";
 import { AppointmentService } from "./app/module/appointment/appointment.service";
 import swaggerUi from "swagger-ui-express";
 import { openapiSpec } from "./app/docs/openapi";
+import compression from "compression";
+import { rateLimiter } from "./app/middleware/rateLimit";
 
 const app: Application = express();
 
@@ -24,12 +26,36 @@ app.set("views", path.resolve(process.cwd(), `src/app/templates`))
 
 app.post("/webhook", express.raw({ type: "application/json" }), PaymentController.handleStripeWebhookEvent);
 
+const allowedOrigins =
+    envVars.NODE_ENV === "production"
+        ? [envVars.FRONTEND_URL, envVars.BETTER_AUTH_URL].filter(Boolean)
+        : [
+              envVars.FRONTEND_URL,
+              envVars.BETTER_AUTH_URL,
+              "http://localhost:3000",
+              "http://localhost:5000",
+          ].filter(Boolean);
+
 app.use(cors({
-    origin: [envVars.FRONTEND_URL, envVars.BETTER_AUTH_URL, "http://localhost:3000", "http://localhost:5000"],
+    origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }))
+
+app.use(
+    compression({
+        threshold: 1024,
+        filter: (req: Request, res: Response) => {
+            if (req.path === "/webhook" || req.originalUrl === "/webhook") {
+                return false;
+            }
+            return compression.filter(req, res);
+        },
+    })
+);
+
+app.use(rateLimiter);
 
 app.use("/api/auth", toNodeHandler(auth))
 

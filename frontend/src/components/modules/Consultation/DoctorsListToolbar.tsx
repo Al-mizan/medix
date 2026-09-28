@@ -49,7 +49,7 @@ export default function DoctorsListToolbar({
           key={searchTermFromUrl}
           initialValue={searchTermFromUrl}
           placeholder="Search doctor by name, qualification, email..."
-          debounceMs={700}
+          debounceMs={300}
           onDebouncedChange={onSearchChange}
           isLoading={isBusy}
         />

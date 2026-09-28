@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Diagnostic Services — Coming Soon",
   description:
     "Advanced diagnostic test booking, lab results tracking, and medical imaging services are coming soon to Medix.",
+  alternates: {
+    canonical: "/diagnostics",
+  },
 };
 
 export default function DiagnosticsPage() {

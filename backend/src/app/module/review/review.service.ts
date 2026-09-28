@@ -100,15 +100,24 @@ const getAllReviews = async (query: IqueryParams) => {
     return result;
 };
 
-const myReviews = async (user: IRequestUser) => {
+const myReviews = async (user: IRequestUser, query: IqueryParams = {}) => {
     const isUserExist = await prisma.user.findUnique({
         where: {
             email: user?.email
         }
     });
     if (!isUserExist) {
-        throw new AppError(status.BAD_REQUEST, "Only patients can view their reviews");
+        throw new AppError(status.BAD_REQUEST, "User not found");
     }
+
+    const queryBuilder = new QueryBuilder<Review, Prisma.ReviewWhereInput, Prisma.ReviewInclude>(
+        prisma.review,
+        query,
+        {
+            searchableFields: reviewSearchableFields,
+            filterableFields: reviewFilterableFields,
+        }
+    );
 
     if (isUserExist.role === Role.DOCTOR) {
         const doctorData = await prisma.doctor.findUniqueOrThrow({
@@ -116,33 +125,40 @@ const myReviews = async (user: IRequestUser) => {
                 email: user?.email
             }
         });
-        return await prisma.review.findMany({
-            where: {
-                doctorId: doctorData.id
-            },
-            include: {
-                patient: true,
-                appointment: true
-            }
+        queryBuilder.where({
+            doctorId: doctorData.id
         });
-    }
-
-    if (isUserExist.role === Role.PATIENT) {
+        queryBuilder.include({
+            patient: true,
+            appointment: true
+        });
+    } else if (isUserExist.role === Role.PATIENT) {
         const patientData = await prisma.patient.findUniqueOrThrow({
             where: {
                 email: user?.email
             }
         });
-        return await prisma.review.findMany({
-            where: {
-                patientId: patientData.id
-            },
-            include: {
-                doctor: true,
-                appointment: true
-            }
+        queryBuilder.where({
+            patientId: patientData.id
         });
+        queryBuilder.include({
+            doctor: true,
+            appointment: true
+        });
+    } else {
+        throw new AppError(status.BAD_REQUEST, "Invalid role for reviews");
     }
+
+    const result = await queryBuilder
+        .search()
+        .filter()
+        .dynamicInclude(reviewIncludeConfig)
+        .paginate()
+        .sort()
+        .fields()
+        .execute();
+
+    return result;
 };
 
 const updateReview = async (user: IRequestUser, reviewId: string, payload: IUpdateReviewPayload) => {

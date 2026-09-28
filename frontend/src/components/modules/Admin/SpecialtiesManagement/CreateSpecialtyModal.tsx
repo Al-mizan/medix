@@ -188,7 +188,7 @@ const CreateSpecialtyModal = () => {
                             <div className="relative inline-block border rounded-md p-2 bg-muted/20">
                                 <Image
                                     src={previewUrl}
-                                    alt="Icon Preview"
+                                    alt="Specialty icon preview"
                                     width={64}
                                     height={64}
                                     className="h-16 w-16 object-contain"

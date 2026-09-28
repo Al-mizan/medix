@@ -1,21 +1,63 @@
 "use client"
 
-import AppointmentBarChart from "@/components/shared/AppointmentBarChart"
-import AppointmentPieChart from "@/components/shared/AppointmentPieChart"
-import StatsCard from "@/components/shared/StatsCard"
-import { getDashboardData } from "@/services/dashboard.services"
-import { ApiResponse } from "@/types/api.types"
-import { IAdminDashboardData } from "@/types/dashboard.types"
-import { useQuery } from "@tanstack/react-query"
+import dynamic from "next/dynamic";
+import StatsCard from "@/components/shared/StatsCard";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { getDashboardData } from "@/services/dashboard.services";
+import { ApiResponse } from "@/types/api.types";
+import { IAdminDashboardData } from "@/types/dashboard.types";
+import { useQuery } from "@tanstack/react-query";
+import DashboardStatsSkeleton from "@/components/modules/DashboardStatsSkeleton";
+
+const AppointmentBarChart = dynamic(
+  () => import("@/components/shared/AppointmentBarChart"),
+  {
+    ssr: false,
+    loading: () => (
+      <Card className="col-span-4 border-neutral-200">
+        <CardHeader className="space-y-2">
+          <Skeleton className="h-5 w-48" />
+          <Skeleton className="h-4 w-64" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-[350px] w-full rounded-lg" />
+        </CardContent>
+      </Card>
+    ),
+  }
+);
+
+const AppointmentPieChart = dynamic(
+  () => import("@/components/shared/AppointmentPieChart"),
+  {
+    ssr: false,
+    loading: () => (
+      <Card className="col-span-2 border-neutral-200">
+        <CardHeader className="space-y-2">
+          <Skeleton className="h-5 w-40" />
+          <Skeleton className="h-4 w-52" />
+        </CardHeader>
+        <CardContent className="flex items-center justify-center">
+          <Skeleton className="h-[300px] w-[300px] rounded-full" />
+        </CardContent>
+      </Card>
+    ),
+  }
+);
 
 const AdminDashboardContent = () => {
-  const { data: adminDashboardData } = useQuery({
+  const { data: adminDashboardData, isLoading } = useQuery({
     queryKey: ["admin-dashboard-data"],
     queryFn: getDashboardData,
     refetchOnWindowFocus: "always", // Refetch the data when the window regains focus
   });
 
-  const { data } = adminDashboardData as ApiResponse<IAdminDashboardData>;
+  if (isLoading) {
+    return <DashboardStatsSkeleton />;
+  }
+
+  const data = (adminDashboardData as ApiResponse<IAdminDashboardData>)?.data;
   //http://localhost:5000/api/v1/doctors?page=1&limit=2&searchTerm=ortho&appointmentFee[gt]=1000&appointmentFee[lte]=1500&fields=name,email&sortBy=user.name.firstName&sortOrder=asc&experience[gt]=7&include=specialties&user.role=DOCTOR&specialties.specialty.title=Neurology&gender=MALE&specialties.specialty.title=Cardiology2
   return (
     <div>

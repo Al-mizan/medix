@@ -251,7 +251,24 @@ describe('QueryBuilder', () => {
         limit: 10,
         total: 25,
         totalPages: 3,
+        totalPage: 3,
       });
+    });
+
+    it('should clamp limit to max 100 and calculate skip accurately for page 2 and limit 5', async () => {
+      mockModel.count.mockResolvedValue(10);
+      mockModel.findMany.mockResolvedValue([]);
+
+      const qbBounded = new QueryBuilder(mockModel, { page: 2, limit: 5 });
+      qbBounded.paginate();
+      const queryBounded = qbBounded.getQuery();
+      expect(queryBounded.skip).toBe(5);
+      expect(queryBounded.take).toBe(5);
+
+      const qbExceeded = new QueryBuilder(mockModel, { page: 1, limit: 1000 });
+      qbExceeded.paginate();
+      const queryExceeded = qbExceeded.getQuery();
+      expect(queryExceeded.take).toBe(100);
     });
   });
 });

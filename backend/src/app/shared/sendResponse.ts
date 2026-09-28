@@ -20,6 +20,7 @@ export interface IResponseData<T> {
         limit: number;
         total: number;
         totalPages: number;
+        totalPage?: number;
     }
 }
 

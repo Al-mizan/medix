@@ -8,58 +8,67 @@ import { IqueryParams } from "../../interface/query.interface";
 import { IRequestUser } from "../../interface/requestUser.interface";
 import { doctorFilterableFields, doctorIncludeConfig, doctorSearchableFields } from "./doctor.constant";
 import { Doctor, Prisma } from "../../../generated/prisma/client";
+import { redisService, computeQueryHash } from "../../lib/redis";
 
 
 const getAllDoctors = async (query: IqueryParams) => {
+    const queryHash = computeQueryHash(query);
+    const cacheKey = `doctors:list:${queryHash}`;
 
-    const queryBuilder = new QueryBuilder<Doctor, Prisma.DoctorWhereInput, Prisma.DoctorInclude>(
-        prisma.doctor,
-        query,
-        {
-            searchableFields: doctorSearchableFields,
-            filterableFields: doctorFilterableFields,
-        }
-    );
-    const result = await queryBuilder
-        .search()
-        .filter()
-        .where({
-            isDeleted: false,
-        })
-        .include({
-            user: true,
-            // specialties: true,
-            specialties: {
-                include: {
-                    specialty: true
-                }
-            },
-        })
-        .dynamicInclude(doctorIncludeConfig)
-        .paginate()
-        .sort()
-        .fields()
-        .execute();
+    return await redisService.withCache(cacheKey, 300, async () => {
+        const queryBuilder = new QueryBuilder<Doctor, Prisma.DoctorWhereInput, Prisma.DoctorInclude>(
+            prisma.doctor,
+            query,
+            {
+                searchableFields: doctorSearchableFields,
+                filterableFields: doctorFilterableFields,
+            }
+        );
+        const result = await queryBuilder
+            .search()
+            .filter()
+            .where({
+                isDeleted: false,
+            })
+            .include({
+                user: true,
+                // specialties: true,
+                specialties: {
+                    include: {
+                        specialty: true
+                    }
+                },
+            })
+            .dynamicInclude(doctorIncludeConfig)
+            .paginate()
+            .sort()
+            .fields()
+            .execute();
 
-    return result;
+        return result;
+    });
 }
 
 const getDoctorById = async (id: string) => {
-    const doctor = await prisma.doctor.findUnique({
-        where: {
-            id,
-            isDeleted: false,
-        },
-        include: {
-            user: true,
-            specialties: {
-                include: {
-                    specialty: true
-                }
+    const cacheKey = `doctors:detail:${id}`;
+
+    return await redisService.withCache(cacheKey, 180, async () => {
+        const doctor = await prisma.doctor.findUnique({
+            where: {
+                id,
+                isDeleted: false,
             },
-        }
-    })
-    return doctor;
+            include: {
+                user: true,
+                specialties: {
+                    include: {
+                        specialty: true
+                    }
+                },
+            }
+        });
+        return doctor;
+    });
 }
 
 const updateDoctor = async (id: string, payload: IUpdateDoctorPayload, user?: IRequestUser) => {
@@ -133,6 +142,12 @@ const updateDoctor = async (id: string, payload: IUpdateDoctorPayload, user?: IR
         }
     })
 
+    // Invalidate cached doctor details and doctor listings
+    await Promise.all([
+        redisService.delete(`doctors:detail:${id}`),
+        redisService.deleteByPattern("doctors:list:*"),
+    ]);
+
     const doctor = await getDoctorById(id);
 
     return doctor;
@@ -175,6 +190,12 @@ const deleteDoctor = async (id: string) => {
             where: { doctorId: id }
         })
     })
+
+    // Invalidate cached doctor details and doctor listings
+    await Promise.all([
+        redisService.delete(`doctors:detail:${id}`),
+        redisService.deleteByPattern("doctors:list:*"),
+    ]);
 
     return { message: "Doctor deleted successfully" };
 }

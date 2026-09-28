@@ -16,9 +16,12 @@ import {
   DataTableFilterConfig,
   DataTableFilterValues,
 } from "@/components/shared/table/DataTableFilters";
+import { Button } from "@/components/ui/button";
+import { SearchX } from "lucide-react";
 import DoctorConsultationCard from "./DoctorConsultationCard";
 import ConsultationPagination from "./ConsultationPagination";
 import DoctorsListToolbar from "./DoctorsListToolbar";
+import DoctorListSkeleton from "@/components/modules/DoctorListSkeleton";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 12;
@@ -198,15 +201,30 @@ const DoctorsList = ({
         onSortingChange={handleSortingChange}
       />
 
-      {isBusy && (
-        <div className="rounded-md border p-4 text-sm text-muted-foreground">
-          Loading doctors...
-        </div>
-      )}
+      {isBusy && <DoctorListSkeleton />}
 
       {!isBusy && doctors.length === 0 && (
-        <div className="rounded-md border p-6 text-center text-sm text-muted-foreground">
-          No doctors found for your current search/filter.
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed bg-card/50 p-10 text-center shadow-xs sm:p-14">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <SearchX className="h-8 w-8" />
+          </div>
+          <h2 className="mt-4 text-lg font-semibold tracking-tight sm:text-xl">
+            No doctors found
+          </h2>
+          <p className="mt-2 max-w-md text-sm text-muted-foreground sm:text-base">
+            We couldn&apos;t find any healthcare specialists matching your search or active filters. Try adjusting your search term or resetting filters to view all available doctors.
+          </p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <Button
+              variant="outline"
+              onClick={() => {
+                handleDebouncedSearchChange("");
+                clearAllFilters();
+              }}
+            >
+              Reset Filters &amp; Search
+            </Button>
+          </div>
         </div>
       )}
 

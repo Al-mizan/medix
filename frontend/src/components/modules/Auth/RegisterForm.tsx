@@ -83,7 +83,7 @@ const RegisterForm = () => {
     return (
         <Card className="w-full max-w-md mx-auto shadow-md">
             <CardHeader className="text-center">
-                <CardTitle className="text-2xl font-bold">
+                <CardTitle as="h1" className="text-2xl font-bold">
                     Create an Account
                 </CardTitle>
                 <CardDescription>
@@ -107,6 +107,7 @@ const RegisterForm = () => {
                         name="name"
                         validators={{
                             onChange: registerBaseSchema.shape.name,
+                            onBlur: registerBaseSchema.shape.name,
                         }}
                     >
                         {(field) => (
@@ -122,6 +123,7 @@ const RegisterForm = () => {
                         name="email"
                         validators={{
                             onChange: registerBaseSchema.shape.email,
+                            onBlur: registerBaseSchema.shape.email,
                         }}
                     >
                         {(field) => (
@@ -150,6 +152,7 @@ const RegisterForm = () => {
                         name="password"
                         validators={{
                             onChange: registerBaseSchema.shape.password,
+                            onBlur: registerBaseSchema.shape.password,
                         }}
                     >
                         {(field) => (
@@ -174,7 +177,7 @@ const RegisterForm = () => {
                                         }
                                     >
                                         {showPassword ? (
-                                            <EyeOff className="size-4" />
+                                             <EyeOff className="size-4" />
                                         ) : (
                                             <Eye className="size-4" />
                                         )}
@@ -187,7 +190,19 @@ const RegisterForm = () => {
                     <form.Field
                         name="confirmPassword"
                         validators={{
+                            onChangeListenTo: ["password"],
                             onChange: ({ value, fieldApi }) => {
+                                if (!value) return "Please confirm your password";
+                                if (
+                                    value !==
+                                    fieldApi.form.getFieldValue("password")
+                                ) {
+                                    return "Passwords do not match";
+                                }
+                                return undefined;
+                            },
+                            onBlur: ({ value, fieldApi }) => {
+                                if (!value) return "Please confirm your password";
                                 if (
                                     value !==
                                     fieldApi.form.getFieldValue("password")

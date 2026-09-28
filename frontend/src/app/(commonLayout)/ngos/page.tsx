@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Healthcare NGOs — Coming Soon",
   description:
     "Connect with verified healthcare NGOs, access free or subsidized medical services, and find community health programs near you.",
+  alternates: {
+    canonical: "/ngos",
+  },
 };
 
 export default function NGOsPage() {

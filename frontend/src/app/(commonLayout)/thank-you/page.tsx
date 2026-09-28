@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Thank You | Medix Healthcare",
   description:
     "Thank you for choosing Medix Digital Healthcare. Your request or clinical registration has been safely received.",
+  alternates: {
+    canonical: "/thank-you",
+  },
 };
 
 export default function ThankYouPage() {

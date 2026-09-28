@@ -19,12 +19,14 @@ const bookAppointment = catchAsync(async (req: Request, res: Response) => {
 
 const getMyAppointments = catchAsync(async (req: Request, res: Response) => {
     const user = req.user;
-    const appointments = await AppointmentService.getMyAppointments(user);
+    const query = req.query;
+    const result = await AppointmentService.getMyAppointments(user, query as IqueryParams);
     sendResponse(res, {
         success: true,
         httpStatusCode: status.OK,
         message: 'Appointments retrieved successfully',
-        data: appointments
+        data: result.data,
+        meta: result.meta,
     });
 });
 

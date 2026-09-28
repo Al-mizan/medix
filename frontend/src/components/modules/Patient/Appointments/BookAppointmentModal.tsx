@@ -20,6 +20,7 @@ import { CalendarPlus, Clock3, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface BookAppointmentModalProps {
   doctorId: string
@@ -53,6 +54,7 @@ const BookAppointmentModal = ({
 }: BookAppointmentModalProps) => {
   const [open, setOpen] = useState(false)
   const [selectedScheduleId, setSelectedScheduleId] = useState<string>("")
+  const [selectionError, setSelectionError] = useState<string | null>(null)
 
   const router = useRouter()
 
@@ -92,15 +94,22 @@ const BookAppointmentModal = ({
 
     if (!nextOpen) {
       setSelectedScheduleId("")
+      setSelectionError(null)
     }
+  }
+
+  const handleSelectSlot = (scheduleId: string) => {
+    setSelectedScheduleId(scheduleId)
+    setSelectionError(null)
   }
 
   const handleProceed = () => {
     if (!selectedScheduleId) {
-      toast.error("Select a schedule slot first")
+      setSelectionError("Please select an available appointment slot before proceeding.")
       return
     }
 
+    setSelectionError(null)
     const targetPath = `/dashboard/book-appointments?doctorId=${encodeURIComponent(doctorId)}&scheduleId=${encodeURIComponent(selectedScheduleId)}`
 
     if (!isAuthenticated) {
@@ -145,10 +154,26 @@ const BookAppointmentModal = ({
               {!isAuthenticated && <Badge variant="outline">Login required to continue</Badge>}
             </div>
 
+            {selectionError && (
+              <div
+                role="alert"
+                className="rounded-lg border border-destructive/40 bg-destructive/5 p-3 text-xs font-medium text-destructive animate-in fade-in"
+              >
+                {selectionError}
+              </div>
+            )}
+
             {isBusy && (
-              <div className="flex items-center gap-2 rounded-xl border p-4 text-sm text-muted-foreground">
-                <Loader2 className="size-4 animate-spin" />
-                Loading available schedules...
+              <div className="grid gap-3" data-testid="schedule-slots-skeleton">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div
+                    key={`slot-skeleton-${i}`}
+                    className="rounded-2xl border p-4 space-y-2 bg-muted/10"
+                  >
+                    <Skeleton className="h-5 w-48 rounded-md" />
+                    <Skeleton className="h-4 w-36 rounded-md" />
+                  </div>
+                ))}
               </div>
             )}
 
@@ -168,10 +193,10 @@ const BookAppointmentModal = ({
                     <button
                       key={scheduleId}
                       type="button"
-                      onClick={() => setSelectedScheduleId(scheduleId)}
+                      onClick={() => handleSelectSlot(scheduleId)}
                       className={`rounded-2xl border p-4 text-left transition ${
                         isSelected
-                          ? "border-primary bg-primary/5 shadow-sm"
+                          ? "border-primary bg-primary/5 shadow-sm ring-2 ring-primary/20"
                           : "bg-card hover:border-primary/40 hover:bg-muted/30"
                       }`}
                     >

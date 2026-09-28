@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Medicine & Pharmacy — Coming Soon",
   description:
     "Online prescription fulfillment, medicine delivery, and pharmacy services integrated with your electronic health records are coming soon.",
+  alternates: {
+    canonical: "/medicine",
+  },
 };
 
 export default function MedicinePage() {

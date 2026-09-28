@@ -37,8 +37,10 @@ const AppField = ({
     className,
     disabled = false,
 }: AppFieldProps) => {
+    const isTouchedOrSubmitted =
+        field.state.meta.isTouched || Boolean(field.form?.state?.isSubmitted);
     const firstError =
-        field.state.meta.isTouched && field.state.meta.errors.length > 0
+        isTouchedOrSubmitted && field.state.meta.errors.length > 0
             ? getErrorMessage(field.state.meta.errors[0])
             : null;
 

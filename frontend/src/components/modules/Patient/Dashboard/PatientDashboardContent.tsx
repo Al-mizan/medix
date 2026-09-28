@@ -14,24 +14,45 @@ import { IPatientDashboardData } from "@/types/dashboard.types";
 import { IPatientProfile } from "@/types/patient.types";
 import { IPrescription } from "@/types/prescription.types";
 
+import dynamic from "next/dynamic";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import PatientDashboardHeader from "./PatientDashboardHeader";
 import PatientStatsOverview from "./PatientStatsOverview";
 import PatientUpcomingAppointmentsCard from "./PatientUpcomingAppointmentsCard";
-import PatientStatusDistributionCard from "./PatientStatusDistributionCard";
 import PatientHealthSnapshotCard from "./PatientHealthSnapshotCard";
 import PatientRecentPrescriptionsCard from "./PatientRecentPrescriptionsCard";
+import DashboardStatsSkeleton from "@/components/modules/DashboardStatsSkeleton";
+
+const PatientStatusDistributionCard = dynamic(
+  () => import("./PatientStatusDistributionCard"),
+  {
+    ssr: false,
+    loading: () => (
+      <Card className="border-[#E3E6EB] bg-white shadow-xs">
+        <CardHeader className="pb-2 border-b border-[#E3E6EB] space-y-2">
+          <Skeleton className="h-5 w-40" />
+          <Skeleton className="h-4 w-56" />
+        </CardHeader>
+        <CardContent className="flex items-center justify-center p-6">
+          <Skeleton className="h-60 w-60 rounded-full" />
+        </CardContent>
+      </Card>
+    ),
+  }
+);
 
 export default function PatientDashboardContent() {
     const [payingAppointmentId, setPayingAppointmentId] = useState<string | null>(null);
 
     // Queries
-    const { data: statsResponse } = useQuery({
+    const { data: statsResponse, isLoading: isStatsLoading } = useQuery({
         queryKey: ["patient-dashboard-stats"],
         queryFn: () => getPatientDashboardData(),
         staleTime: 30 * 1000,
     });
 
-    const { data: appointmentsResponse } = useQuery({
+    const { data: appointmentsResponse, isLoading: isAppointmentsLoading } = useQuery({
         queryKey: ["my-appointments"],
         queryFn: () => getMyAppointments(),
         staleTime: 30 * 1000,
@@ -140,6 +161,10 @@ export default function PatientDashboardContent() {
             setPayingAppointmentId(null);
         }
     };
+
+    if (isStatsLoading && isAppointmentsLoading) {
+        return <DashboardStatsSkeleton />;
+    }
 
     return (
         <div className="space-y-6">

@@ -5,6 +5,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { getAllSpecialties, getDoctors } from "@/services/doctor.services";
+import { JsonLd } from "@/components/shared/JsonLd";
 import {
   HeroSection,
   SpecialtiesSection,
@@ -20,6 +21,32 @@ export const metadata: Metadata = {
   title: "Medix - Modern Clinical Healthcare, Seamlessly Connected",
   description:
     "Connect with board-certified physicians in under 8 minutes. Schedule encrypted video consultations, access accredited clinical triage, and receive verifiable digital prescriptions.",
+  alternates: {
+    canonical: "/",
+  },
+};
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "MedicalOrganization",
+  name: "Medix Healthcare",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://medix.health",
+  logo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://medix.health"}/icon.svg`,
+  description:
+    "Connect with board-certified physicians in under 8 minutes. Schedule encrypted video consultations, access accredited clinical triage, and receive verifiable digital prescriptions.",
+  medicalSpecialty: [
+    "Cardiology",
+    "Dermatology",
+    "Neurology",
+    "Pediatrics",
+    "General Practice",
+    "Psychiatry",
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "customer service",
+    availableLanguage: ["English"],
+  },
 };
 
 export default async function HomePage() {
@@ -42,6 +69,7 @@ export default async function HomePage() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <JsonLd schema={organizationSchema} />
       <main className="min-h-screen flex flex-col bg-background text-foreground">
         <HeroSection />
         <SpecialtiesSection />

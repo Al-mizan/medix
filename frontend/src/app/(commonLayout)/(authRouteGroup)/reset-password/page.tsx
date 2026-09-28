@@ -4,6 +4,9 @@ import ResetPasswordForm from "@/components/modules/Auth/ResetPasswordForm";
 export const metadata: Metadata = {
     title: "Set New Password",
     description: "Update your Medix account security password.",
+    alternates: {
+        canonical: "/reset-password",
+    },
 };
 
 interface ResetPasswordPageProps {

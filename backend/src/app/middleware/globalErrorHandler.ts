@@ -10,6 +10,7 @@ import { deleteFileFromCloudinary } from "../config/cloudinary.config";
 import { deleteUploadedFilesFromGlobalErrorHandler } from "../utils/deleteUploadedFilesFromGlobalErrorHandler";
 import { Prisma } from "../../generated/prisma/client";
 import { handlePrismaClientKnownRequestError, handlePrismaClientUnknownError, handlePrismaClientValidationError, handlerPrismaClientInitializationError, handlerPrismaClientRustPanicError } from "../errorHelpers/handlePrismaErrors";
+import multer from "multer";
 
 
 export const globalErrorHandler = async (err: unknown, req: Request, res: Response, next: NextFunction) => {
@@ -68,6 +69,21 @@ export const globalErrorHandler = async (err: unknown, req: Request, res: Respon
         message = simplifiedZodError.message;
         errorSources = [...simplifiedZodError.errorSources];
         stack = err.stack;
+    }
+    else if (err instanceof multer.MulterError) {
+        statusCode = status.BAD_REQUEST;
+        if (err.code === "LIMIT_FILE_SIZE") {
+            message = "File size exceeds the 25MB limit";
+        } else {
+            message = err.message;
+        }
+        stack = err.stack;
+        errorSources = [
+            {
+                path: err.field || "file",
+                message,
+            }
+        ];
     }
     else if (err instanceof AppError) {
         statusCode = err.statusCode;

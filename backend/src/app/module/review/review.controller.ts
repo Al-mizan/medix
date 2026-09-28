@@ -31,14 +31,15 @@ const getAllReviews = catchAsync(async (req: Request, res: Response) => {
 
 const myReviews = catchAsync(async (req: Request, res: Response) => {
     const user = req.user;
-    const result = await ReviewService.myReviews(user);
+    const query = req.query;
+    const result = await ReviewService.myReviews(user, query as IqueryParams);
     sendResponse(res, {
         httpStatusCode: httpStatus.OK,
         success: true,
-        message: 'Reviews retrieval successfully',
-        data: result
+        message: 'Reviews retrieved successfully',
+        data: result.data,
+        meta: result.meta,
     });
-
 });
 
 const updateReview = catchAsync(async (req: Request, res: Response) => {

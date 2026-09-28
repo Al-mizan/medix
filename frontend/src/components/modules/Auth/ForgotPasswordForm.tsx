@@ -77,7 +77,7 @@ const ForgotPasswordForm = () => {
     return (
         <Card className="w-full max-w-md mx-auto shadow-md">
             <CardHeader className="text-center">
-                <CardTitle className="text-2xl font-bold">
+                <CardTitle as="h1" className="text-2xl font-bold">
                     Forgot Password?
                 </CardTitle>
                 <CardDescription>

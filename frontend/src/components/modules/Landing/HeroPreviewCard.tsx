@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   Video,
   Mic,
@@ -63,10 +64,15 @@ export default function HeroPreviewCard() {
           {/* Doctor Visual Avatar & Speaking Waves */}
           <div className="relative z-10 flex flex-col items-center justify-center my-auto text-center space-y-3">
             <div className="relative">
-              <div className="size-20 sm:size-24 rounded-full bg-gradient-to-tr from-primary to-secondary p-1 shadow-lg">
-                <div className="size-full rounded-full bg-[#1A2D3F] flex items-center justify-center text-2xl font-extrabold text-white">
-                  DR
-                </div>
+              <div className="size-20 sm:size-24 rounded-full bg-gradient-to-tr from-primary to-secondary p-1 shadow-lg overflow-hidden">
+                <Image
+                  src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=192&q=80"
+                  alt="Dr. Sarah Jenkins"
+                  width={96}
+                  height={96}
+                  priority
+                  className="size-full rounded-full object-cover"
+                />
               </div>
               <span className="absolute bottom-1 right-1 size-5 rounded-full bg-secondary border-2 border-[#142332] flex items-center justify-center">
                 <Activity className="size-3 text-white" />

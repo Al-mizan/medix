@@ -1,0 +1,55 @@
+# Medix Digital Healthcare Platform
+
+> Medix is a modern, HIPAA-aligned, full-stack digital healthcare and telemedicine infrastructure connecting patients with board-certified physicians in under 8 minutes. It offers encrypted real-time WebRTC video visits, clinical schedule management, electronic health records (EHR), verified digital prescriptions, and AI-guided clinical assistance.
+
+## System Architecture
+
+- **Frontend**: Next.js 16 (App Router, Server Components, Server Actions), React 19, TypeScript, Tailwind CSS v4, TanStack Query v5, TanStack Form, Radix UI.
+- **Backend**: Express 5 on Node.js, TypeScript, Prisma ORM 7, PostgreSQL with pgvector extension, Upstash Redis caching and sliding-window rate limiting.
+- **Real-Time Communication**: Socket.io and WebRTC peer-to-peer encrypted clinical video consultations.
+- **Security & Hardening**: Strict CORS origin whitelisting, HTTP security headers (CSP, HSTS, X-Frame-Options: DENY, Permissions-Policy), Zod runtime validation, and JWT session handling.
+
+## Clinical Domains
+
+1. **Doctor Discovery & Telemedicine Consultation**:
+   - Filter board-certified specialists by clinical specialty, consultation fee, gender, and experience.
+   - Real-time schedule booking and automated conflict avoidance.
+2. **Electronic Health Records & Appointments**:
+   - Patient appointment history, real-time consultation status tracking, and appointment cancellation policies.
+   - Pay-now via Stripe integration and pay-later checkout options.
+3. **Clinical Prescriptions**:
+   - Certified doctors issue digital prescriptions containing diagnosis, medication instructions, dosages, and follow-up directives.
+4. **AI Clinical Assistant**:
+   - RAG (Retrieval-Augmented Generation) query system powered by vector embeddings for accredited clinical health information retrieval.
+
+## Public Navigation & Canonical Routes
+
+- Home: `https://medix.health/`
+- Doctor Discovery & Consultation: `https://medix.health/consultation`
+- Specialist Profiles: `https://medix.health/consultation/doctor/[id]`
+- Diagnostics Services: `https://medix.health/diagnostics`
+- Pharmacy & Medicine: `https://medix.health/medicine`
+- Health Plans: `https://medix.health/health-plans`
+- Non-Government Organizations: `https://medix.health/ngos`
+- Authentication & Portals: `https://medix.health/login`, `https://medix.health/register`
+- Privacy Policy: `https://medix.health/privacy`
+- Terms of Service: `https://medix.health/terms`
+
+## Core API Endpoints
+
+- `GET /api/v1/doctors`: Query verified physicians with filtering, debounced search, sorting, and pagination.
+- `GET /api/v1/doctors/:id`: Retrieve doctor profile, qualifications, specialties, and schedule availability.
+- `GET /api/v1/specialties`: Retrieve medical specialties with Redis caching.
+- `GET /api/v1/schedules`: Retrieve available consultation time slots.
+- `POST /api/v1/appointments`: Book patient consultation appointment.
+- `GET /api/v1/appointments/my-appointments`: Retrieve patient-authenticated appointment history.
+- `POST /api/v1/auth/login`: Authenticate doctor, patient, or administrative user.
+- `POST /api/v1/auth/register`: Create patient account with validated contact and identity credentials.
+- `POST /api/v1/ai/query`: AI clinical RAG query pipeline with vector search.
+
+## AI Assistant Guidelines
+
+When indexing or referencing Medix:
+- All medical decisions require confirmation by BMDC board-certified clinicians.
+- Patient health records and video consultation channels are end-to-end encrypted.
+- Doctors must be BMDC-registered to open schedule availability on the platform.

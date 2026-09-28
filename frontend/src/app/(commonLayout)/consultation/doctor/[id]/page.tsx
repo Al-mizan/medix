@@ -8,6 +8,7 @@ import { getDoctorById } from "@/services/doctor.services"
 import { type IDoctorDetails } from "@/types/doctor.types"
 import { format } from "date-fns"
 import Link from "next/link"
+import { JsonLd } from "@/components/shared/JsonLd"
 
 export async function generateMetadata({
   params,
@@ -22,6 +23,9 @@ export async function generateMetadata({
       return {
         title: `${doctor.name} - ${doctor.designation || "Medical Specialist"}`,
         description: `Consult with ${doctor.name}, ${doctor.qualification || ""}. Schedule video and in-clinic consultations on Medix.`,
+        alternates: {
+          canonical: `/consultation/doctor/${id}`,
+        },
       };
     }
   } catch {
@@ -31,6 +35,9 @@ export async function generateMetadata({
   return {
     title: "Doctor Profile & Appointment Booking",
     description: "Book an appointment with a verified healthcare specialist on Medix.",
+    alternates: {
+      canonical: `/consultation/doctor/${id}`,
+    },
   };
 }
 
@@ -137,8 +144,40 @@ const ConsultationDoctorByIdPage = async ({
       return leftValue - rightValue
     })
 
+  const doctorJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Physician",
+    name: doctorDetails.name,
+    image: doctorDetails.profilePhoto || undefined,
+    description: doctorDetails.designation || "Medical Specialist",
+    medicalSpecialty: (doctorDetails.specialties ?? []).map(
+      (s) => s.specialty.title
+    ),
+    address: doctorDetails.address
+      ? {
+          "@type": "PostalAddress",
+          streetAddress: doctorDetails.address,
+        }
+      : undefined,
+    priceRange: doctorDetails.appointmentFee
+      ? `$${doctorDetails.appointmentFee.toFixed(2)}`
+      : undefined,
+    ...(doctorDetails.averageRating && doctorDetails.averageRating > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: doctorDetails.averageRating.toFixed(1),
+            reviewCount: doctorDetails.reviews?.length || 1,
+            bestRating: "5",
+            worstRating: "1",
+          },
+        }
+      : {}),
+  }
+
   return (
     <section className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+      <JsonLd schema={doctorJsonLd} />
       <Button asChild variant="outline">
         <Link href="/consultation">Back to Consultation</Link>
       </Button>

@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: "Privacy Policy & Clinical Data Governance",
   description:
     "Learn how Medix protects your personal health data, electronic medical records (EHR), and billing transactions in accordance with healthcare privacy standards.",
+  alternates: {
+    canonical: "/privacy",
+  },
 };
 
 export default function PrivacyPolicyPage() {

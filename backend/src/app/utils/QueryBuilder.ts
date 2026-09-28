@@ -264,8 +264,9 @@ TInclude = Record<string, unknown>
      * @returns The QueryBuilder instance for chaining
      */
     paginate() : this {
-        const page = Number(this.queryParams.page) || 1;
-        const limit = Number(this.queryParams.limit) || 10;
+        const page = Math.max(Number(this.queryParams.page) || 1, 1);
+        const rawLimit = Number(this.queryParams.limit) || 10;
+        const limit = Math.min(Math.max(rawLimit, 1), 100);
 
         this.page = page;
         this.limit = limit;
@@ -435,6 +436,7 @@ TInclude = Record<string, unknown>
                 limit : this.limit,
                 total,
                 totalPages,
+                totalPage : totalPages,
             }
         }
 

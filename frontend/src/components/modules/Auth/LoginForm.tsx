@@ -59,7 +59,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
     return (
         <Card className="w-full max-w-md mx-auto shadow-md">
             <CardHeader className="text-center">
-                <CardTitle className="text-2xl font-bold">
+                <CardTitle as="h1" className="text-2xl font-bold">
                     Welcome Back!
                 </CardTitle>
                 <CardDescription>
@@ -81,7 +81,10 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                 >
                     <form.Field
                         name="email"
-                        validators={{ onChange: loginZodSchema.shape.email }}
+                        validators={{
+                            onChange: loginZodSchema.shape.email,
+                            onBlur: loginZodSchema.shape.email,
+                        }}
                     >
                         {(field) => (
                             <AppField
@@ -95,7 +98,10 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
 
                     <form.Field
                         name="password"
-                        validators={{ onChange: loginZodSchema.shape.password }}
+                        validators={{
+                            onChange: loginZodSchema.shape.password,
+                            onBlur: loginZodSchema.shape.password,
+                        }}
                     >
                         {(field) => (
                             <AppField

@@ -10,6 +10,7 @@ export interface PaginationMeta {
     limit: number;
     total: number;
     totalPages: number;
+    totalPage?: number;
 }
 export interface ApiErrorResponse {
     success: false;

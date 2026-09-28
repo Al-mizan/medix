@@ -19,12 +19,14 @@ const givePrescription = catchAsync(async (req: Request, res: Response) => {
 
 const myPrescriptions = catchAsync(async (req: Request, res: Response) => {
     const user = req.user;
-    const result = await PrescriptionService.myPrescriptions(user);
+    const query = req.query;
+    const result = await PrescriptionService.myPrescriptions(user, query as IqueryParams);
     sendResponse(res, {
         httpStatusCode: httpStatus.OK,
         success: true,
         message: 'Prescription fetched successfully',
-        data: result
+        data: result.data,
+        meta: result.meta,
     });
 });
 

@@ -2,16 +2,51 @@ import type { Metadata } from "next";
 import DoctorsList from "@/components/modules/Consultation/DoctorsList";
 import { getAllSpecialties, getDoctors } from "@/services/doctor.services";
 import { getUserInfo } from "@/services/auth.services";
+import { JsonLd } from "@/components/shared/JsonLd";
 import {
     dehydrate,
     HydrationBoundary,
     QueryClient,
 } from "@tanstack/react-query";
 
+const consultationSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "MedicalClinic",
+            name: "Medix Virtual Clinic & Telemedicine Consultation",
+            url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://medix.health"}/consultation`,
+            description:
+                "Browse certified physicians across specialties, compare consultation fees and ratings, and schedule video consultations online.",
+            medicalSpecialty: [
+                "Cardiology",
+                "Dermatology",
+                "Neurology",
+                "Pediatrics",
+                "General Practice",
+            ],
+            availableService: {
+                "@type": "MedicalTherapy",
+                name: "Online Video Consultation & Digital Health Triage",
+            },
+        },
+        {
+            "@type": "ItemList",
+            name: "Healthcare Specialists & Telemedicine Doctors",
+            description:
+                "Directory of certified healthcare specialists available for digital consultations on Medix.",
+            url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://medix.health"}/consultation`,
+        },
+    ],
+};
+
 export const metadata: Metadata = {
     title: "Find Doctors & Telemedicine Specialists",
     description:
         "Browse certified physicians across specialties, compare consultation fees and ratings, and schedule video consultations online.",
+    alternates: {
+        canonical: "/consultation",
+    },
 };
 
 const SPECIALTIES_FILTER_KEY = "specialties.specialty.title";
@@ -84,6 +119,7 @@ const ConsultationPage = async ({
     });
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
+            <JsonLd schema={consultationSchema} />
             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <DoctorsList
                     initialQueryString={queryString}

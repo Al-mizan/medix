@@ -48,5 +48,36 @@ describe('Express Application (Supertest)', () => {
     expect(res.status).toBe(200);
     expect(res.headers['content-type']).toMatch(/html/);
   });
+
+  it('GET /api/v1/openapi.json should support gzip compression', async () => {
+    const res = await request(app)
+      .get('/api/v1/openapi.json')
+      .set('Accept-Encoding', 'gzip');
+
+    expect(res.status).toBe(200);
+    expect(res.headers['content-encoding']).toBe('gzip');
+  });
+
+  it('POST /api/auth/* should be protected by Auth Tier rate limiting (10 req/min)', async () => {
+    const ip = '192.168.100.1';
+
+    for (let i = 1; i <= 10; i++) {
+      const res = await request(app)
+        .post('/api/auth/sign-in')
+        .set('X-Forwarded-For', ip);
+
+      expect(res.headers['x-ratelimit-limit']).toBe('10');
+      expect(res.headers['x-ratelimit-remaining']).toBe((10 - i).toString());
+    }
+
+    const blockedRes = await request(app)
+      .post('/api/auth/sign-in')
+      .set('X-Forwarded-For', ip);
+
+    expect(blockedRes.status).toBe(429);
+    expect(blockedRes.body.success).toBe(false);
+    expect(blockedRes.headers['retry-after']).toBeDefined();
+  });
 });
+
 

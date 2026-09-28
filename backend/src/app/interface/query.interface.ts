@@ -84,5 +84,6 @@ export interface IQueryResult<T>{
         limit : number;
         total : number;
         totalPages : number;
+        totalPage?: number;
     }
 }

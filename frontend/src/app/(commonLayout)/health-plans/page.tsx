@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Health Plans — Coming Soon",
   description:
     "Personalized health plans, preventive care packages, and wellness programs tailored to your medical needs are coming soon.",
+  alternates: {
+    canonical: "/health-plans",
+  },
 };
 
 export default function HealthPlansPage() {

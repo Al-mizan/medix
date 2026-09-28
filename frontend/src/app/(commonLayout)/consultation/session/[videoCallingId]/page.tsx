@@ -3,12 +3,26 @@ import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { AlertCircle, CreditCard, LayoutDashboard } from "lucide-react"
+import dynamic from "next/dynamic"
 import { getAppointmentByVideoCallingId } from "@/services/appointment.services"
 import { getUserInfo } from "@/services/auth.services"
-import VideoCallRoom from "@/components/modules/Consultation/VideoCallRoom"
 import PreCallScreen from "@/components/modules/Consultation/PreCallScreen"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+
+const VideoCallRoom = dynamic(
+  () => import("@/components/modules/Consultation/VideoCallRoom"),
+  {
+    loading: () => (
+      <div className="flex h-screen w-full items-center justify-center bg-neutral-950 text-white">
+        <div className="flex flex-col items-center gap-3">
+          <div className="size-8 animate-spin rounded-full border-4 border-[#0B7285] border-t-transparent" />
+          <p className="text-sm text-neutral-400">Loading consultation room...</p>
+        </div>
+      </div>
+    ),
+  }
+)
 
 interface ConsultationSessionPageProps {
   params: Promise<{

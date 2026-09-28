@@ -4,6 +4,9 @@ import VerifyEmailForm from "@/components/modules/Auth/VerifyEmailForm";
 export const metadata: Metadata = {
     title: "Verify Email Address",
     description: "Verify your email to complete registration on Medix.",
+    alternates: {
+        canonical: "/verify-email",
+    },
 };
 
 interface VerifyEmailPageProps {

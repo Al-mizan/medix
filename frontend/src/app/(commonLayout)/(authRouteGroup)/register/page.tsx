@@ -5,6 +5,9 @@ export const metadata: Metadata = {
     title: "Create Patient Account",
     description:
         "Join Medix to book consultations with top specialists, track medical reports, and receive digital prescriptions.",
+    alternates: {
+        canonical: "/register",
+    },
 };
 
 const RegisterPage = () => {

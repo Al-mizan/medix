@@ -136,7 +136,7 @@ const givePrescription = async (user: IRequestUser, payload: ICreatePrescription
 
 };
 
-const myPrescriptions = async (user: IRequestUser) => {
+const myPrescriptions = async (user: IRequestUser, query: IqueryParams = {}) => {
     const isUserExists = await prisma.user.findUnique({
         where: {
             email: user?.email
@@ -147,39 +147,46 @@ const myPrescriptions = async (user: IRequestUser) => {
         throw new AppError(status.NOT_FOUND, "User not found");
     }
 
+    const queryBuilder = new QueryBuilder<Prescription, Prisma.PrescriptionWhereInput, Prisma.PrescriptionInclude>(
+        prisma.prescription,
+        query,
+        {
+            searchableFields: prescriptionSearchableFields,
+            filterableFields: prescriptionFilterableFields,
+        }
+    );
+
     if (isUserExists.role === Role.DOCTOR) {
-        const prescriptions = await prisma.prescription.findMany({
-            where: {
-                doctor: {
-                    email: user?.email
-                }
-            },
-            include: {
-                patient: true,
-                doctor: true,
-                appointment: true,
+        queryBuilder.where({
+            doctor: {
+                email: user?.email
             }
         });
-        return prescriptions;
-    }
-
-    if (isUserExists.role === Role.PATIENT) {
-        const prescriptions = await prisma.prescription.findMany({
-            where: {
-                patient: {
-                    email: user?.email
-                }
-            },
-            include: {
-                patient: true,
-                doctor: true,
-                appointment: true,
+    } else if (isUserExists.role === Role.PATIENT) {
+        queryBuilder.where({
+            patient: {
+                email: user?.email
             }
         });
-        return prescriptions;
+    } else {
+        throw new AppError(status.BAD_REQUEST, "Invalid role for prescriptions");
     }
 
+    const result = await queryBuilder
+        .search()
+        .filter()
+        .include({
+            patient: true,
+            doctor: true,
+            appointment: true,
+        })
+        .dynamicInclude(prescriptionIncludeConfig)
+        .paginate()
+        .sort()
+        .fields()
+        .execute();
 
+    return result;
 };
 
 const getAllPrescriptions = async (query: IqueryParams) => {

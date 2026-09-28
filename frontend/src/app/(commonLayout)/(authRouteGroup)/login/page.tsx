@@ -5,6 +5,9 @@ export const metadata: Metadata = {
     title: "Sign In to Your Account",
     description:
         "Sign in to access your Medix patient portal, doctor workspace, or administrative dashboard.",
+    alternates: {
+        canonical: "/login",
+    },
 };
 
 interface LoginParams {

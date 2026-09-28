@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: "Terms of Service & Telemedicine Agreement",
   description:
     "Terms and conditions governing clinical consultations, appointment cancellations, Stripe payment refunds, and telemedicine services on Medix.",
+  alternates: {
+    canonical: "/terms",
+  },
 };
 
 export default function TermsOfServicePage() {

@@ -55,7 +55,7 @@ export const seedSuperAdmin = async () => {
             }
         })
 
-        console.log("Super Admin Created ", superAdmin);
+        console.log("Super Admin Created: ", superAdmin?.email);
     } catch (error) {
         console.error("Error seeding super admin: ", error);
         await prisma.user.delete({

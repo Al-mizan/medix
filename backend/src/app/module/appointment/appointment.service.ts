@@ -117,7 +117,7 @@ const bookAppointment = async (payload: IBookAppointmentPayload, user: IRequestU
     };
 }
 
-const getMyAppointments = async (user: IRequestUser) => {
+const getMyAppointments = async (user: IRequestUser, query: IqueryParams = {}) => {
     //user can be patient or doctor, so we need to check both
     const patientData = await prisma.patient.findUnique({
         where: {
@@ -131,40 +131,53 @@ const getMyAppointments = async (user: IRequestUser) => {
         }
     });
 
-    let appointments;
-
-    if (patientData) {
-        appointments = await prisma.appointment.findMany({
-            where: {
-                patientId: patientData.id
-            },
-            include: {
-                doctor: true,
-                schedule: true,
-                payment: true,
-                prescription: true,
-                review: true,
-            }
-        });
-    } else if (doctorData) {
-        appointments = await prisma.appointment.findMany({
-            where: {
-                doctorId: doctorData.id
-            },
-            include: {
-                patient: true,
-                schedule: true,
-                payment: true,
-                prescription: true,
-                review: true,
-            }
-        });
-    } else {
-        throw new Error("User not found");
+    if (!patientData && !doctorData) {
+        throw new AppError(status.NOT_FOUND, "User not found");
     }
 
-    return appointments;
+    const queryBuilder = new QueryBuilder<Appointment, Prisma.AppointmentWhereInput, Prisma.AppointmentInclude>(
+        prisma.appointment,
+        query,
+        {
+            searchableFields: appointmentSearchableFields,
+            filterableFields: appointmentFilterableFields,
+        }
+    );
 
+    if (patientData) {
+        queryBuilder.where({
+            patientId: patientData.id
+        });
+        queryBuilder.include({
+            doctor: true,
+            schedule: true,
+            payment: true,
+            prescription: true,
+            review: true,
+        });
+    } else if (doctorData) {
+        queryBuilder.where({
+            doctorId: doctorData.id
+        });
+        queryBuilder.include({
+            patient: true,
+            schedule: true,
+            payment: true,
+            prescription: true,
+            review: true,
+        });
+    }
+
+    const result = await queryBuilder
+        .search()
+        .filter()
+        .dynamicInclude(appointmentIncludeConfig)
+        .paginate()
+        .sort()
+        .fields()
+        .execute();
+
+    return result;
 }
 
 /**
@@ -464,18 +477,22 @@ const cancelUnpaidAppointments = async () => {
 
     const unpaidAppointments = await prisma.appointment.findMany({
         where: {
-            // status: AppointmentStatus.SCHEDULED,
+            status: AppointmentStatus.SCHEDULED,
             createdAt: {
                 lte: thirtyMinutesAgo,
             },
             paymentStatus: PaymentStatus.UNPAID,
         },
+        take: 100,
     });
+
+    if (unpaidAppointments.length === 0) {
+        return;
+    }
 
     const appointmentToCancel = unpaidAppointments.map(appointment => appointment.id);
 
     await prisma.$transaction(async (tx) => {
-
         await tx.appointment.updateMany({
             where: {
                 id: {

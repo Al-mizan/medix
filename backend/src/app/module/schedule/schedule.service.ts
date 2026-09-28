@@ -8,6 +8,7 @@ import { QueryBuilder } from "../../utils/QueryBuilder";
 import { ICreateSchedulePayload, IUpdateSchedulePayload } from "./schedule.interface";
 import { buildDateTime, convertDateTimetoUTC } from "./schedule.utils";
 import { scheduleFilterableFields, scheduleIncludeConfig, scheduleSearchableFields } from "./schedule.constant";
+import { redisService, computeQueryHash } from "../../lib/redis";
 
 const createSchedule = async (payload: ICreateSchedulePayload) => {
     const { startDate, endDate, startTime, endTime } = payload;
@@ -68,29 +69,38 @@ const createSchedule = async (payload: ICreateSchedulePayload) => {
         currentDate.setDate(currentDate.getDate() + 1);
     }
 
+    if (schedules.length > 0) {
+        await redisService.deleteByPattern("schedules:list:*");
+    }
+
     return schedules;
 }
 
 const getAllSchedules = async (query: IqueryParams) => {
-    const queryBuilder = new QueryBuilder<Schedule, Prisma.ScheduleWhereInput, Prisma.ScheduleInclude>(
-        prisma.schedule,
-        query,
-        {
-            searchableFields: scheduleSearchableFields,
-            filterableFields: scheduleFilterableFields
-        }
-    )
+    const queryHash = computeQueryHash(query);
+    const cacheKey = `schedules:list:${queryHash}`;
 
-    const result = await queryBuilder
-        .search()
-        .filter()
-        .paginate()
-        .dynamicInclude(scheduleIncludeConfig)
-        .sort()
-        .fields()
-        .execute();
+    return await redisService.withCache(cacheKey, 120, async () => {
+        const queryBuilder = new QueryBuilder<Schedule, Prisma.ScheduleWhereInput, Prisma.ScheduleInclude>(
+            prisma.schedule,
+            query,
+            {
+                searchableFields: scheduleSearchableFields,
+                filterableFields: scheduleFilterableFields
+            }
+        );
 
-    return result;
+        const result = await queryBuilder
+            .search()
+            .filter()
+            .paginate()
+            .dynamicInclude(scheduleIncludeConfig)
+            .sort()
+            .fields()
+            .execute();
+
+        return result;
+    });
 }
 
 const getScheduleById = async (id: string) => {
@@ -139,6 +149,8 @@ const updateSchedule = async (id: string, payload: IUpdateSchedulePayload) => {
         }
     });
 
+    await redisService.deleteByPattern("schedules:list:*");
+
     return updatedSchedule;
 }
 
@@ -170,6 +182,9 @@ const deleteSchedule = async (id: string) => {
             id: id
         }
     });
+
+    await redisService.deleteByPattern("schedules:list:*");
+
     return true;
 }
 

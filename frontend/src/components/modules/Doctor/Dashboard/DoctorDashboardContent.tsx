@@ -6,24 +6,49 @@ import { getMyAppointments } from "@/services/appointment.services";
 import { getDoctorDashboardData } from "@/services/dashboard.services";
 import { ApiResponse } from "@/types/api.types";
 import { IAppointment } from "@/types/appointment.types";
+import dynamic from "next/dynamic";
 import { IDoctorDashboardData } from "@/types/dashboard.types";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import DoctorStatsRow from "./DoctorStatsRow";
-import DoctorAppointmentStatusDonut from "./DoctorAppointmentStatusDonut";
 import DoctorTodayAppointmentsList from "./DoctorTodayAppointmentsList";
 import DoctorPrescriptionBanner from "./DoctorPrescriptionBanner";
+import DashboardStatsSkeleton from "@/components/modules/DashboardStatsSkeleton";
+
+const DoctorAppointmentStatusDonut = dynamic(
+  () => import("./DoctorAppointmentStatusDonut"),
+  {
+    ssr: false,
+    loading: () => (
+      <Card className="border-neutral-200 shadow-sm lg:col-span-3 dark:border-neutral-800">
+        <CardHeader className="pb-2 space-y-2">
+          <Skeleton className="h-5 w-40" />
+          <Skeleton className="h-4 w-56" />
+        </CardHeader>
+        <CardContent className="flex items-center justify-center p-6">
+          <Skeleton className="h-60 w-60 rounded-full" />
+        </CardContent>
+      </Card>
+    ),
+  }
+);
 
 const DoctorDashboardContent = () => {
-  const { data: statsResponse } = useQuery({
+  const { data: statsResponse, isLoading: isStatsLoading } = useQuery({
     queryKey: ["doctor-dashboard-data"],
     queryFn: getDoctorDashboardData,
     refetchOnWindowFocus: "always",
   });
 
-  const { data: appointmentsResponse } = useQuery({
+  const { data: appointmentsResponse, isLoading: isAppointmentsLoading } = useQuery({
     queryKey: ["my-appointments"],
     queryFn: () => getMyAppointments(),
     refetchOnWindowFocus: "always",
   });
+
+  if (isStatsLoading && isAppointmentsLoading) {
+    return <DashboardStatsSkeleton />;
+  }
 
   const stats = (statsResponse as ApiResponse<IDoctorDashboardData>)?.data;
   const appointments =
