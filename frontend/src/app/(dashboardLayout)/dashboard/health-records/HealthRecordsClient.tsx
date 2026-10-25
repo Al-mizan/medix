@@ -36,7 +36,6 @@ export default function HealthRecordsClient() {
     const reportCount = profile?.medicalReports?.length || 0;
 
     return (
-        // <div className="space-y-6 max-w-7xl mx-auto">
         <div className="mx-auto w-full min-w-0 max-w-screen-2xl space-y-5 px-4 sm:px-6">
             {/* Header Banner */}
             <div className="rounded-2xl border border-border bg-card text-card-foreground p-5 sm:p-6 shadow-2xs">
