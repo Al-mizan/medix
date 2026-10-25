@@ -82,7 +82,7 @@ const CreateAdminModal = ({ isSuperAdmin = false }: CreateAdminModalProps) => {
         return (
             <Button
                 variant="outline"
-                className="gap-2 opacity-60 cursor-not-allowed"
+                className="gap-2 opacity-60 cursor-not-allowed w-full sm:w-auto shrink-0"
                 disabled
                 title="Only Super Admins can create new administrators"
             >
@@ -95,7 +95,7 @@ const CreateAdminModal = ({ isSuperAdmin = false }: CreateAdminModalProps) => {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className="gap-2">
+                <Button className="gap-2 w-full sm:w-auto shrink-0">
                     <Plus className="h-4 w-4" />
                     <span>Add Administrator</span>
                 </Button>
@@ -215,15 +215,16 @@ const CreateAdminModal = ({ isSuperAdmin = false }: CreateAdminModalProps) => {
                         )}
                     </form.Field>
 
-                    <div className="flex justify-end gap-2 pt-4">
+                    <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4">
                         <DialogClose asChild>
-                            <Button type="button" variant="outline" disabled={isPending}>
+                            <Button type="button" variant="outline" disabled={isPending} className="w-full sm:w-auto">
                                 Cancel
                             </Button>
                         </DialogClose>
                         <AppSubmitButton
                             isPending={isPending}
                             label="Create Account"
+                            className="w-full sm:w-auto"
                         />
                     </div>
                 </form>

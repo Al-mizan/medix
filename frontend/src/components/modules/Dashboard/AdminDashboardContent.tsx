@@ -60,23 +60,42 @@ const AdminDashboardContent = () => {
   const data = (adminDashboardData as ApiResponse<IAdminDashboardData>)?.data;
   //http://localhost:5000/api/v1/doctors?page=1&limit=2&searchTerm=ortho&appointmentFee[gt]=1000&appointmentFee[lte]=1500&fields=name,email&sortBy=user.name.firstName&sortOrder=asc&experience[gt]=7&include=specialties&user.role=DOCTOR&specialties.specialty.title=Neurology&gender=MALE&specialties.specialty.title=Cardiology2
   return (
-    <div>
-      <StatsCard
-        title="Total Appointments"
-        value={data?.appointmentCount || 0}
-        iconName="CalendarDays"
-        description="Number of appointments scheduled"
-      />
-      <StatsCard
-        title="Total Patients"
-        value={data?.patientCount || 0}
-        iconName="Users"
-        description="Number of patients registered"
-      />
+    <div className="space-y-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatsCard
+          title="Total Appointments"
+          value={data?.appointmentCount || 0}
+          iconName="CalendarDays"
+          description="Number of appointments scheduled"
+        />
+        <StatsCard
+          title="Total Patients"
+          value={data?.patientCount || 0}
+          iconName="Users"
+          description="Number of patients registered"
+        />
+        <StatsCard
+          title="Total Doctors"
+          value={data?.doctorCount || 0}
+          iconName="Stethoscope"
+          description="Active doctors registered"
+        />
+        <StatsCard
+          title="Total Revenue"
+          value={
+            data?.totalRevenue !== undefined
+              ? `$${data.totalRevenue.toLocaleString()}`
+              : "$0"
+          }
+          iconName="CreditCard"
+          description="Total platform revenue"
+        />
+      </div>
 
-      <AppointmentBarChart data={data?.barChartData || []} />
-
-      <AppointmentPieChart data={data?.pieChartData || []} />
+      <div className="grid gap-6 lg:grid-cols-6">
+        <AppointmentBarChart data={data?.barChartData || []} />
+        <AppointmentPieChart data={data?.pieChartData || []} />
+      </div>
     </div>
   );
 }

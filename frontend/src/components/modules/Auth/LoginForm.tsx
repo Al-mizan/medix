@@ -123,7 +123,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                                         }
                                         variant="ghost"
                                         size="icon"
-                                        className="pointer-events-auto"
+                                        className="pointer-events-auto hover:bg-transparent"
                                     >
                                         {showPassword ? (
                                             <EyeOff className="size-4" />

@@ -113,6 +113,7 @@ const CancelAppointmentConfirmationDialog = ({
                             type="button"
                             variant="outline"
                             disabled={isSubmitting}
+                            className="w-full sm:w-auto"
                         >
                             Keep Appointment
                         </Button>
@@ -122,6 +123,7 @@ const CancelAppointmentConfirmationDialog = ({
                         variant="destructive"
                         onClick={handleConfirmCancel}
                         disabled={isSubmitting}
+                        className="w-full sm:w-auto"
                     >
                         {isSubmitting ? (
                             <>

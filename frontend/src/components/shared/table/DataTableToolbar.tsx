@@ -62,7 +62,7 @@ export default function DataTableToolbar({
             )}
 
             {toolbarAction && (
-                <div className="ml-auto shrink-0">{toolbarAction}</div>
+                <div className="w-full sm:w-auto sm:ml-auto shrink-0">{toolbarAction}</div>
             )}
         </div>
     );

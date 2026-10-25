@@ -112,12 +112,13 @@ const EditDoctorFormModal = ({
                                 }}
                             </form.Field>
 
-                            <div className="flex items-center justify-end gap-3 border-t pt-4">
+                            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 border-t pt-4">
                                 <DialogClose asChild>
                                     <Button
                                         type="button"
                                         variant="outline"
                                         disabled={isPending}
+                                        className="w-full sm:w-auto"
                                     >
                                         Cancel
                                     </Button>
@@ -133,7 +134,7 @@ const EditDoctorFormModal = ({
                                             isPending={isSubmitting || isPending}
                                             pendingLabel="Saving changes..."
                                             disabled={!canSubmit || isLoadingSpecialties}
-                                            className="w-auto min-w-36"
+                                            className="w-full sm:w-auto min-w-36"
                                         >
                                             Save Changes
                                         </AppSubmitButton>

@@ -165,11 +165,11 @@ const EditScheduleFormModal = ({
 
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button type="button" variant="outline" disabled={isPending}>
+                  <Button type="button" variant="outline" disabled={isPending} className="w-full sm:w-auto">
                     Cancel
                   </Button>
                 </DialogClose>
-                <AppSubmitButton isPending={isPending} pendingLabel="Updating..." className="w-auto">
+                <AppSubmitButton isPending={isPending} pendingLabel="Updating..." className="w-full sm:w-auto">
                   Save Changes
                 </AppSubmitButton>
               </DialogFooter>

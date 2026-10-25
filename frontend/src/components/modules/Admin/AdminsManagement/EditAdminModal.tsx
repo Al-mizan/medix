@@ -205,12 +205,13 @@ const EditAdminModal = ({
                             )}
                         </form.Field>
 
-                        <div className="flex justify-end gap-2 pt-4">
+                        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4">
                             <DialogClose asChild>
                                 <Button
                                     type="button"
                                     variant="outline"
                                     disabled={isPending}
+                                    className="w-full sm:w-auto"
                                 >
                                     Cancel
                                 </Button>
@@ -218,6 +219,7 @@ const EditAdminModal = ({
                             <AppSubmitButton
                                 isPending={isPending}
                                 label="Save Changes"
+                                className="w-full sm:w-auto"
                             />
                         </div>
                     </form>

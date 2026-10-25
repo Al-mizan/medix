@@ -169,7 +169,7 @@ const RegisterForm = () => {
                                         }
                                         variant="ghost"
                                         size="icon"
-                                        className="pointer-events-auto"
+                                        className="pointer-events-auto hover:bg-transparent"
                                         aria-label={
                                             showPassword
                                                 ? "Hide password"
@@ -229,7 +229,7 @@ const RegisterForm = () => {
                                         }
                                         variant="ghost"
                                         size="icon"
-                                        className="pointer-events-auto"
+                                        className="pointer-events-auto hover:bg-transparent"
                                         aria-label={
                                             showConfirmPassword
                                                 ? "Hide password"

@@ -114,7 +114,7 @@ const CreateSpecialtyModal = () => {
     return (
         <Dialog open={open} onOpenChange={handleClose}>
             <DialogTrigger asChild>
-                <Button className="gap-2">
+                <Button className="gap-2 w-full sm:w-auto shrink-0">
                     <Plus className="h-4 w-4" />
                     <span>Add Specialty</span>
                 </Button>
@@ -230,13 +230,13 @@ const CreateSpecialtyModal = () => {
                         )}
                     </div>
 
-                    <div className="flex justify-end gap-2 pt-4">
+                    <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4">
                         <DialogClose asChild>
-                            <Button type="button" variant="outline" disabled={isPending}>
+                            <Button type="button" variant="outline" disabled={isPending} className="w-full sm:w-auto">
                                 Cancel
                             </Button>
                         </DialogClose>
-                        <AppSubmitButton isPending={isPending}>
+                        <AppSubmitButton isPending={isPending} className="w-full sm:w-auto">
                             Create Specialty
                         </AppSubmitButton>
                     </div>
