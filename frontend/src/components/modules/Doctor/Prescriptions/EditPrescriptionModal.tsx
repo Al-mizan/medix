@@ -198,7 +198,7 @@ const EditPrescriptionModal = ({
             </div>
 
             {/* Dynamic Medications Array */}
-            <div className="space-y-3 rounded-xl border border-neutral-200 bg-neutral-50/60 p-4 dark:border-neutral-800 dark:bg-neutral-900/40">
+            <div className="space-y-3 rounded-xl border border-border bg-muted/30 p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-xs font-semibold text-foreground">Medications & Regimen</h4>
@@ -211,7 +211,7 @@ const EditPrescriptionModal = ({
                   variant="outline"
                   size="sm"
                   onClick={handleAddMedication}
-                  className="h-7 border-[#0B7285]/30 text-xs text-[#0B7285] hover:bg-[#0B7285]/10"
+                  className="h-7 border-primary/30 text-xs text-primary hover:bg-primary/10"
                 >
                   <Plus className="mr-1 size-3" />
                   Add Medication
@@ -222,12 +222,13 @@ const EditPrescriptionModal = ({
                 {medications.map((med, index) => (
                   <div
                     key={index}
-                    className="flex flex-col gap-2 rounded-lg border border-neutral-200 bg-card p-3 dark:border-neutral-700 sm:flex-row sm:items-center"
+                    className="flex flex-col gap-2 rounded-lg border border-border bg-card p-3 sm:flex-row sm:items-center"
                   >
                     <div className="grid flex-1 grid-cols-1 gap-2 sm:grid-cols-4">
                       <div>
-                        <Label className="text-[10px] text-muted-foreground">Medicine Name</Label>
+                        <Label htmlFor={`edit-med-name-${index}`} className="text-xs text-muted-foreground">Medicine Name</Label>
                         <Input
+                          id={`edit-med-name-${index}`}
                           placeholder="e.g. Amoxicillin"
                           value={med.name}
                           onChange={(e) => handleMedicationChange(index, "name", e.target.value)}
@@ -235,8 +236,9 @@ const EditPrescriptionModal = ({
                         />
                       </div>
                       <div>
-                        <Label className="text-[10px] text-muted-foreground">Dosage</Label>
+                        <Label htmlFor={`edit-med-dosage-${index}`} className="text-xs text-muted-foreground">Dosage</Label>
                         <Input
+                          id={`edit-med-dosage-${index}`}
                           placeholder="e.g. 500mg"
                           value={med.dosage}
                           onChange={(e) => handleMedicationChange(index, "dosage", e.target.value)}
@@ -244,8 +246,9 @@ const EditPrescriptionModal = ({
                         />
                       </div>
                       <div>
-                        <Label className="text-[10px] text-muted-foreground">Frequency</Label>
+                        <Label htmlFor={`edit-med-frequency-${index}`} className="text-xs text-muted-foreground">Frequency</Label>
                         <Input
+                          id={`edit-med-frequency-${index}`}
                           placeholder="e.g. 1-0-1 (after food)"
                           value={med.frequency}
                           onChange={(e) => handleMedicationChange(index, "frequency", e.target.value)}
@@ -253,8 +256,9 @@ const EditPrescriptionModal = ({
                         />
                       </div>
                       <div>
-                        <Label className="text-[10px] text-muted-foreground">Duration</Label>
+                        <Label htmlFor={`edit-med-duration-${index}`} className="text-xs text-muted-foreground">Duration</Label>
                         <Input
+                          id={`edit-med-duration-${index}`}
                           placeholder="e.g. 7 days"
                           value={med.duration}
                           onChange={(e) => handleMedicationChange(index, "duration", e.target.value)}
@@ -306,7 +310,7 @@ const EditPrescriptionModal = ({
               <AppSubmitButton
                 isPending={isPending}
                 pendingLabel="Updating Prescription..."
-                className="h-9 bg-[#0B7285] px-4 text-xs text-white hover:bg-[#095E70] w-auto"
+                className="h-9 bg-primary px-4 text-xs text-primary-foreground hover:bg-primary-hover w-auto"
               >
                 Update Prescription
               </AppSubmitButton>

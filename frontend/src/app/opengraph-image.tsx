@@ -75,7 +75,7 @@ export default async function Image() {
                 color: "#FFFFFF",
               }}
             >
-              Medix<span style={{ color: "#14B8A6" }}>.</span>
+              Medix<span style={{ color: "#0B7285" }}>.</span>
             </span>
           </div>
 
@@ -87,13 +87,13 @@ export default async function Image() {
               padding: "10px 20px",
               borderRadius: "9999px",
               backgroundColor: "rgba(11, 114, 133, 0.35)",
-              border: "1px solid rgba(20, 184, 166, 0.4)",
+              border: "1px solid rgba(11, 114, 133, 0.6)",
               fontSize: "16px",
               fontWeight: 600,
-              color: "#5EEAD4",
+              color: "#E1F3F6",
             }}
           >
-            Verified Clinical Network • HIPAA Aligned
+            Verified Specialists • Encrypted Telemedicine
           </div>
         </div>
 
@@ -117,13 +117,14 @@ export default async function Image() {
             }}
           >
             Modern Healthcare,{" "}
-            <span style={{ color: "#2DD4BF" }}>Seamlessly Connected</span>
+            <span style={{ color: "#E1F3F6" }}>Seamlessly Connected</span>
           </h1>
           <p
             style={{
               fontSize: "24px",
               lineHeight: 1.45,
-              color: "#94A3B8",
+              color: "#E1F3F6",
+              opacity: 0.85,
               margin: 0,
             }}
           >
@@ -141,7 +142,7 @@ export default async function Image() {
             paddingTop: "28px",
             borderTop: "1px solid rgba(255, 255, 255, 0.12)",
             fontSize: "18px",
-            color: "#CBD5E1",
+            color: "#E1F3F6",
           }}
         >
           <div style={{ display: "flex", gap: "32px" }}>
@@ -149,7 +150,7 @@ export default async function Image() {
             <span>🔒 Encrypted Medical Records</span>
             <span>💳 Secure Stripe Checkout</span>
           </div>
-          <span style={{ color: "#2DD4BF", fontWeight: 700 }}>medix.health</span>
+          <span style={{ color: "#0B7285", fontWeight: 700 }}>medix.health</span>
         </div>
       </div>
     ),

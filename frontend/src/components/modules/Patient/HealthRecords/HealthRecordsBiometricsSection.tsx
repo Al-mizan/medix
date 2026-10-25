@@ -26,17 +26,17 @@ const BLOOD_GROUP_LABELS: Record<BloodGroup, string> = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function HealthRecordsBiometricsSection({ form }: { form: any }) {
     return (
-        <Card className="border-[#E3E6EB] shadow-xs">
+        <Card className="border-border bg-card text-card-foreground shadow-xs">
             <CardHeader className="pb-4 border-b border-border/40">
                 <div className="flex items-center gap-2.5">
-                    <div className="flex size-9 items-center justify-center rounded-lg bg-[#E1F3F6] text-[#0B7285]">
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
                         <HeartPulse className="size-5" />
                     </div>
                     <div>
-                        <CardTitle className="text-base font-semibold text-[#101828]">
+                        <CardTitle className="text-base font-semibold text-foreground">
                             Biometrics & Vitals
                         </CardTitle>
-                        <CardDescription className="text-xs text-[#5B6472]">
+                        <CardDescription className="text-xs text-muted-foreground">
                             Blood group, body measurements, and physical vital signs
                         </CardDescription>
                     </div>
@@ -48,8 +48,8 @@ export default function HealthRecordsBiometricsSection({ form }: { form: any }) 
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {(field: any) => (
                         <div className="space-y-1.5">
-                            <Label htmlFor="bloodGroup" className="text-xs font-medium text-[#101828]">
-                                Blood Group <span className="text-[#D8464B]">*</span>
+                            <Label htmlFor="bloodGroup" className="text-xs font-medium text-foreground">
+                                Blood Group <span className="text-destructive">*</span>
                             </Label>
                             <Select
                                 value={field.state.value}
@@ -60,9 +60,9 @@ export default function HealthRecordsBiometricsSection({ form }: { form: any }) 
                                 </SelectTrigger>
                                 <SelectContent>
                                     {BloodGroupValues.map((group) => (
-                                        <SelectItem key={group} value={group}>
-                                            {BLOOD_GROUP_LABELS[group]}
-                                        </SelectItem>
+                                         <SelectItem key={group} value={group}>
+                                             {BLOOD_GROUP_LABELS[group]}
+                                         </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
@@ -75,8 +75,8 @@ export default function HealthRecordsBiometricsSection({ form }: { form: any }) 
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {(field: any) => (
                         <div className="space-y-1.5">
-                            <Label htmlFor="height" className="text-xs font-medium text-[#101828]">
-                                Height (cm) <span className="text-[#D8464B]">*</span>
+                            <Label htmlFor="height" className="text-xs font-medium text-foreground">
+                                Height (cm) <span className="text-destructive">*</span>
                             </Label>
                             <Input
                                 id="height"
@@ -95,8 +95,8 @@ export default function HealthRecordsBiometricsSection({ form }: { form: any }) 
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {(field: any) => (
                         <div className="space-y-1.5">
-                            <Label htmlFor="weight" className="text-xs font-medium text-[#101828]">
-                                Weight (kg) <span className="text-[#D8464B]">*</span>
+                            <Label htmlFor="weight" className="text-xs font-medium text-foreground">
+                                Weight (kg) <span className="text-destructive">*</span>
                             </Label>
                             <Input
                                 id="weight"

@@ -38,20 +38,20 @@ export default function PatientStatusDistributionCard({
     chartData,
 }: PatientStatusDistributionCardProps) {
     return (
-        <Card className="border-[#E3E6EB] bg-white shadow-xs">
-            <CardHeader className="pb-2 border-b border-[#E3E6EB]">
-                <CardTitle className="text-base font-semibold text-[#101828] flex items-center gap-2">
-                    <Activity className="size-4 text-[#0B7285]" />
+        <Card className="border-border bg-card shadow-xs">
+            <CardHeader className="pb-2 border-b border-border">
+                <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
+                    <Activity className="size-4 text-primary" />
                     Appointment Status
                 </CardTitle>
-                <CardDescription className="text-xs text-[#5B6472]">
+                <CardDescription className="text-xs text-muted-foreground">
                     Distribution of your overall appointment history
                 </CardDescription>
             </CardHeader>
             <CardContent className="pt-4">
                 {chartData.length === 0 || chartData.every((item) => item.value === 0) ? (
                     <div className="flex flex-col items-center justify-center h-64 text-center">
-                        <p className="text-xs text-[#5B6472]">
+                        <p className="text-xs text-muted-foreground">
                             No appointment history available yet.
                         </p>
                     </div>
@@ -83,11 +83,15 @@ export default function PatientStatusDistributionCard({
                                 </Pie>
                                 <Tooltip
                                     contentStyle={{
-                                        backgroundColor: "#FFFFFF",
-                                        borderColor: "#E3E6EB",
+                                        backgroundColor: "var(--card)",
+                                        borderColor: "var(--border)",
                                         borderRadius: "8px",
-                                        boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.05)",
+                                        boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                                         fontSize: "12px",
+                                        color: "var(--card-foreground)",
+                                    }}
+                                    itemStyle={{
+                                        color: "var(--card-foreground)",
                                     }}
                                 />
                                 <Legend

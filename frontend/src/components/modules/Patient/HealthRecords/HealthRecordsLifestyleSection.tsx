@@ -8,17 +8,17 @@ import { Textarea } from "@/components/ui/textarea";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function HealthRecordsLifestyleSection({ form }: { form: any }) {
     return (
-        <Card className="border-[#E3E6EB] shadow-xs">
+        <Card className="border-border bg-card text-card-foreground shadow-xs">
             <CardHeader className="pb-4 border-b border-border/40">
                 <div className="flex items-center gap-2.5">
-                    <div className="flex size-9 items-center justify-center rounded-lg bg-[#E3F7EE] text-[#178A5E]">
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                         <Stethoscope className="size-5" />
                     </div>
                     <div>
-                        <CardTitle className="text-base font-semibold text-[#101828]">
+                        <CardTitle className="text-base font-semibold text-foreground">
                             Lifestyle & Clinical History
                         </CardTitle>
-                        <CardDescription className="text-xs text-[#5B6472]">
+                        <CardDescription className="text-xs text-muted-foreground">
                             Daily health habits, nutrition, immunization, and mental well-being
                         </CardDescription>
                     </div>
@@ -31,12 +31,12 @@ export default function HealthRecordsLifestyleSection({ form }: { form: any }) {
                     <form.Field name="smokingStatus">
                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {(field: any) => (
-                            <div className="flex items-center justify-between rounded-lg border border-[#E3E6EB] p-4 bg-white shadow-2xs">
+                            <div className="flex items-center justify-between rounded-lg border border-border p-4 bg-muted/30 text-card-foreground shadow-2xs">
                                 <div className="space-y-0.5 pr-2">
-                                    <Label htmlFor="smokingStatus" className="text-xs font-semibold text-[#101828] cursor-pointer">
+                                    <Label htmlFor="smokingStatus" className="text-xs font-semibold text-foreground cursor-pointer">
                                         Smoker
                                     </Label>
-                                    <p className="text-[11px] text-[#5B6472]">Tobacco or vape</p>
+                                    <p className="text-[11px] text-muted-foreground">Tobacco or vape</p>
                                 </div>
                                 <Switch
                                     id="smokingStatus"
@@ -51,12 +51,12 @@ export default function HealthRecordsLifestyleSection({ form }: { form: any }) {
                     <form.Field name="pregnancyStatus">
                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {(field: any) => (
-                            <div className="flex items-center justify-between rounded-lg border border-[#E3E6EB] p-4 bg-white shadow-2xs">
+                            <div className="flex items-center justify-between rounded-lg border border-border p-4 bg-muted/30 text-card-foreground shadow-2xs">
                                 <div className="space-y-0.5 pr-2">
-                                    <Label htmlFor="pregnancyStatus" className="text-xs font-semibold text-[#101828] cursor-pointer">
+                                    <Label htmlFor="pregnancyStatus" className="text-xs font-semibold text-foreground cursor-pointer">
                                         Pregnant
                                     </Label>
-                                    <p className="text-[11px] text-[#5B6472]">Currently expecting</p>
+                                    <p className="text-[11px] text-muted-foreground">Currently expecting</p>
                                 </div>
                                 <Switch
                                     id="pregnancyStatus"
@@ -71,12 +71,12 @@ export default function HealthRecordsLifestyleSection({ form }: { form: any }) {
                     <form.Field name="recentAnxiety">
                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {(field: any) => (
-                            <div className="flex items-center justify-between rounded-lg border border-[#E3E6EB] p-4 bg-white shadow-2xs">
+                            <div className="flex items-center justify-between rounded-lg border border-border p-4 bg-muted/30 text-card-foreground shadow-2xs">
                                 <div className="space-y-0.5 pr-2">
-                                    <Label htmlFor="recentAnxiety" className="text-xs font-semibold text-[#101828] cursor-pointer">
+                                    <Label htmlFor="recentAnxiety" className="text-xs font-semibold text-foreground cursor-pointer">
                                         Recent Anxiety
                                     </Label>
-                                    <p className="text-[11px] text-[#5B6472]">Past 6 months</p>
+                                    <p className="text-[11px] text-muted-foreground">Past 6 months</p>
                                 </div>
                                 <Switch
                                     id="recentAnxiety"
@@ -91,12 +91,12 @@ export default function HealthRecordsLifestyleSection({ form }: { form: any }) {
                     <form.Field name="recentDepression">
                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {(field: any) => (
-                            <div className="flex items-center justify-between rounded-lg border border-[#E3E6EB] p-4 bg-white shadow-2xs">
+                            <div className="flex items-center justify-between rounded-lg border border-border p-4 bg-muted/30 text-card-foreground shadow-2xs">
                                 <div className="space-y-0.5 pr-2">
-                                    <Label htmlFor="recentDepression" className="text-xs font-semibold text-[#101828] cursor-pointer">
+                                    <Label htmlFor="recentDepression" className="text-xs font-semibold text-foreground cursor-pointer">
                                         Recent Depression
                                     </Label>
-                                    <p className="text-[11px] text-[#5B6472]">Persistent low mood</p>
+                                    <p className="text-[11px] text-muted-foreground">Persistent low mood</p>
                                 </div>
                                 <Switch
                                     id="recentDepression"
@@ -115,7 +115,7 @@ export default function HealthRecordsLifestyleSection({ form }: { form: any }) {
                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {(field: any) => (
                             <div className="space-y-1.5">
-                                <Label htmlFor="dietaryPreferences" className="text-xs font-medium text-[#101828]">
+                                <Label htmlFor="dietaryPreferences" className="text-xs font-medium text-foreground">
                                     Dietary Preferences
                                 </Label>
                                 <Input
@@ -135,7 +135,7 @@ export default function HealthRecordsLifestyleSection({ form }: { form: any }) {
                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {(field: any) => (
                             <div className="space-y-1.5">
-                                <Label htmlFor="immunizationStatus" className="text-xs font-medium text-[#101828]">
+                                <Label htmlFor="immunizationStatus" className="text-xs font-medium text-foreground">
                                     Immunization Status
                                 </Label>
                                 <Input
@@ -156,7 +156,7 @@ export default function HealthRecordsLifestyleSection({ form }: { form: any }) {
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {(field: any) => (
                         <div className="space-y-1.5">
-                            <Label htmlFor="mentalHealthHistory" className="text-xs font-medium text-[#101828]">
+                            <Label htmlFor="mentalHealthHistory" className="text-xs font-medium text-foreground">
                                 Mental Health History & Clinical Notes
                             </Label>
                             <Textarea

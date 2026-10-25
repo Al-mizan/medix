@@ -147,15 +147,15 @@ export default function HealthRecordsForm({ profile }: HealthRecordsFormProps) {
 
             {/* Bottom Actions */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-                <div className="flex items-center gap-2 text-xs text-[#5B6472]">
-                    <CheckCircle2 className="size-4 text-[#178A5E]" />
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <CheckCircle2 className="size-4 text-secondary" />
                     <span>Your health data is encrypted and securely shared only with your treating physicians.</span>
                 </div>
 
                 <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full sm:w-auto min-w-[200px] bg-[#D9542E] hover:bg-[#B8431F] text-white font-medium shadow-sm transition-colors cursor-pointer"
+                    className="w-full sm:w-auto min-w-[200px] bg-accent hover:bg-accent-hover text-accent-foreground font-medium shadow-sm transition-colors cursor-pointer"
                 >
                     {isSubmitting ? (
                         <>

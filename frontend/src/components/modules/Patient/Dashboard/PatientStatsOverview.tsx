@@ -20,28 +20,28 @@ export default function PatientStatsOverview({
                 value={totalAppointments}
                 iconName="Calendar"
                 description="Lifetime booking history"
-                className="border-[#E3E6EB] bg-white shadow-xs"
+                className="border-border bg-card text-card-foreground shadow-xs"
             />
             <StatsCard
                 title="Upcoming Appointments"
                 value={upcomingAppointmentsCount}
                 iconName="Clock"
                 description="Scheduled visits"
-                className="border-[#E3E6EB] bg-white shadow-xs"
+                className="border-border bg-card text-card-foreground shadow-xs"
             />
             <StatsCard
                 title="Completed Visits"
                 value={completedAppointmentsCount}
                 iconName="CheckCircle"
                 description="Consultations finished"
-                className="border-[#E3E6EB] bg-white shadow-xs"
+                className="border-border bg-card text-card-foreground shadow-xs"
             />
             <StatsCard
                 title="Prescriptions"
                 value={totalPrescriptions}
                 iconName="FileText"
                 description="Active & past prescriptions"
-                className="border-[#E3E6EB] bg-white shadow-xs"
+                className="border-border bg-card text-card-foreground shadow-xs"
             />
         </div>
     );

@@ -130,7 +130,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
               <span className="text-xs font-semibold text-[#5B4FCF] dark:text-[#DAD6FA]">
                 Medix AI
               </span>
-              <span className="inline-flex items-center gap-0.5 rounded-md bg-[#5B4FCF]/10 px-1.5 py-0.5 text-[9px] font-semibold tracking-wider text-[#5B4FCF] uppercase dark:bg-[#5B4FCF]/30 dark:text-[#DAD6FA]">
+              <span className="inline-flex items-center gap-0.5 rounded-md bg-[#5B4FCF]/10 px-1.5 py-0.5 text-[10px] font-semibold tracking-wider text-[#5B4FCF] uppercase dark:bg-[#5B4FCF]/30 dark:text-[#DAD6FA]">
                 <ShieldCheck className="size-2.5" />
                 Verified RAG
               </span>

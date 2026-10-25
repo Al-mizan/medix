@@ -249,9 +249,9 @@ export function MedixAIChatSheet({ open, onOpenChange }: MedixAIChatSheetProps) 
                   <div className="rounded-2xl rounded-tl-xs border border-[#5B4FCF]/20 bg-[#ECEAFB] px-4 py-3 text-[#3E3595] shadow-xs dark:border-[#7B70E0]/30 dark:bg-[#2B2467]/50 dark:text-[#DAD6FA] max-w-[85%]">
                     <div className="flex items-center gap-2">
                       <div className="flex items-center gap-1">
-                        <span className="size-1.5 rounded-full bg-[#5B4FCF] animate-bounce [animation-delay:-0.3s]" />
-                        <span className="size-1.5 rounded-full bg-[#5B4FCF] animate-bounce [animation-delay:-0.15s]" />
-                        <span className="size-1.5 rounded-full bg-[#5B4FCF] animate-bounce" />
+                        <span className="size-1.5 rounded-full bg-[#5B4FCF] animate-pulse [animation-delay:-0.3s]" />
+                        <span className="size-1.5 rounded-full bg-[#5B4FCF] animate-pulse [animation-delay:-0.15s]" />
+                        <span className="size-1.5 rounded-full bg-[#5B4FCF] animate-pulse" />
                       </div>
                       <span className="text-xs font-medium text-[#5B4FCF] dark:text-[#DAD6FA]">
                         Synthesizing medical knowledge...
@@ -276,7 +276,7 @@ export function MedixAIChatSheet({ open, onOpenChange }: MedixAIChatSheetProps) 
               placeholder="Ask a medical question or platform help..."
               rows={1}
               disabled={queryMutation.isPending}
-              className="min-h-[40px] max-h-[120px] resize-none border-0 bg-transparent px-2 py-1.5 text-sm shadow-none focus-visible:ring-0 focus-visible:outline-none placeholder:text-muted-foreground"
+              className="min-h-[40px] max-h-[120px] resize-none border-0 bg-transparent px-2 py-1.5 text-base sm:text-sm shadow-none focus-visible:ring-0 focus-visible:outline-none placeholder:text-muted-foreground"
             />
             <Button
               type="button"

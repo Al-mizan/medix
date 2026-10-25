@@ -20,17 +20,17 @@ export default function HealthRecordsClient() {
     return (
         <div className="mx-auto max-w-5xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
             {/* Header */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-[#E3E6EB] pb-5">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-border pb-5">
                 <div>
-                    <div className="flex items-center gap-2 text-xs font-medium text-[#0B7285] mb-2">
+                    <div className="flex items-center gap-2 text-xs font-medium text-primary mb-2">
                         <Link href="/dashboard" className="flex items-center gap-1 hover:underline">
                             <ArrowLeft className="size-3.5" /> Back to Dashboard
                         </Link>
                     </div>
-                    <h1 className="text-2xl font-bold tracking-tight text-[#101828]">
+                    <h1 className="text-2xl font-bold tracking-tight text-foreground">
                         Health Records & Clinical Profile
                     </h1>
-                    <p className="text-sm text-[#5B6472] mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                         Keep your vital health information up to date to ensure doctors provide accurate, personalized care.
                     </p>
                 </div>

@@ -112,7 +112,7 @@
   --muted-foreground: #5B6472;
   --text-primary: #101828;
   --text-secondary: #5B6472;
-  --text-muted: #8A93A3;
+  --text-muted: #5B6472;
 
   /* Primary: Clarity Teal */
   --primary: #0B7285;
@@ -124,9 +124,9 @@
   --secondary-hover: #0F6E4A;
   --secondary-foreground: #FFFFFF;
 
-  /* Accent: Terracotta */
-  --accent: #D9542E;
-  --accent-hover: #B8431F;
+  /* Accent: Terracotta (Darkened to #C4431D for 5.38:1 WCAG AA text contrast) */
+  --accent: #C4431D;
+  --accent-hover: #A83614;
   --accent-foreground: #FFFFFF;
 
   /* AI: Assist Violet */

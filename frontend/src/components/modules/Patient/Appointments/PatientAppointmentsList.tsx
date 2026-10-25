@@ -113,12 +113,12 @@ const PatientAppointmentsList = ({
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
-      <div className="rounded-2xl border bg-linear-to-r from-cyan-50 via-white to-blue-50 p-6">
+      <div className="rounded-2xl border border-border bg-card text-card-foreground bg-gradient-to-r from-primary/5 via-card to-secondary/5 p-6 shadow-xs">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="space-y-2">
-            <h1 className="text-2xl font-semibold tracking-tight">My Appointments</h1>
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">My Appointments</h1>
             <p className="text-sm text-muted-foreground">
-              Review upcoming and past appointments, and finish payment for unpaid bookings.
+              Review upcoming and past appointments, and complete payments for unpaid bookings.
             </p>
           </div>
 
@@ -139,7 +139,7 @@ const PatientAppointmentsList = ({
       )}
 
       {sortedAppointments.length === 0 ? (
-        <Card>
+        <Card className="border-border bg-card text-card-foreground">
           <CardHeader>
             <CardTitle>No appointments yet</CardTitle>
             <CardDescription>
@@ -163,17 +163,19 @@ const PatientAppointmentsList = ({
               !appointment.review
 
             return (
-              <Card key={appointment.id} className="gap-4">
+              <Card key={appointment.id} className="gap-4 border-border bg-card text-card-foreground shadow-xs">
                 <CardHeader>
                   <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="space-y-1">
-                      <CardTitle>{appointment.doctor?.name || "Doctor appointment"}</CardTitle>
-                      <CardDescription>
+                    <div className="space-y-1 min-w-0 flex-1">
+                      <CardTitle className="truncate" title={appointment.doctor?.name || "Doctor appointment"}>
+                        {appointment.doctor?.name || "Doctor appointment"}
+                      </CardTitle>
+                      <CardDescription className="truncate" title={appointment.doctor?.designation || "Consultation"}>
                         {appointment.doctor?.designation || "Consultation"}
                       </CardDescription>
                     </div>
 
-                    <div className="flex flex-wrap gap-2 text-xs">
+                    <div className="flex flex-wrap gap-2 text-xs shrink-0">
                       <Badge variant="outline">{appointment.status || "SCHEDULED"}</Badge>
                       <Badge variant={appointment.paymentStatus === "PAID" ? "secondary" : "outline"}>
                         {appointment.paymentStatus || "UNPAID"}
@@ -184,31 +186,33 @@ const PatientAppointmentsList = ({
 
                 <CardContent className="space-y-4">
                   <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-2xl border bg-muted/20 p-4 text-sm">
+                    <div className="rounded-xl border border-border/80 bg-muted/20 p-4 text-sm">
                       <div className="mb-2 flex items-center gap-2 text-muted-foreground">
-                        <CalendarClock className="size-4" />
+                        <CalendarClock className="size-4 text-primary" />
                         Schedule
                       </div>
-                      <p className="font-medium">{formatDateTime(appointment.schedule?.startDateTime)}</p>
-                      <p className="text-muted-foreground">Ends {formatDateTime(appointment.schedule?.endDateTime)}</p>
+                      <p className="font-medium text-foreground">{formatDateTime(appointment.schedule?.startDateTime)}</p>
+                      <p className="text-xs text-muted-foreground">Ends {formatDateTime(appointment.schedule?.endDateTime)}</p>
                     </div>
 
-                    <div className="rounded-2xl border bg-muted/20 p-4 text-sm">
+                    <div className="rounded-xl border border-border/80 bg-muted/20 p-4 text-sm">
                       <div className="mb-2 flex items-center gap-2 text-muted-foreground">
-                        <CircleDollarSign className="size-4" />
+                        <CircleDollarSign className="size-4 text-primary" />
                         Payment
                       </div>
-                      <p className="font-medium">৳{appointment.doctor?.appointmentFee?.toFixed(2) ?? appointment.payment?.amount?.toFixed(2) ?? "0.00"}</p>
-                      <p className="text-muted-foreground">Transaction {appointment.payment?.transactionId || "Pending"}</p>
+                      <p className="font-medium text-foreground">
+                        ৳{appointment.doctor?.appointmentFee ? Number(appointment.doctor.appointmentFee).toLocaleString("en-BD") : appointment.payment?.amount ? Number(appointment.payment.amount).toLocaleString("en-BD") : "0.00"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">Transaction {appointment.payment?.transactionId || "Pending"}</p>
                     </div>
                   </div>
 
-                  <div className="text-sm text-muted-foreground">
-                    Appointment ID: <span className="font-medium text-foreground">{appointment.id}</span>
+                  <div className="text-xs text-muted-foreground">
+                    Appointment ID: <span className="font-medium text-foreground font-mono">{appointment.id}</span>
                   </div>
                 </CardContent>
 
-                <CardFooter className="flex flex-wrap items-center justify-between gap-3">
+                <CardFooter className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-border/60">
                   <Button asChild variant="outline" size="sm">
                     <Link href={`/consultation/doctor/${appointment.doctorId || appointment.doctor?.id || ""}`}>
                       View Doctor
@@ -225,8 +229,8 @@ const PatientAppointmentsList = ({
                           size="sm"
                           className={
                             appointment.status === "INPROGRESS"
-                              ? "gap-1.5 bg-[#0B7285] hover:bg-[#095E70] text-white animate-pulse"
-                              : "gap-1.5 border-[#0B7285]/30 text-[#0B7285] hover:bg-[#0B7285]/10"
+                              ? "gap-1.5 bg-primary hover:bg-primary-hover text-primary-foreground animate-pulse"
+                              : "gap-1.5 border-primary/30 text-primary hover:bg-primary/10"
                           }
                           variant={appointment.status === "INPROGRESS" ? "default" : "outline"}
                         >

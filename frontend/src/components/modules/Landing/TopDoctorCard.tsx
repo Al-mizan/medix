@@ -21,7 +21,7 @@ export default function TopDoctorCard({ doctor }: TopDoctorCardProps) {
   const rating = doctor.averageRating
     ? Number(doctor.averageRating).toFixed(1)
     : "4.9";
-  const fee = doctor.appointmentFee ? Number(doctor.appointmentFee).toFixed(0) : "50";
+  const fee = doctor.appointmentFee ? Number(doctor.appointmentFee).toLocaleString("en-BD") : "500";
   const experienceYears = doctor.experience ?? 5;
 
   return (
@@ -48,26 +48,31 @@ export default function TopDoctorCard({ doctor }: TopDoctorCardProps) {
           </div>
 
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5 flex-wrap">
+            <div className="flex items-center gap-1.5 min-w-0">
               <Link
                 href={`/consultation/doctor/${doctor.id}`}
-                className="text-base font-bold text-foreground truncate hover:text-primary transition-colors"
+                className="text-base font-bold text-foreground truncate hover:text-primary transition-colors min-w-0 flex-1"
+                title={doctor.name}
               >
                 {doctor.name}
               </Link>
-              <span title="BMDC Verified License">
-                <ShieldCheck className="size-4 text-secondary shrink-0" />
+              <span title="BMDC Verified License" className="shrink-0">
+                <ShieldCheck className="size-4 text-secondary" />
               </span>
             </div>
 
-            <p className="text-xs font-medium text-text-secondary mt-0.5 truncate">
+            <p
+              className="text-xs font-medium text-text-secondary mt-0.5 truncate"
+              title={doctor.designation || "Senior Consultant Physician"}
+            >
               {doctor.designation || "Senior Consultant Physician"}
             </p>
 
-            <div className="mt-2 flex items-center gap-2">
+            <div className="mt-2 flex items-center gap-2 min-w-0">
               <Badge
                 variant="secondary"
-                className="bg-tint-primary-bg text-tint-primary-text border-none text-[11px] font-semibold px-2.5 py-0.5"
+                className="bg-tint-primary-bg text-tint-primary-text border-none text-[11px] font-semibold px-2.5 py-0.5 truncate max-w-[180px]"
+                title={primarySpecialty}
               >
                 {primarySpecialty}
               </Badge>
@@ -93,7 +98,7 @@ export default function TopDoctorCard({ doctor }: TopDoctorCardProps) {
           <span className="text-border">&bull;</span>
 
           <div className="text-right">
-            <span className="font-extrabold text-foreground tabular-nums text-sm">${fee}</span>
+            <span className="font-extrabold text-foreground tabular-nums text-sm">৳{fee} BDT</span>
             <span className="text-[10px] text-text-muted ml-0.5">/ visit</span>
           </div>
         </div>

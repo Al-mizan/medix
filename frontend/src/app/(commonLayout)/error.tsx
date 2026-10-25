@@ -34,7 +34,7 @@ export default function Error({
           <div className="relative inline-flex items-center justify-center">
             <div className="absolute -inset-4 rounded-full bg-tint-danger-bg/70 blur-xl pointer-events-none" />
             <div className="relative size-20 sm:size-24 rounded-3xl bg-surface border border-danger/30 shadow-md flex items-center justify-center text-danger">
-              <AlertTriangle className="size-10 sm:size-12 text-danger animate-bounce stroke-[1.75]" />
+              <AlertTriangle className="size-10 sm:size-12 text-danger stroke-[1.75]" />
               <div className="absolute -top-2 -right-2 size-7 rounded-full bg-destructive text-destructive-foreground font-mono text-xs font-bold flex items-center justify-center shadow-xs">
                 !
               </div>

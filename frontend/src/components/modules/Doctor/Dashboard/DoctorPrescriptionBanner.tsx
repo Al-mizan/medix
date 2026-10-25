@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function DoctorPrescriptionBanner() {
   return (
-    <Card className="border-neutral-200 bg-gradient-to-r from-[#0B7285]/5 via-transparent to-transparent shadow-sm dark:border-neutral-800">
+    <Card className="border-border bg-gradient-to-r from-primary/5 via-card to-card text-card-foreground shadow-xs">
       <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <h4 className="text-sm font-semibold text-foreground">
@@ -18,7 +18,7 @@ export default function DoctorPrescriptionBanner() {
         <Button
           asChild
           size="sm"
-          className="bg-[#0B7285] text-white hover:bg-[#095E70] shrink-0"
+          className="bg-primary text-primary-foreground hover:bg-primary-hover shrink-0"
         >
           <Link href="/doctor/dashboard/prescriptions">
             Create Prescription

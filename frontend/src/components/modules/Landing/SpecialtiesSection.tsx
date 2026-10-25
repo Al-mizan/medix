@@ -150,7 +150,10 @@ export default function SpecialtiesSection() {
 
                     {/* Specialty Title */}
                     <div>
-                      <h3 className="text-sm sm:text-base font-bold text-foreground group-hover:text-primary transition-colors truncate">
+                      <h3
+                        className="text-sm sm:text-base font-bold text-foreground group-hover:text-primary transition-colors truncate"
+                        title={specialty.title}
+                      >
                         {specialty.title}
                       </h3>
                       <p className="text-[11px] text-text-muted mt-0.5 truncate">

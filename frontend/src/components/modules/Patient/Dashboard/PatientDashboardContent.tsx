@@ -29,8 +29,8 @@ const PatientStatusDistributionCard = dynamic(
   {
     ssr: false,
     loading: () => (
-      <Card className="border-[#E3E6EB] bg-white shadow-xs">
-        <CardHeader className="pb-2 border-b border-[#E3E6EB] space-y-2">
+      <Card className="border-border bg-card shadow-xs">
+        <CardHeader className="pb-2 border-b border-border space-y-2">
           <Skeleton className="h-5 w-40" />
           <Skeleton className="h-4 w-56" />
         </CardHeader>

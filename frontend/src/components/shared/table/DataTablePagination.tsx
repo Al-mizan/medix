@@ -87,6 +87,7 @@ const DataTablePagination = <TData,>({
                     variant="outline"
                     size="sm"
                     aria-label="Previous page"
+                    className="min-h-[44px] min-w-[44px] sm:min-h-8 sm:min-w-8"
                     onClick={() => table.previousPage()}
                     disabled={!table.getCanPreviousPage() || isLoading}
                 >
@@ -102,7 +103,7 @@ const DataTablePagination = <TData,>({
                                 variant="ghost"
                                 size="sm"
                                 aria-label="Jump backward 5 pages"
-                                className="min-w-9 px-2"
+                                className="min-h-[44px] min-w-[44px] sm:min-h-8 sm:min-w-9 px-2"
                                 onClick={() =>
                                     table.setPageIndex(jumpBackwardTarget - 1)
                                 }
@@ -120,7 +121,7 @@ const DataTablePagination = <TData,>({
                                 variant="ghost"
                                 size="sm"
                                 aria-label="Jump forward 5 pages"
-                                className="min-w-9 px-2"
+                                className="min-h-[44px] min-w-[44px] sm:min-h-8 sm:min-w-9 px-2"
                                 onClick={() =>
                                     table.setPageIndex(jumpForwardTarget - 1)
                                 }
@@ -140,7 +141,7 @@ const DataTablePagination = <TData,>({
                             aria-label={`Page ${item}`}
                             aria-current={isActive ? "page" : undefined}
                             className={cn(
-                                "min-w-9 tabular-nums",
+                                "min-h-[44px] min-w-[44px] sm:min-h-8 sm:min-w-9 tabular-nums",
                                 isActive && "pointer-events-none",
                             )}
                             onClick={() => table.setPageIndex(item - 1)}
@@ -155,6 +156,7 @@ const DataTablePagination = <TData,>({
                     variant="outline"
                     size="sm"
                     aria-label="Next page"
+                    className="min-h-[44px] min-w-[44px] sm:min-h-8 sm:min-w-8"
                     onClick={() => table.nextPage()}
                     disabled={!table.getCanNextPage() || isLoading}
                 >

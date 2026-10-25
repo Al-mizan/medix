@@ -19,18 +19,18 @@ export default function PatientRecentPrescriptionsCard({
     recentPrescriptions,
 }: PatientRecentPrescriptionsCardProps) {
     return (
-        <Card className="lg:col-span-2 border-[#E3E6EB] bg-white shadow-xs">
-            <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-[#E3E6EB]">
+        <Card className="lg:col-span-2 border-border bg-card text-card-foreground shadow-xs">
+            <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-border">
                 <div>
-                    <CardTitle className="text-base font-semibold text-[#101828] flex items-center gap-2">
-                        <Pill className="size-4 text-[#0B7285]" />
+                    <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
+                        <Pill className="size-4 text-primary" />
                         Recent Prescriptions
                     </CardTitle>
-                    <CardDescription className="text-xs text-[#5B6472]">
+                    <CardDescription className="text-xs text-muted-foreground">
                         Medical orders and dosage instructions from your consultations
                     </CardDescription>
                 </div>
-                <Button asChild variant="ghost" size="sm" className="text-xs text-[#0B7285] hover:text-[#095E70]">
+                <Button asChild variant="ghost" size="sm" className="text-xs text-primary hover:text-primary/90">
                     <Link href="/dashboard/my-prescriptions">
                         View all <ArrowRight className="size-3.5 ml-1" />
                     </Link>
@@ -39,13 +39,13 @@ export default function PatientRecentPrescriptionsCard({
             <CardContent className="p-4 sm:p-6">
                 {recentPrescriptions.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-10 text-center">
-                        <div className="size-12 rounded-full bg-[#E1F3F6] flex items-center justify-center text-[#0B7285] mb-3">
+                        <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-3">
                             <FileText className="size-6" />
                         </div>
-                        <h3 className="text-sm font-semibold text-[#101828]">
+                        <h3 className="text-sm font-semibold text-foreground">
                             No prescriptions found
                         </h3>
-                        <p className="text-xs text-[#5B6472] max-w-sm mt-1">
+                        <p className="text-xs text-muted-foreground max-w-sm mt-1">
                             Prescriptions issued by doctors after completed visits will appear here.
                         </p>
                     </div>
@@ -61,31 +61,31 @@ export default function PatientRecentPrescriptionsCard({
                             return (
                                 <div
                                     key={rx.id}
-                                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border border-[#E3E6EB] hover:border-[#0B7285]/40 transition-colors bg-white shadow-2xs"
+                                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border border-border hover:border-primary/40 transition-colors bg-card shadow-2xs"
                                 >
-                                    <div className="space-y-1">
-                                        <div className="flex items-center gap-2">
-                                            <h4 className="text-sm font-semibold text-[#101828]">
+                                    <div className="space-y-1 min-w-0 flex-1">
+                                        <div className="flex items-center gap-2 min-w-0">
+                                            <h4 className="text-sm font-semibold text-foreground truncate" title={`Dr. ${doctorName}`}>
                                                 Dr. {doctorName}
                                             </h4>
-                                            <span className="text-[11px] text-[#5B6472]">• {formattedDate}</span>
+                                            <span className="text-[11px] text-muted-foreground shrink-0">• {formattedDate}</span>
                                         </div>
-                                        <p className="text-xs text-[#5B6472] line-clamp-2">
+                                        <p className="text-xs text-muted-foreground line-clamp-2" title={rx.instructions || undefined}>
                                             {rx.instructions || "Standard clinical medication guidance issued."}
                                         </p>
                                         {followUp && (
-                                            <p className="text-[11px] font-medium text-[#0B7285]">
+                                            <p className="text-[11px] font-medium text-primary">
                                                 Follow-up date: {followUp}
                                             </p>
                                         )}
                                     </div>
 
-                                    <div className="self-end sm:self-center">
+                                    <div className="self-end sm:self-center shrink-0">
                                         <Button
                                             asChild
                                             variant="outline"
                                             size="sm"
-                                            className="text-xs font-medium border-[#0B7285] text-[#0B7285] hover:bg-[#E1F3F6]"
+                                            className="text-xs font-medium border-primary/30 text-primary hover:bg-primary/10"
                                         >
                                             <Link href="/dashboard/my-prescriptions">
                                                 View Details

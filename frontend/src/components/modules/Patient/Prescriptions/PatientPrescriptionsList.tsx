@@ -82,14 +82,14 @@ export default function PatientPrescriptionsList({
     return (
         <div className="space-y-6">
             {/* Controls Bar: Search & Sort */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-4 rounded-xl border border-[#E3E6EB] shadow-xs">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-card text-card-foreground p-4 rounded-xl border border-border shadow-xs">
                 <div className="relative w-full sm:w-80">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8A93A3]" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search by doctor or medicine..."
                         value={searchTerm}
                         onChange={handleSearchChange}
-                        className="pl-9 bg-[#F7F8FA] border-[#E3E6EB] text-sm h-9"
+                        className="pl-9 bg-muted/40 border-border text-base sm:text-sm h-9"
                     />
                 </div>
 
@@ -99,7 +99,7 @@ export default function PatientPrescriptionsList({
                         variant="outline"
                         size="sm"
                         onClick={() => setSortAsc(!sortAsc)}
-                        className="h-9 text-xs border-[#E3E6EB] text-[#5B6472]"
+                        className="h-9 text-xs border-border text-muted-foreground"
                     >
                         <ArrowUpDown className="mr-1.5 h-3.5 w-3.5" />
                         {sortAsc ? "Oldest First" : "Newest First"}
@@ -108,7 +108,7 @@ export default function PatientPrescriptionsList({
                     <Button
                         asChild
                         size="sm"
-                        className="h-9 text-xs bg-[#D9542E] hover:bg-[#B8431F] text-white shadow-xs"
+                        className="h-9 text-xs bg-accent hover:bg-accent/90 text-accent-foreground shadow-xs"
                     >
                         <Link href="/dashboard/book-appointments">
                             <Plus className="mr-1 h-3.5 w-3.5" />
@@ -124,7 +124,7 @@ export default function PatientPrescriptionsList({
                     {Array.from({ length: 4 }).map((_, i) => (
                         <div
                             key={i}
-                            className="rounded-xl border border-[#E3E6EB] bg-white p-5 space-y-4"
+                            className="rounded-xl border border-border bg-card p-5 space-y-4"
                         >
                             <div className="flex items-center gap-3">
                                 <Skeleton className="h-11 w-11 rounded-full" />
@@ -143,14 +143,14 @@ export default function PatientPrescriptionsList({
                     ))}
                 </div>
             ) : filteredPrescriptions.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-[#E3E6EB] bg-white p-12 text-center shadow-xs">
-                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#E1F3F6] text-[#0B7285] mb-4">
+                <div className="rounded-xl border border-dashed border-border bg-card p-12 text-center shadow-xs">
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary mb-4">
                         <FileText className="h-7 w-7" />
                     </div>
-                    <h3 className="text-base font-semibold text-[#101828]">
+                    <h3 className="text-base font-semibold text-foreground">
                         {searchTerm ? "No matching prescriptions found" : "No Prescriptions on File Yet"}
                     </h3>
-                    <p className="text-xs text-[#5B6472] mt-1.5 max-w-sm mx-auto">
+                    <p className="text-xs text-muted-foreground mt-1.5 max-w-sm mx-auto">
                         {searchTerm
                             ? `We couldn't find any prescriptions matching "${searchTerm}". Try another search term.`
                             : "Prescriptions given by your doctors after appointments will automatically appear here with downloadable PDFs."}
@@ -158,7 +158,7 @@ export default function PatientPrescriptionsList({
                     <div className="mt-5">
                         <Button
                             asChild
-                            className="bg-[#0B7285] hover:bg-[#095E70] text-white text-xs px-4 py-2 h-9"
+                            className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs px-4 py-2 h-9"
                         >
                             <Link href="/dashboard/book-appointments">
                                 <Calendar className="mr-1.5 h-3.5 w-3.5" />
@@ -180,18 +180,18 @@ export default function PatientPrescriptionsList({
 
                     {/* Pagination Bar */}
                     {totalPages > 1 && (
-                        <div className="flex items-center justify-between border-t border-[#E3E6EB] bg-white px-4 py-3 rounded-xl shadow-xs">
-                            <span className="text-xs text-[#5B6472]">
+                        <div className="flex items-center justify-between border-t border-border bg-card text-card-foreground px-4 py-3 rounded-xl shadow-xs">
+                            <span className="text-xs text-muted-foreground">
                                 Showing{" "}
-                                <strong className="text-[#101828]">
+                                <strong className="text-foreground">
                                     {(currentPage - 1) * ITEMS_PER_PAGE + 1}
                                 </strong>{" "}
                                 to{" "}
-                                <strong className="text-[#101828]">
+                                <strong className="text-foreground">
                                     {Math.min(currentPage * ITEMS_PER_PAGE, filteredPrescriptions.length)}
                                 </strong>{" "}
                                 of{" "}
-                                <strong className="text-[#101828]">
+                                <strong className="text-foreground">
                                     {filteredPrescriptions.length}
                                 </strong>{" "}
                                 prescriptions
@@ -208,7 +208,7 @@ export default function PatientPrescriptionsList({
                                 >
                                     <ChevronLeft className="h-4 w-4" />
                                 </Button>
-                                <span className="text-xs font-medium px-2 text-[#101828]">
+                                <span className="text-xs font-medium px-2 text-foreground">
                                     {currentPage} / {totalPages}
                                 </span>
                                 <Button

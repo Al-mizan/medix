@@ -26,15 +26,16 @@ const DashboardNavbarContent = ({
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
-        const checkSmallerScreen = () => {
-            setIsMobile(window.innerWidth < 768);
+        const mediaQuery = window.matchMedia("(max-width: 767px)");
+        const handleMediaChange = (e: MediaQueryListEvent | MediaQueryList) => {
+            setIsMobile(e.matches);
         };
 
-        checkSmallerScreen();
-        window.addEventListener("resize", checkSmallerScreen);
+        setIsMobile(mediaQuery.matches);
+        mediaQuery.addEventListener("change", handleMediaChange);
 
         return () => {
-            window.removeEventListener("resize", checkSmallerScreen);
+            mediaQuery.removeEventListener("change", handleMediaChange);
         };
     }, []);
 

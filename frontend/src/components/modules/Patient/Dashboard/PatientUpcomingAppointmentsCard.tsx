@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { format } from "date-fns";
-import { ArrowRight, Calendar, CalendarClock, CheckCircle2, CreditCard, Loader2 } from "lucide-react";
+import { ArrowRight, Calendar, CalendarClock, CheckCircle2, CreditCard, Loader2, Video } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,18 +27,18 @@ export default function PatientUpcomingAppointmentsCard({
     onPayNow,
 }: PatientUpcomingAppointmentsCardProps) {
     return (
-        <Card className="lg:col-span-2 border-[#E3E6EB] bg-white shadow-xs">
-            <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-[#E3E6EB]">
+        <Card className="lg:col-span-2 border-border bg-card text-card-foreground shadow-xs">
+            <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-border">
                 <div>
-                    <CardTitle className="text-base font-semibold text-[#101828] flex items-center gap-2">
-                        <CalendarClock className="size-4 text-[#0B7285]" />
+                    <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
+                        <CalendarClock className="size-4 text-primary" />
                         Upcoming Consultations
                     </CardTitle>
-                    <CardDescription className="text-xs text-[#5B6472] mt-0.5">
+                    <CardDescription className="text-xs text-muted-foreground mt-0.5">
                         Your next scheduled sessions with verified medical specialists
                     </CardDescription>
                 </div>
-                <Button asChild variant="ghost" size="sm" className="text-xs text-[#0B7285] hover:text-[#095E70]">
+                <Button asChild variant="ghost" size="sm" className="text-xs text-primary hover:text-primary/90">
                     <Link href="/dashboard/my-appointments">
                         View all <ArrowRight className="size-3.5 ml-1" />
                     </Link>
@@ -47,19 +47,19 @@ export default function PatientUpcomingAppointmentsCard({
             <CardContent className="p-4 sm:p-6">
                 {nextAppointments.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-10 text-center">
-                        <div className="size-12 rounded-full bg-[#E1F3F6] flex items-center justify-center text-[#0B7285] mb-3">
+                        <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-3">
                             <Calendar className="size-6" />
                         </div>
-                        <h3 className="text-sm font-semibold text-[#101828]">
+                        <h3 className="text-sm font-semibold text-foreground">
                             No upcoming appointments
                         </h3>
-                        <p className="text-xs text-[#5B6472] max-w-sm mt-1 mb-4">
+                        <p className="text-xs text-muted-foreground max-w-sm mt-1 mb-4">
                             You have no scheduled appointments at the moment. Need to see a doctor?
                         </p>
                         <Button
                             asChild
                             size="sm"
-                            className="bg-[#D9542E] hover:bg-[#B8431F] text-white text-xs font-medium"
+                            className="bg-accent hover:bg-accent/90 text-accent-foreground text-xs font-medium"
                         >
                             <Link href="/dashboard/book-appointments">
                                 Book an Appointment
@@ -81,35 +81,35 @@ export default function PatientUpcomingAppointmentsCard({
                             return (
                                 <div
                                     key={appt.id}
-                                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border border-[#E3E6EB] hover:border-[#0B7285]/40 transition-colors bg-white shadow-2xs"
+                                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border border-border hover:border-primary/40 transition-colors bg-card shadow-2xs"
                                 >
-                                    <div className="flex items-center gap-3">
-                                        <Avatar className="size-11 border border-border">
+                                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                                        <Avatar className="size-11 border border-border shrink-0">
                                             <AvatarImage src={photo} alt={doctorName} />
-                                            <AvatarFallback className="bg-[#E1F3F6] text-[#075463] text-sm font-semibold">
+                                            <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
                                                 {doctorName.charAt(0)}
                                             </AvatarFallback>
                                         </Avatar>
-                                        <div>
-                                            <h4 className="text-sm font-semibold text-[#101828]">
+                                        <div className="space-y-0.5 min-w-0 flex-1">
+                                            <h4 className="text-sm font-semibold text-foreground truncate" title={`Dr. ${doctorName}`}>
                                                 Dr. {doctorName}
                                             </h4>
-                                            <p className="text-xs text-[#5B6472]">{designation}</p>
-                                            <div className="flex items-center gap-2 mt-1 text-xs text-[#5B6472]">
-                                                <span className="font-medium text-[#0B7285]">
+                                            <p className="text-xs text-muted-foreground truncate" title={designation}>{designation}</p>
+                                            <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                                                <span className="font-medium text-primary">
                                                     {formattedDate}
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-2.5 self-end sm:self-center">
+                                    <div className="flex items-center gap-2.5 shrink-0 self-end sm:self-center">
                                         {isUnpaid ? (
                                             <Button
                                                 size="sm"
                                                 disabled={isCurrentlyPaying}
                                                 onClick={() => onPayNow(appt.id)}
-                                                className="bg-[#D9542E] hover:bg-[#B8431F] text-white text-xs h-8 px-3 font-medium shadow-2xs cursor-pointer"
+                                                className="bg-accent hover:bg-accent-hover text-accent-foreground text-xs h-8 px-3 font-medium shadow-2xs cursor-pointer"
                                             >
                                                 {isCurrentlyPaying ? (
                                                     <>
@@ -124,16 +124,36 @@ export default function PatientUpcomingAppointmentsCard({
                                                 )}
                                             </Button>
                                         ) : (
-                                            <Badge className="bg-[#E3F7EE] text-[#0F5C3E] border-transparent text-xs py-1 px-2.5">
-                                                <CheckCircle2 className="size-3 mr-1 text-[#178A5E]" /> Paid
-                                            </Badge>
+                                            <div className="flex items-center gap-1.5">
+                                                <Badge className="bg-secondary/15 text-secondary border-transparent text-xs py-1 px-2.5">
+                                                    <CheckCircle2 className="size-3 mr-1 text-secondary" /> Paid
+                                                </Badge>
+
+                                                {appt.videoCallingId && (appt.status === "INPROGRESS" || appt.status === "SCHEDULED") && (
+                                                    <Button
+                                                        asChild
+                                                        size="sm"
+                                                        variant={appt.status === "INPROGRESS" ? "default" : "outline"}
+                                                        className={
+                                                            appt.status === "INPROGRESS"
+                                                                ? "h-8 bg-primary hover:bg-primary-hover text-primary-foreground text-xs px-2.5 animate-pulse"
+                                                                : "h-8 border-primary/30 text-primary hover:bg-primary/10 text-xs px-2.5"
+                                                        }
+                                                    >
+                                                        <Link href={`/consultation/session/${appt.videoCallingId}`}>
+                                                            <Video className="size-3.5 mr-1" />
+                                                            {appt.status === "INPROGRESS" ? "Join Video Call" : "Pre-Call Setup"}
+                                                        </Link>
+                                                    </Button>
+                                                )}
+                                            </div>
                                         )}
 
                                         <Badge
                                             variant="outline"
-                                            className="border-[#0B7285]/30 text-[#075463] bg-[#E1F3F6]/50 text-xs py-1 px-2.5"
+                                            className="border-primary/30 text-primary bg-primary/10 text-xs py-1 px-2.5"
                                         >
-                                            Scheduled
+                                            {appt.status ?? "Scheduled"}
                                         </Badge>
                                     </div>
                                 </div>

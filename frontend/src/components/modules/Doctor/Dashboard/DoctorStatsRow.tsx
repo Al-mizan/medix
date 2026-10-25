@@ -13,28 +13,24 @@ export default function DoctorStatsRow({ stats }: DoctorStatsRowProps) {
         value={stats?.appointmentCount ?? 0}
         iconName="Calendar"
         description="All recorded bookings"
-        className="border-neutral-200 shadow-sm dark:border-neutral-800"
       />
       <StatsCard
         title="Patients Treated"
         value={stats?.patientCount ?? 0}
         iconName="Users"
         description="Unique patients consulted"
-        className="border-neutral-200 shadow-sm dark:border-neutral-800"
       />
       <StatsCard
         title="Patient Reviews"
         value={stats?.reviewCount ?? 0}
         iconName="Star"
         description="Total patient feedbacks received"
-        className="border-neutral-200 shadow-sm dark:border-neutral-800"
       />
       <StatsCard
         title="Total Revenue"
-        value={`$${(stats?.totalRevenue ?? 0).toLocaleString()}`}
-        iconName="DollarSign"
+        value={`৳${(stats?.totalRevenue ?? 0).toLocaleString("en-BD")}`}
+        iconName="CreditCard"
         description="Earnings from completed consultations"
-        className="border-neutral-200 shadow-sm dark:border-neutral-800"
       />
     </div>
   );

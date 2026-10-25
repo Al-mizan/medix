@@ -160,7 +160,7 @@ const ConsultationDoctorByIdPage = async ({
         }
       : undefined,
     priceRange: doctorDetails.appointmentFee
-      ? `$${doctorDetails.appointmentFee.toFixed(2)}`
+      ? `৳${Number(doctorDetails.appointmentFee).toLocaleString("en-BD")}`
       : undefined,
     ...(doctorDetails.averageRating && doctorDetails.averageRating > 0
       ? {
@@ -178,25 +178,32 @@ const ConsultationDoctorByIdPage = async ({
   return (
     <section className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <JsonLd schema={doctorJsonLd} />
-      <Button asChild variant="outline">
+      <Button asChild variant="outline" size="sm">
         <Link href="/consultation">Back to Consultation</Link>
       </Button>
 
-      <div className="relative overflow-hidden rounded-2xl border bg-linear-to-r from-sky-50 via-white to-cyan-50 p-6">
-        <div className="absolute -right-12 -top-12 h-44 w-44 rounded-full bg-sky-300/20 blur-3xl" />
-        <div className="absolute -bottom-12 left-8 h-36 w-36 rounded-full bg-cyan-200/25 blur-3xl" />
-        <div className="flex flex-col gap-4 md:flex-row md:items-start">
-          <Avatar className="size-24 ring-4 ring-white shadow-sm">
+      {/* Doctor Hero Card */}
+      <div className="relative overflow-hidden rounded-2xl border border-border bg-card text-card-foreground bg-gradient-to-r from-primary/5 via-card to-secondary/5 p-6 shadow-xs">
+        <div className="flex flex-col gap-5 md:flex-row md:items-start">
+          <Avatar className="size-24 ring-4 ring-primary/20 shadow-sm shrink-0">
             <AvatarImage src={doctorDetails.profilePhoto} alt={doctorDetails.name} />
-            <AvatarFallback>{getInitials(doctorDetails.name)}</AvatarFallback>
+            <AvatarFallback className="bg-primary/10 text-primary font-bold text-lg">
+              {getInitials(doctorDetails.name)}
+            </AvatarFallback>
           </Avatar>
 
-          <div className="relative space-y-2">
-            <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{doctorDetails.name}</h1>
-            <p className="text-muted-foreground">{doctorDetails.designation || "N/A"}</p>
-            <p className="text-sm text-muted-foreground">{doctorDetails.currentWorkingPlace || "N/A"}</p>
+          <div className="relative min-w-0 flex-1 space-y-2">
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl truncate" title={doctorDetails.name}>
+              {doctorDetails.name}
+            </h1>
+            <p className="text-sm font-medium text-muted-foreground truncate" title={doctorDetails.designation || "N/A"}>
+              {doctorDetails.designation || "N/A"}
+            </p>
+            <p className="text-xs text-muted-foreground truncate" title={doctorDetails.currentWorkingPlace || "N/A"}>
+              {doctorDetails.currentWorkingPlace || "N/A"}
+            </p>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 pt-1">
               {(doctorDetails.specialties ?? []).map((item) => (
                 <Badge key={item.specialty.id} variant="secondary">
                   {item.specialty.title}
@@ -209,8 +216,8 @@ const ConsultationDoctorByIdPage = async ({
 
             <div className="flex flex-wrap gap-2 pt-1 text-xs">
               <Badge variant="outline">Experience: {doctorDetails.experience ?? 0} yrs</Badge>
-              <Badge variant="outline">Fee: ${doctorDetails.appointmentFee?.toFixed(2) ?? "N/A"}</Badge>
-              <Badge variant="outline">Rating: {doctorDetails.averageRating?.toFixed(1) ?? "0.0"}</Badge>
+              <Badge variant="outline" className="tabular-nums">Fee: ৳{doctorDetails.appointmentFee ? Number(doctorDetails.appointmentFee).toLocaleString("en-BD") : "N/A"} BDT</Badge>
+              <Badge variant="outline">Rating: {doctorDetails.averageRating ? Number(doctorDetails.averageRating).toFixed(1) : "0.0"}</Badge>
             </div>
 
             <div className="pt-3">
@@ -225,64 +232,65 @@ const ConsultationDoctorByIdPage = async ({
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-2xl border bg-card p-5 shadow-sm">
-          <h2 className="mb-3 text-base font-semibold">Professional Information</h2>
+      <div className="grid gap-5 md:grid-cols-2">
+        <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
+          <h2 className="mb-3 text-base font-semibold text-foreground">Professional Information</h2>
           <div className="space-y-2 text-sm">
-            <p><span className="font-medium">Qualification:</span> {doctorDetails.qualification || "N/A"}</p>
-            <p><span className="font-medium">Experience:</span> {doctorDetails.experience ?? 0} years</p>
-            <p><span className="font-medium">Registration Number:</span> {doctorDetails.registrationNumber || "N/A"}</p>
-            <p><span className="font-medium">Appointment Fee:</span> ${doctorDetails.appointmentFee?.toFixed(2) ?? "N/A"}</p>
-            <p><span className="font-medium">Average Rating:</span> {doctorDetails.averageRating?.toFixed(1) ?? "0.0"}</p>
+            <p><span className="font-medium text-foreground">Qualification:</span> <span className="text-muted-foreground">{doctorDetails.qualification || "N/A"}</span></p>
+            <p><span className="font-medium text-foreground">Experience:</span> <span className="text-muted-foreground">{doctorDetails.experience ?? 0} years</span></p>
+            <p><span className="font-medium text-foreground">Registration Number:</span> <span className="text-muted-foreground">{doctorDetails.registrationNumber || "N/A"}</span></p>
+            <p><span className="font-medium text-foreground">Appointment Fee:</span> <span className="text-muted-foreground">৳{doctorDetails.appointmentFee ? Number(doctorDetails.appointmentFee).toLocaleString("en-BD") : "N/A"}</span></p>
+            <p><span className="font-medium text-foreground">Average Rating:</span> <span className="text-muted-foreground">{doctorDetails.averageRating ? Number(doctorDetails.averageRating).toFixed(1) : "0.0"} / 5</span></p>
           </div>
         </div>
 
-        <div className="rounded-2xl border bg-card p-5 shadow-sm">
-          <h2 className="mb-3 text-base font-semibold">Contact Information</h2>
+        <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
+          <h2 className="mb-3 text-base font-semibold text-foreground">Contact Information</h2>
           <div className="space-y-2 text-sm">
-            <p><span className="font-medium">Email:</span> {doctorDetails.email || "N/A"}</p>
-            <p><span className="font-medium">Contact Number:</span> {doctorDetails.contactNumber || "N/A"}</p>
-            <p><span className="font-medium">Gender:</span> {doctorDetails.gender || "N/A"}</p>
-            <p><span className="font-medium">Address:</span> {doctorDetails.address || "N/A"}</p>
+            <p><span className="font-medium text-foreground">Email:</span> <span className="text-muted-foreground">{doctorDetails.email || "N/A"}</span></p>
+            <p><span className="font-medium text-foreground">Contact Number:</span> <span className="text-muted-foreground">{doctorDetails.contactNumber || "N/A"}</span></p>
+            <p><span className="font-medium text-foreground">Gender:</span> <span className="text-muted-foreground">{doctorDetails.gender || "N/A"}</span></p>
+            <p><span className="font-medium text-foreground">Address:</span> <span className="text-muted-foreground">{doctorDetails.address || "N/A"}</span></p>
           </div>
         </div>
       </div>
 
-      <div className="rounded-2xl border bg-card p-5 shadow-sm">
-        <div className="mb-4 flex flex-wrap items-center gap-2">
-          <h2 className="text-base font-semibold">Available Doctor Schedules</h2>
-          <Badge variant="secondary">Today onward</Badge>
+      <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-border/60 pb-3">
+          <h2 className="text-base font-semibold text-foreground">Available Doctor Schedules</h2>
+          <Badge variant="secondary" className="text-xs">From Today Onward</Badge>
         </div>
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {availableUpcomingSchedules.slice(0, 18).map((item, index) => (
             <div
               key={item.id ?? item.schedule?.id ?? `schedule-${index}`}
-              className="rounded-xl border bg-muted/20 p-4 text-sm"
+              className="rounded-xl border border-border/80 bg-muted/30 p-3.5 text-xs space-y-1"
             >
-              <p><span className="font-medium">Start:</span> {formatDateTime(item.schedule?.startDateTime)}</p>
-              <p><span className="font-medium">End:</span> {formatDateTime(item.schedule?.endDateTime)}</p>
-              <p className="pt-1 text-xs text-emerald-700">Available</p>
+              <p><span className="font-semibold text-foreground">Start:</span> <span className="text-muted-foreground">{formatDateTime(item.schedule?.startDateTime)}</span></p>
+              <p><span className="font-semibold text-foreground">End:</span> <span className="text-muted-foreground">{formatDateTime(item.schedule?.endDateTime)}</span></p>
+              <p className="pt-0.5 font-medium text-emerald-600 dark:text-emerald-400">Available for Booking</p>
             </div>
           ))}
           {availableUpcomingSchedules.length === 0 && (
-            <p className="text-sm text-muted-foreground">No available schedules from today onward.</p>
+            <p className="text-sm text-muted-foreground py-4 text-center sm:col-span-2 lg:col-span-3">No available upcoming schedules found. Check back soon.</p>
           )}
         </div>
       </div>
 
-      <div className="rounded-2xl border bg-card p-5 shadow-sm">
-        <h2 className="mb-3 text-base font-semibold">Patient Reviews</h2>
-        <div className="space-y-3">
+      <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
+        <h2 className="mb-3 text-base font-semibold text-foreground border-b border-border/60 pb-3">Patient Reviews</h2>
+        <div className="divide-y divide-border/60">
           {(doctorDetails.reviews ?? []).map((review, index) => (
-            <div key={review.id ?? `review-${index}`} className="rounded-md border p-3 text-sm">
-              <p><span className="font-medium">Rating:</span> {review.rating ?? "N/A"} / 5</p>
-              <p><span className="font-medium">Comment:</span> {review.comment || "N/A"}</p>
-              <p><span className="font-medium">Patient ID:</span> {review.patientId || "N/A"}</p>
-              <p className="text-xs text-muted-foreground">{formatDateTime(review.createdAt)}</p>
+            <div key={review.id ?? `review-${index}`} className="py-3.5 first:pt-0 last:pb-0 text-sm space-y-1">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-semibold text-foreground">Rating: {review.rating ?? "5"} / 5</span>
+                <span className="text-muted-foreground">{formatDateTime(review.createdAt)}</span>
+              </div>
+              <p className="text-muted-foreground">{review.comment || "Patient completed consultation successfully."}</p>
             </div>
           ))}
           {(!doctorDetails.reviews || doctorDetails.reviews.length === 0) && (
-            <p className="text-sm text-muted-foreground">No reviews yet.</p>
+            <p className="text-sm text-muted-foreground py-4 text-center">No reviews yet for this physician.</p>
           )}
         </div>
       </div>

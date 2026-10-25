@@ -53,10 +53,10 @@ export default function DoctorAppointmentStatusDonut({
   const totalCount = distributionData.reduce((acc, curr) => acc + curr.value, 0);
 
   return (
-    <Card className="border-neutral-200 shadow-sm lg:col-span-3 dark:border-neutral-800">
-      <CardHeader className="pb-2">
+    <Card className="border-border bg-card text-card-foreground shadow-xs lg:col-span-3">
+      <CardHeader className="pb-2 border-b border-border/60">
         <CardTitle className="flex items-center gap-2 text-base font-semibold">
-          <Activity className="size-4 text-[#0B7285]" />
+          <Activity className="size-4 text-primary" />
           Status Distribution
         </CardTitle>
         <CardDescription>
@@ -137,11 +137,11 @@ export default function DoctorAppointmentStatusDonut({
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-neutral-100 text-xs dark:border-neutral-800">
+            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border text-xs">
               {distributionData.map((item) => (
                 <div
                   key={item.status}
-                  className="flex items-center justify-between rounded-md bg-neutral-50 px-2.5 py-1.5 dark:bg-neutral-900/50"
+                  className="flex items-center justify-between rounded-md bg-muted/40 px-2.5 py-1.5 border border-border/50"
                 >
                   <span className="flex items-center gap-1.5 text-muted-foreground">
                     <span

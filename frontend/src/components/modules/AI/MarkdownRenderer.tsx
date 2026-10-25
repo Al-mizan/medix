@@ -107,7 +107,7 @@ export function MarkdownRenderer({ content, className = "" }: MarkdownRendererPr
       blocks.push(
         <blockquote
           key={`quote-${blocks.length}`}
-          className="my-2 rounded-r border-l-3 border-[#5B4FCF] bg-[#5B4FCF]/5 px-3 py-1.5 text-sm italic text-inherit dark:bg-[#5B4FCF]/10"
+          className="my-3 border-l-2 border-border pl-4 text-sm italic text-muted-foreground"
         >
           {currentQuote.map((q, i) => (
             <p key={i} className="leading-relaxed">

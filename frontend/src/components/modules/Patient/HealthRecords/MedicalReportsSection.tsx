@@ -139,26 +139,26 @@ export default function MedicalReportsSection({
     return (
         <div className="space-y-6 pt-4">
             {/* Header */}
-            <div className="rounded-xl border border-[#E3E6EB] bg-white p-6 shadow-xs">
-                <div className="flex items-center gap-3 border-b border-[#E3E6EB] pb-4 mb-6">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#E1F3F6] text-[#0B7285]">
+            <div className="rounded-xl border border-border bg-card text-card-foreground p-6 shadow-xs">
+                <div className="flex items-center gap-3 border-b border-border pb-4 mb-6">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                         <FileText className="h-5 w-5" />
                     </div>
                     <div>
-                        <h2 className="text-lg font-semibold text-[#101828]">
+                        <h2 className="text-lg font-semibold text-foreground">
                             Medical Reports & Diagnostic Documents
                         </h2>
-                        <p className="text-sm text-[#5B6472]">
+                        <p className="text-sm text-muted-foreground">
                             Upload and store lab results, imaging scans, and hospital discharge summaries to share with your doctors.
                         </p>
                     </div>
                 </div>
 
                 {/* Upload Form */}
-                <form onSubmit={handleUpload} className="rounded-lg border border-dashed border-[#0B7285]/30 bg-[#F7F8FA] p-5 space-y-4">
+                <form onSubmit={handleUpload} className="rounded-lg border border-dashed border-primary/30 bg-muted/30 p-5 space-y-4">
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div className="space-y-1.5">
-                            <Label htmlFor="reportName" className="text-xs font-semibold text-[#101828]">
+                            <Label htmlFor="reportName" className="text-xs font-semibold text-foreground">
                                 Report / Document Title
                             </Label>
                             <Input
@@ -166,12 +166,12 @@ export default function MedicalReportsSection({
                                 placeholder="e.g. Complete Blood Count (CBC) - Aug 2026"
                                 value={reportName}
                                 onChange={(e) => setReportName(e.target.value)}
-                                className="bg-white border-[#E3E6EB] text-sm"
+                                className="bg-background border-border text-base sm:text-sm"
                             />
                         </div>
 
                         <div className="space-y-1.5">
-                            <Label htmlFor="reportFile" className="text-xs font-semibold text-[#101828]">
+                            <Label htmlFor="reportFile" className="text-xs font-semibold text-foreground">
                                 Select File (PDF, PNG, JPG)
                             </Label>
                             <div className="relative">
@@ -181,22 +181,22 @@ export default function MedicalReportsSection({
                                     ref={fileInputRef}
                                     accept="image/*,application/pdf"
                                     onChange={handleFileChange}
-                                    className="bg-white border-[#E3E6EB] text-sm cursor-pointer file:cursor-pointer file:text-xs file:font-semibold file:bg-[#E1F3F6] file:text-[#0B7285] file:border-0 file:rounded-md file:mr-2"
+                                    className="bg-background border-border text-sm cursor-pointer file:cursor-pointer file:text-xs file:font-semibold file:bg-primary/10 file:text-primary file:border-0 file:rounded-md file:mr-2"
                                 />
                             </div>
                         </div>
                     </div>
 
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                        <div className="flex items-center gap-1.5 text-xs text-[#5B6472]">
-                            <AlertCircle className="h-3.5 w-3.5 text-[#0B7285]" />
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <AlertCircle className="h-3.5 w-3.5 text-primary" />
                             <span>Supported formats: PDF, JPEG, PNG. Maximum size 10MB per file.</span>
                         </div>
 
                         <Button
                             type="submit"
                             disabled={!selectedFile || isUploading}
-                            className="w-full sm:w-auto bg-[#D9542E] hover:bg-[#B8431F] text-white font-medium text-xs px-5 py-2 h-9 shadow-xs"
+                            className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground font-medium text-xs px-5 py-2 h-9 shadow-xs"
                         >
                             {isUploading ? (
                                 <>
@@ -215,16 +215,16 @@ export default function MedicalReportsSection({
 
                 {/* Reports List */}
                 <div className="mt-8 space-y-3">
-                    <h3 className="text-sm font-semibold text-[#101828] flex items-center gap-2">
-                        <FileCheck2 className="h-4 w-4 text-[#178A5E]" />
+                    <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                        <FileCheck2 className="h-4 w-4 text-secondary" />
                         Uploaded Reports ({medicalReports.length})
                     </h3>
 
                     {medicalReports.length === 0 ? (
-                        <div className="rounded-lg border border-dashed border-[#E3E6EB] bg-[#F7F8FA] p-8 text-center">
-                            <FileText className="mx-auto h-8 w-8 text-[#8A93A3] mb-2" />
-                            <p className="text-sm font-medium text-[#101828]">No medical reports uploaded yet</p>
-                            <p className="text-xs text-[#5B6472] mt-1 max-w-sm mx-auto">
+                        <div className="rounded-lg border border-dashed border-border bg-muted/30 p-8 text-center">
+                            <FileText className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
+                            <p className="text-sm font-medium text-foreground">No medical reports uploaded yet</p>
+                            <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
                                 Keep all your diagnostic tests and lab reports organized in one secure place for your consultations.
                             </p>
                         </div>
@@ -233,33 +233,33 @@ export default function MedicalReportsSection({
                             {medicalReports.map((report) => (
                                 <div
                                     key={report.id}
-                                    className="group flex flex-col justify-between rounded-lg border border-[#E3E6EB] bg-white p-4 shadow-xs transition hover:border-[#0B7285]/40 hover:shadow-sm"
+                                    className="group flex flex-col justify-between rounded-lg border border-border bg-card p-4 shadow-xs transition hover:border-primary/40 hover:shadow-sm"
                                 >
                                     <div>
                                         <div className="flex items-start justify-between gap-2 mb-2">
-                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#E1F3F6] text-[#0B7285]">
+                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
                                                 <FileText className="h-4 w-4" />
                                             </div>
-                                            <span className="inline-flex items-center gap-1 rounded bg-[#F7F8FA] px-2 py-0.5 text-[10px] font-medium text-[#5B6472]">
+                                            <span className="inline-flex items-center gap-1 rounded bg-muted/40 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
                                                 <Calendar className="h-2.5 w-2.5" />
                                                 {formatDateSafe(report.createdAt)}
                                             </span>
                                         </div>
 
                                         <h4
-                                            className="text-sm font-semibold text-[#101828] line-clamp-2"
+                                            className="text-sm font-semibold text-foreground line-clamp-2"
                                             title={report.reportName}
                                         >
                                             {report.reportName}
                                         </h4>
                                     </div>
 
-                                    <div className="mt-4 flex items-center justify-between border-t border-[#E3E6EB] pt-3">
+                                    <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
                                         <a
                                             href={report.reportLink}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-1 text-xs font-medium text-[#0B7285] hover:text-[#095E70] hover:underline"
+                                            className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 hover:underline"
                                         >
                                             <ExternalLink className="h-3.5 w-3.5" />
                                             View Report
@@ -270,7 +270,7 @@ export default function MedicalReportsSection({
                                             variant="ghost"
                                             size="sm"
                                             onClick={() => setReportToDelete(report)}
-                                            className="h-7 px-2 text-[#D8464B] hover:bg-[#FCEBEB] hover:text-[#D8464B]"
+                                            className="h-7 px-2 text-destructive hover:bg-destructive/10 hover:text-destructive"
                                             title="Delete report"
                                         >
                                             <Trash2 className="h-3.5 w-3.5" />
@@ -304,7 +304,7 @@ export default function MedicalReportsSection({
                                 void handleDelete();
                             }}
                             disabled={isDeleting}
-                            className="bg-[#D8464B] hover:bg-[#D8464B]/90 text-white"
+                            className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                         >
                             {isDeleting ? (
                                 <>

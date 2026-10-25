@@ -84,8 +84,8 @@ const AdminDashboardContent = () => {
           title="Total Revenue"
           value={
             data?.totalRevenue !== undefined
-              ? `$${data.totalRevenue.toLocaleString()}`
-              : "$0"
+              ? `৳${data.totalRevenue.toLocaleString("en-BD")}`
+              : "৳0"
           }
           iconName="CreditCard"
           description="Total platform revenue"

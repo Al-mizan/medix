@@ -31,17 +31,17 @@ const MARITAL_STATUS_OPTIONS = [
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function HealthRecordsDemographicsSection({ form }: { form: any }) {
     return (
-        <Card className="border-[#E3E6EB] shadow-xs">
+        <Card className="border-border bg-card text-card-foreground shadow-xs">
             <CardHeader className="pb-4 border-b border-border/40">
                 <div className="flex items-center gap-2.5">
-                    <div className="flex size-9 items-center justify-center rounded-lg bg-[#E1F3F6] text-[#0B7285]">
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
                         <User className="size-5" />
                     </div>
                     <div>
-                        <CardTitle className="text-base font-semibold text-[#101828]">
+                        <CardTitle className="text-base font-semibold text-foreground">
                             Demographics
                         </CardTitle>
-                        <CardDescription className="text-xs text-[#5B6472]">
+                        <CardDescription className="text-xs text-muted-foreground">
                             Personal identity, biological sex, and birth date details
                         </CardDescription>
                     </div>
@@ -53,8 +53,8 @@ export default function HealthRecordsDemographicsSection({ form }: { form: any }
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {(field: any) => (
                         <div className="space-y-1.5">
-                            <Label htmlFor="gender" className="text-xs font-medium text-[#101828]">
-                                Gender <span className="text-[#D8464B]">*</span>
+                            <Label htmlFor="gender" className="text-xs font-medium text-foreground">
+                                Gender <span className="text-destructive">*</span>
                             </Label>
                             <Select
                                 value={field.state.value}
@@ -80,8 +80,8 @@ export default function HealthRecordsDemographicsSection({ form }: { form: any }
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {(field: any) => (
                         <div className="space-y-1.5">
-                            <Label htmlFor="dateOfBirth" className="text-xs font-medium text-[#101828]">
-                                Date of Birth <span className="text-[#D8464B]">*</span>
+                            <Label htmlFor="dateOfBirth" className="text-xs font-medium text-foreground">
+                                Date of Birth <span className="text-destructive">*</span>
                             </Label>
                             <Input
                                 id="dateOfBirth"
@@ -100,7 +100,7 @@ export default function HealthRecordsDemographicsSection({ form }: { form: any }
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {(field: any) => (
                         <div className="space-y-1.5">
-                            <Label htmlFor="maritalStatus" className="text-xs font-medium text-[#101828]">
+                            <Label htmlFor="maritalStatus" className="text-xs font-medium text-foreground">
                                 Marital Status
                             </Label>
                             <Select

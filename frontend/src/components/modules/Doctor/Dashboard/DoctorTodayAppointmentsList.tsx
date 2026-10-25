@@ -16,13 +16,13 @@ import { IAppointment } from "@/types/appointment.types";
 const getStatusBadgeClass = (status?: string) => {
   switch (status) {
     case "SCHEDULED":
-      return "border-[#0B7285]/30 bg-[#0B7285]/10 text-[#0B7285] dark:bg-[#0B7285]/20";
+      return "border-primary/30 bg-primary/10 text-primary";
     case "INPROGRESS":
-      return "border-[#E3A130]/30 bg-[#E3A130]/10 text-[#B87A14] dark:text-[#E3A130] dark:bg-[#E3A130]/20";
+      return "border-warning/30 bg-warning/10 text-warning";
     case "COMPLETED":
-      return "border-[#178A5E]/30 bg-[#178A5E]/10 text-[#178A5E] dark:bg-[#178A5E]/20";
+      return "border-success/30 bg-success/10 text-success";
     case "CANCELED":
-      return "border-[#D8464B]/30 bg-[#D8464B]/10 text-[#D8464B] dark:bg-[#D8464B]/20";
+      return "border-destructive/30 bg-destructive/10 text-destructive";
     default:
       return "border-muted bg-muted/40 text-muted-foreground";
   }
@@ -43,11 +43,11 @@ export default function DoctorTodayAppointmentsList({
   todayAppointments,
 }: DoctorTodayAppointmentsListProps) {
   return (
-    <Card className="border-neutral-200 shadow-sm lg:col-span-4 dark:border-neutral-800">
-      <CardHeader className="flex flex-row items-center justify-between pb-3">
+    <Card className="border-border bg-card text-card-foreground shadow-xs lg:col-span-4">
+      <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-border/60">
         <div className="space-y-0.5">
           <CardTitle className="flex items-center gap-2 text-base font-semibold">
-            <Clock className="size-4 text-[#0B7285]" />
+            <Clock className="size-4 text-primary" />
             Today&apos;s Appointments
           </CardTitle>
           <CardDescription>
@@ -59,7 +59,7 @@ export default function DoctorTodayAppointmentsList({
           asChild
           variant="ghost"
           size="sm"
-          className="text-xs text-[#0B7285] hover:bg-[#0B7285]/10"
+          className="text-xs text-primary hover:bg-primary/10"
         >
           <Link href="/doctor/dashboard/appointments">
             View all
@@ -68,10 +68,10 @@ export default function DoctorTodayAppointmentsList({
         </Button>
       </CardHeader>
 
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-3 pt-4">
         {todayAppointments.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-neutral-200 py-12 text-center dark:border-neutral-800">
-            <div className="mb-3 flex size-12 items-center justify-center rounded-full bg-[#0B7285]/10 text-[#0B7285]">
+          <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/20 py-12 text-center">
+            <div className="mb-3 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
               <CalendarCheck className="size-6" />
             </div>
             <h3 className="text-sm font-semibold text-foreground">
@@ -84,13 +84,13 @@ export default function DoctorTodayAppointmentsList({
               asChild
               variant="outline"
               size="sm"
-              className="mt-4 border-[#0B7285]/30 text-xs hover:bg-[#0B7285]/10"
+              className="mt-4 border-primary/30 text-primary text-xs hover:bg-primary/10"
             >
               <Link href="/doctor/dashboard/appointments">View Schedule</Link>
             </Button>
           </div>
         ) : (
-          <div className="divide-y divide-neutral-100 dark:divide-neutral-800">
+          <div className="divide-y divide-border/60">
             {todayAppointments.map((appointment) => {
               const patient = appointment.patient;
               const schedule = appointment.schedule;
@@ -108,39 +108,39 @@ export default function DoctorTodayAppointmentsList({
                   key={appointment.id}
                   className="flex flex-col gap-3 py-3.5 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
                 >
-                  <div className="flex items-center gap-3">
-                    <Avatar className="size-10 border border-neutral-200 dark:border-neutral-700">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <Avatar className="size-10 border border-border shrink-0">
                       {patient?.profilePhoto && (
                         <AvatarImage
                           src={patient.profilePhoto}
                           alt={patient?.name ?? "Patient"}
                         />
                       )}
-                      <AvatarFallback className="bg-[#0B7285]/10 text-xs font-semibold text-[#0B7285]">
+                      <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
                         {getInitials(patient?.name)}
                       </AvatarFallback>
                     </Avatar>
 
-                    <div className="space-y-0.5">
-                      <p className="text-sm font-medium text-foreground">
+                    <div className="space-y-0.5 min-w-0 flex-1">
+                      <p className="text-sm font-medium text-foreground truncate" title={patient?.name ?? "Patient"}>
                         {patient?.name ?? "Patient"}
                       </p>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Clock className="size-3 text-[#0B7285]" />
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground truncate">
+                        <span className="flex items-center gap-1 shrink-0">
+                          <Clock className="size-3 text-primary" />
                           {startTime} - {endTime}
                         </span>
                         {patient?.contactNumber && (
                           <>
                             <span>•</span>
-                            <span>{patient.contactNumber}</span>
+                            <span className="truncate">{patient.contactNumber}</span>
                           </>
                         )}
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
                     <Badge
                       variant="outline"
                       className={`rounded-md px-2 py-0.5 text-xs font-medium ${getStatusBadgeClass(appointment.status)}`}
@@ -155,11 +155,17 @@ export default function DoctorTodayAppointmentsList({
                         variant={isInProgress ? "default" : "outline"}
                         className={
                           isInProgress
-                            ? "h-8 bg-[#E3A130] px-3 text-xs text-white hover:bg-[#B87A14]"
-                            : "h-8 border-[#0B7285]/40 px-3 text-xs text-[#0B7285] hover:bg-[#0B7285]/10"
+                            ? "h-8 bg-warning text-warning-foreground hover:bg-warning/90 px-3 text-xs"
+                            : "h-8 border-primary/40 px-3 text-xs text-primary hover:bg-primary/10"
                         }
                       >
-                        <Link href={`/consultation/doctor/${appointment.id}`}>
+                        <Link
+                          href={
+                            appointment.videoCallingId
+                              ? `/consultation/session/${appointment.videoCallingId}`
+                              : `/consultation/doctor/${appointment.doctorId || appointment.id}`
+                          }
+                        >
                           <Video className="mr-1.5 size-3.5" />
                           {isInProgress ? "Resume Call" : "Join Call"}
                         </Link>

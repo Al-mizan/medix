@@ -144,7 +144,7 @@ const DataTable = <TData,>({
                                         {header.isPlaceholder ? null : header.column.getCanSort() ? (
                                             <Button
                                                 variant="ghost"
-                                                className="h-auto cursor-pointer p-0 font-semibold hover:bg-transparent hover:text-inherit focus-visible:ring-0"
+                                                className="h-auto cursor-pointer p-0 font-semibold hover:bg-transparent hover:text-inherit focus-visible:ring-2 focus-visible:ring-ring rounded-xs px-1"
                                                 onClick={header.column.getToggleSortingHandler()}
                                             >
                                                 {flexRender(

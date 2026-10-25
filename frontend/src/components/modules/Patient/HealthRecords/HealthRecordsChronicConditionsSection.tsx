@@ -6,17 +6,17 @@ import { Switch } from "@/components/ui/switch";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function HealthRecordsChronicConditionsSection({ form }: { form: any }) {
     return (
-        <Card className="border-[#E3E6EB] shadow-xs">
+        <Card className="border-border bg-card text-card-foreground shadow-xs">
             <CardHeader className="pb-4 border-b border-border/40">
                 <div className="flex items-center gap-2.5">
-                    <div className="flex size-9 items-center justify-center rounded-lg bg-[#FBEAE3] text-[#D9542E]">
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-accent/10 text-accent">
                         <ShieldAlert className="size-5" />
                     </div>
                     <div>
-                        <CardTitle className="text-base font-semibold text-[#101828]">
+                        <CardTitle className="text-base font-semibold text-foreground">
                             Chronic Conditions & Allergies
                         </CardTitle>
-                        <CardDescription className="text-xs text-[#5B6472]">
+                        <CardDescription className="text-xs text-muted-foreground">
                             Essential alerts regarding sensitivities, past procedures, and chronic illnesses
                         </CardDescription>
                     </div>
@@ -27,12 +27,12 @@ export default function HealthRecordsChronicConditionsSection({ form }: { form: 
                 <form.Field name="hasAllergies">
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {(field: any) => (
-                        <div className="flex items-center justify-between rounded-lg border border-[#E3E6EB] p-4 bg-white shadow-2xs">
+                        <div className="flex items-center justify-between rounded-lg border border-border p-4 bg-muted/30 text-card-foreground shadow-2xs">
                             <div className="space-y-0.5 pr-2">
-                                <Label htmlFor="hasAllergies" className="text-xs font-semibold text-[#101828] cursor-pointer">
+                                <Label htmlFor="hasAllergies" className="text-xs font-semibold text-foreground cursor-pointer">
                                     Allergies
                                 </Label>
-                                <p className="text-[11px] text-[#5B6472]">
+                                <p className="text-[11px] text-muted-foreground">
                                     Food, medication, or seasonal reactions
                                 </p>
                             </div>
@@ -49,12 +49,12 @@ export default function HealthRecordsChronicConditionsSection({ form }: { form: 
                 <form.Field name="hasDiabetes">
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {(field: any) => (
-                        <div className="flex items-center justify-between rounded-lg border border-[#E3E6EB] p-4 bg-white shadow-2xs">
+                        <div className="flex items-center justify-between rounded-lg border border-border p-4 bg-muted/30 text-card-foreground shadow-2xs">
                             <div className="space-y-0.5 pr-2">
-                                <Label htmlFor="hasDiabetes" className="text-xs font-semibold text-[#101828] cursor-pointer">
+                                <Label htmlFor="hasDiabetes" className="text-xs font-semibold text-foreground cursor-pointer">
                                     Diabetes
                                 </Label>
-                                <p className="text-[11px] text-[#5B6472]">
+                                <p className="text-[11px] text-muted-foreground">
                                     Type 1, Type 2, or pre-diabetes
                                 </p>
                             </div>
@@ -71,12 +71,12 @@ export default function HealthRecordsChronicConditionsSection({ form }: { form: 
                 <form.Field name="hasPastSurgeries">
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {(field: any) => (
-                        <div className="flex items-center justify-between rounded-lg border border-[#E3E6EB] p-4 bg-white shadow-2xs">
+                        <div className="flex items-center justify-between rounded-lg border border-border p-4 bg-muted/30 text-card-foreground shadow-2xs">
                             <div className="space-y-0.5 pr-2">
-                                <Label htmlFor="hasPastSurgeries" className="text-xs font-semibold text-[#101828] cursor-pointer">
+                                <Label htmlFor="hasPastSurgeries" className="text-xs font-semibold text-foreground cursor-pointer">
                                     Past Surgeries
                                 </Label>
-                                <p className="text-[11px] text-[#5B6472]">
+                                <p className="text-[11px] text-muted-foreground">
                                     Prior inpatient surgical procedures
                                 </p>
                             </div>

@@ -26,20 +26,13 @@ export default function PatientHealthSnapshotCard({
     healthData,
 }: PatientHealthSnapshotCardProps) {
     return (
-        <Card className="border-[#E3E6EB] bg-white shadow-xs">
-            <CardHeader className="pb-3 border-b border-[#E3E6EB]">
-                <div className="flex items-center justify-between">
-                    <CardTitle className="text-base font-semibold text-[#101828] flex items-center gap-2">
-                        <HeartPulse className="size-4 text-[#0B7285]" />
-                        Health Summary
-                    </CardTitle>
-                    <Button asChild variant="ghost" size="sm" className="text-xs text-[#0B7285] hover:text-[#095E70]">
-                        <Link href="/dashboard/health-records">
-                            Edit <ArrowRight className="size-3.5 ml-1" />
-                        </Link>
-                    </Button>
-                </div>
-                <CardDescription className="text-xs text-[#5B6472]">
+        <Card className="border-border bg-card text-card-foreground shadow-xs">
+            <CardHeader className="pb-3 border-b border-border">
+                <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
+                    <HeartPulse className="size-4 text-primary" />
+                    Health Summary
+                </CardTitle>
+                <CardDescription className="text-xs text-muted-foreground mt-0.5">
                     Key biometrics and health data snapshot
                 </CardDescription>
             </CardHeader>
@@ -47,25 +40,25 @@ export default function PatientHealthSnapshotCard({
                 {healthData ? (
                     <>
                         <div className="grid grid-cols-2 gap-3">
-                            <div className="p-3 rounded-lg border border-[#E3E6EB] bg-[#F7F8FA]">
-                                <span className="text-[11px] text-[#5B6472] uppercase font-semibold">
+                            <div className="p-3 rounded-lg border border-border bg-muted/30">
+                                <span className="text-[11px] text-muted-foreground uppercase font-semibold">
                                     Blood Group
                                 </span>
-                                <p className="text-lg font-bold text-[#0B7285] mt-0.5">
+                                <p className="text-lg font-bold text-primary mt-0.5">
                                     {formatBloodGroup(healthData.bloodGroup)}
                                 </p>
                             </div>
-                            <div className="p-3 rounded-lg border border-[#E3E6EB] bg-[#F7F8FA]">
-                                <span className="text-[11px] text-[#5B6472] uppercase font-semibold">
+                            <div className="p-3 rounded-lg border border-border bg-muted/30">
+                                <span className="text-[11px] text-muted-foreground uppercase font-semibold">
                                     Allergies
                                 </span>
                                 <div className="mt-1">
                                     {healthData.hasAllergies ? (
-                                        <Badge className="bg-[#FCEBEB] text-[#7A2323] border-transparent text-[11px]">
+                                        <Badge className="bg-destructive/15 text-destructive border-transparent text-[11px]">
                                             Has Allergies
                                         </Badge>
                                     ) : (
-                                        <Badge className="bg-[#E3F7EE] text-[#0F5C3E] border-transparent text-[11px]">
+                                        <Badge className="bg-secondary/15 text-secondary border-transparent text-[11px]">
                                             None Reported
                                         </Badge>
                                     )}
@@ -75,34 +68,34 @@ export default function PatientHealthSnapshotCard({
 
                         <div className="space-y-2.5 pt-1 text-xs">
                             <div className="flex items-center justify-between py-1.5 border-b border-border/40">
-                                <span className="text-[#5B6472]">Height:</span>
-                                <span className="font-semibold text-[#101828]">
+                                <span className="text-muted-foreground">Height:</span>
+                                <span className="font-semibold text-foreground">
                                     {healthData.height ? `${healthData.height} cm` : "Not recorded"}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between py-1.5 border-b border-border/40">
-                                <span className="text-[#5B6472]">Weight:</span>
-                                <span className="font-semibold text-[#101828]">
+                                <span className="text-muted-foreground">Weight:</span>
+                                <span className="font-semibold text-foreground">
                                     {healthData.weight ? `${healthData.weight} kg` : "Not recorded"}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between py-1.5 border-b border-border/40">
-                                <span className="text-[#5B6472]">Diabetes Status:</span>
-                                <span className="font-semibold text-[#101828]">
+                                <span className="text-muted-foreground">Diabetes Status:</span>
+                                <span className="font-semibold text-foreground">
                                     {healthData.hasDiabetes ? (
-                                        <span className="text-[#E3A130]">Diagnosed</span>
+                                        <span className="text-warning">Diagnosed</span>
                                     ) : (
-                                        <span className="text-[#178A5E]">No</span>
+                                        <span className="text-secondary">No</span>
                                     )}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between py-1.5">
-                                <span className="text-[#5B6472]">Smoking Status:</span>
-                                <span className="font-semibold text-[#101828]">
+                                <span className="text-muted-foreground">Smoking Status:</span>
+                                <span className="font-semibold text-foreground">
                                     {healthData.smokingStatus ? (
-                                        <span className="text-[#D8464B]">Smoker</span>
+                                        <span className="text-destructive">Smoker</span>
                                     ) : (
-                                        <span className="text-[#178A5E]">Non-smoker</span>
+                                        <span className="text-secondary">Non-smoker</span>
                                     )}
                                 </span>
                             </div>
@@ -111,7 +104,7 @@ export default function PatientHealthSnapshotCard({
                         <Button
                             asChild
                             variant="outline"
-                            className="w-full text-xs font-medium border-[#0B7285] text-[#0B7285] hover:bg-[#E1F3F6]"
+                            className="w-full text-xs font-medium border-primary text-primary hover:bg-primary/10"
                         >
                             <Link href="/dashboard/health-records">
                                 Update Health Records
@@ -120,21 +113,21 @@ export default function PatientHealthSnapshotCard({
                     </>
                 ) : (
                     <div className="flex flex-col items-center justify-center py-6 text-center space-y-3">
-                        <div className="size-10 rounded-full bg-[#FBF0DC] flex items-center justify-center text-[#7A4A09]">
+                        <div className="size-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-700 dark:text-amber-400">
                             <AlertTriangle className="size-5" />
                         </div>
                         <div>
-                            <h4 className="text-xs font-semibold text-[#101828]">
+                            <h4 className="text-xs font-semibold text-foreground">
                                 Health Profile Incomplete
                             </h4>
-                            <p className="text-[11px] text-[#5B6472] mt-1">
+                            <p className="text-[11px] text-muted-foreground mt-1">
                                 Providing your vitals and allergies helps doctors deliver safer, tailored care.
                             </p>
                         </div>
                         <Button
                             asChild
                             size="sm"
-                            className="bg-[#D9542E] hover:bg-[#B8431F] text-white text-xs font-medium w-full"
+                            className="bg-accent hover:bg-accent/90 text-accent-foreground text-xs font-medium w-full"
                         >
                             <Link href="/dashboard/health-records">
                                 Complete Health Profile

@@ -6,8 +6,8 @@ colors:
   primary-hover: "#095E70"
   secondary: "#178A5E"
   secondary-hover: "#0F6E4A"
-  accent: "#D9542E"
-  accent-hover: "#B8431F"
+  accent: "#C4431D"
+  accent-hover: "#A83614"
   ai: "#5B4FCF"
   ai-hover: "#4A3FB8"
   background: "#F7F8FA"
@@ -15,7 +15,7 @@ colors:
   border: "#E3E6EB"
   text-primary: "#101828"
   text-secondary: "#5B6472"
-  text-muted: "#8A93A3"
+  text-muted: "#5B6472"
   muted: "#F0F2F5"
   warning: "#E3A130"
   danger: "#D8464B"
@@ -48,6 +48,16 @@ typography:
     fontWeight: 600
     lineHeight: 1.2
     letterSpacing: "0.02em"
+  caption:
+    fontFamily: "Geist, system-ui, sans-serif"
+    fontSize: "11px"
+    fontWeight: 500
+    lineHeight: 1.2
+  micro:
+    fontFamily: "Geist, system-ui, sans-serif"
+    fontSize: "10px"
+    fontWeight: 600
+    lineHeight: 1.1
 rounded:
   sm: "6px"
   md: "8px"

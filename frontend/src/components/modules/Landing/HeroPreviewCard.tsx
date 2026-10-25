@@ -42,7 +42,7 @@ export default function HeroPreviewCard() {
           <div
             className="absolute inset-0 opacity-10 pointer-events-none"
             style={{
-              backgroundImage: "radial-gradient(#38BDF8 1px, transparent 1px)",
+              backgroundImage: "radial-gradient(#0B7285 1px, transparent 1px)",
               backgroundSize: "20px 20px",
             }}
           />
@@ -114,7 +114,7 @@ export default function HeroPreviewCard() {
             </div>
 
             {/* Floating Mini Patient Self-View */}
-            <div className="size-14 sm:size-16 rounded-lg bg-black/60 border border-white/20 p-1 flex flex-col justify-end text-[9px] text-white/80 font-medium">
+            <div className="size-14 sm:size-16 rounded-lg bg-black/60 border border-white/20 p-1 flex flex-col justify-end text-[10px] text-white/80 font-medium">
               <div className="size-full rounded bg-white/10 flex items-center justify-center text-white/60">
                 You
               </div>
@@ -127,21 +127,21 @@ export default function HeroPreviewCard() {
           <div className="flex items-center gap-1.5">
             <button
               type="button"
-              className="size-8 rounded-lg bg-surface border border-border flex items-center justify-center text-foreground hover:bg-muted text-xs transition-colors"
+              className="min-h-[44px] min-w-[44px] sm:min-h-8 sm:min-w-8 sm:size-8 rounded-lg bg-surface border border-border flex items-center justify-center text-foreground hover:bg-muted text-xs transition-colors"
               aria-label="Mute microphone"
             >
               <Mic className="size-4 text-foreground" />
             </button>
             <button
               type="button"
-              className="size-8 rounded-lg bg-surface border border-border flex items-center justify-center text-foreground hover:bg-muted text-xs transition-colors"
+              className="min-h-[44px] min-w-[44px] sm:min-h-8 sm:min-w-8 sm:size-8 rounded-lg bg-surface border border-border flex items-center justify-center text-foreground hover:bg-muted text-xs transition-colors"
               aria-label="Toggle camera"
             >
               <Video className="size-4 text-foreground" />
             </button>
             <button
               type="button"
-              className="size-8 rounded-lg bg-surface border border-border flex items-center justify-center text-foreground hover:bg-muted text-xs transition-colors"
+              className="min-h-[44px] min-w-[44px] sm:min-h-8 sm:min-w-8 sm:size-8 rounded-lg bg-surface border border-border flex items-center justify-center text-foreground hover:bg-muted text-xs transition-colors"
               aria-label="Open clinical chat"
             >
               <MessageSquare className="size-4 text-foreground" />
