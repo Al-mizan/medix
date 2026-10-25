@@ -7,11 +7,14 @@ import { Textarea } from "@/components/ui/textarea";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function HealthRecordsLifestyleSection({ form }: { form: any }) {
+    const gender = form.getFieldValue("gender");
+    const isMale = gender === "MALE";
+
     return (
         <Card className="border-border bg-card text-card-foreground shadow-xs">
             <CardHeader className="pb-4 border-b border-border/40">
                 <div className="flex items-center gap-2.5">
-                    <div className="flex size-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-secondary/10 text-secondary">
                         <Stethoscope className="size-5" />
                     </div>
                     <div>
@@ -51,17 +54,25 @@ export default function HealthRecordsLifestyleSection({ form }: { form: any }) {
                     <form.Field name="pregnancyStatus">
                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {(field: any) => (
-                            <div className="flex items-center justify-between rounded-lg border border-border p-4 bg-muted/30 text-card-foreground shadow-2xs">
+                            <div className={`flex items-center justify-between rounded-lg border border-border p-4 bg-muted/30 text-card-foreground shadow-2xs ${isMale ? "opacity-60 cursor-not-allowed" : ""}`}>
                                 <div className="space-y-0.5 pr-2">
-                                    <Label htmlFor="pregnancyStatus" className="text-xs font-semibold text-foreground cursor-pointer">
+                                    <Label
+                                        htmlFor="pregnancyStatus"
+                                        className={`text-xs font-semibold text-foreground ${isMale ? "cursor-not-allowed" : "cursor-pointer"}`}
+                                    >
                                         Pregnant
                                     </Label>
-                                    <p className="text-[11px] text-muted-foreground">Currently expecting</p>
+                                    <p className="text-[11px] text-muted-foreground">
+                                        {isMale ? "Not applicable for male" : "Currently expecting"}
+                                    </p>
                                 </div>
                                 <Switch
                                     id="pregnancyStatus"
-                                    checked={field.state.value}
-                                    onCheckedChange={(checked) => field.handleChange(checked)}
+                                    disabled={isMale}
+                                    checked={isMale ? false : field.state.value}
+                                    onCheckedChange={(checked) => {
+                                        if (!isMale) field.handleChange(checked);
+                                    }}
                                 />
                             </div>
                         )}
@@ -141,7 +152,7 @@ export default function HealthRecordsLifestyleSection({ form }: { form: any }) {
                                 <Input
                                     id="immunizationStatus"
                                     type="text"
-                                    placeholder="e.g. Up to date (COVID-19, Tetanus, Flu)"
+                                    placeholder="e.g. Up to date (COVID-19, Tetanus, Hepatitis B)"
                                     value={field.state.value}
                                     onChange={(e) => field.handleChange(e.target.value)}
                                     className="w-full"
@@ -162,7 +173,7 @@ export default function HealthRecordsLifestyleSection({ form }: { form: any }) {
                             <Textarea
                                 id="mentalHealthHistory"
                                 rows={3}
-                                placeholder="Provide any relevant background regarding therapy, counseling, or past psychiatric treatments..."
+                                placeholder="Confidential notes regarding past therapies, counseling, or psychiatric treatments..."
                                 value={field.state.value}
                                 onChange={(e) => field.handleChange(e.target.value)}
                                 className="resize-y"

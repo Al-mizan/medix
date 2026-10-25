@@ -94,7 +94,15 @@ export class IndexingService {
 
         for (const directory of directories) {
             const absoluteDir = path.resolve(process.cwd(), directory);
-            const files = await this.getMarkdownFiles(absoluteDir).catch(() => []);
+            let files = await this.getMarkdownFiles(absoluteDir).catch(() => []);
+
+            if (files.length === 0) {
+                const parentDir = path.resolve(process.cwd(), "..", directory);
+                const parentFiles = await this.getMarkdownFiles(parentDir).catch(() => []);
+                if (parentFiles.length > 0) {
+                    files = parentFiles;
+                }
+            }
 
             for (const file of files) {
                 const content = await readFile(file, "utf8");

@@ -1,4 +1,5 @@
 // Setup environment variables for testing environment
+process.env.DOTENV_CONFIG_QUIET = 'true';
 process.env.NODE_ENV = 'test';
 process.env.PORT = '5000';
 process.env.DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/medix_test';

@@ -13,11 +13,11 @@ export const RAG_DEFAULTS = {
     MAX_INGEST_CONTENT_LENGTH: 20000,
     CHUNK_SIZE: Number(process.env.RAG_CHUNK_SIZE || 900),
     CHUNK_OVERLAP: Number(process.env.RAG_CHUNK_OVERLAP || 120),
-    EMBEDDING_MODEL: process.env.RAG_EMBEDDING_MODEL || "sentence-transformers/all-MiniLM-L6-v2",
-    GROQ_MODEL: process.env.RAG_GROQ_MODEL || "llama-3.3-70b-versatile",
+    EMBEDDING_MODEL: process.env.RAG_EMBEDDING_MODEL || process.env.OPENROUTER_EMBEDDING_MODEL || "nvidia/llama-nemotron-embed-vl-1b-v2:free",
+    GROQ_MODEL: process.env.RAG_GROQ_MODEL || "openai/gpt-oss-120b",
 } as const;
 
-export const RAG_DOC_DIRECTORIES = (process.env.RAG_DOC_DIRS || "Tasks")
+export const RAG_DOC_DIRECTORIES = (process.env.RAG_DOC_DIRS || "docs")
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);

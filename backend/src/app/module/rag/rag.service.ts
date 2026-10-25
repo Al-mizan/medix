@@ -104,16 +104,37 @@ export class RagService {
     }
 
     public async queryKnowledge(payload: IRagQueryRequest) {
-        const matches = await this.retrieveMatches(payload);
+        let matches: IRagMatch[] = [];
+        try {
+            matches = await this.retrieveMatches(payload);
+        } catch (error) {
+            console.warn("Vector retrieval error in RAG query, proceeding to fallback:", error);
+        }
 
         if (!matches.length) {
-            return {
-                answer: "I do not have enough indexed context to answer this query yet.",
-                citations: [],
-                retrieval: {
-                    totalMatches: 0,
-                },
-            };
+            try {
+                const answer = await this.llmService.generateGroundedAnswer({
+                    question: payload.query,
+                    context: "No specific indexed clinical record matched this exact query. Provide concise, safe clinical or platform guidance, and advise consulting a qualified physician or scheduling an appointment for specific medical concerns.",
+                });
+
+                return {
+                    answer,
+                    citations: [],
+                    retrieval: {
+                        totalMatches: 0,
+                    },
+                };
+            } catch (llmError) {
+                console.error("LLM fallback failed:", llmError);
+                return {
+                    answer: "I couldn't retrieve an exact answer from our clinical knowledge base at the moment. Please feel free to ask another question or consult a verified doctor directly.",
+                    citations: [],
+                    retrieval: {
+                        totalMatches: 0,
+                    },
+                };
+            }
         }
 
         const context = RagUtils.buildPromptContext(matches);

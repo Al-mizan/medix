@@ -81,12 +81,18 @@ describe("TICK-023 & TICK-024: Database Optimization & Redis Caching Layer", () 
 
                 // Spy on redisService.get to simulate unexpected redis error
                 const getSpy = vi.spyOn(redisService, "get").mockRejectedValueOnce(new Error("Connection reset"));
+                const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
                 const res = await redisService.withCache("test:fallback", 60, fetcher);
                 expect(res).toBe("fallback-data");
                 expect(executionCount).toBe(1);
+                expect(warnSpy).toHaveBeenCalledWith(
+                    expect.stringContaining("Redis withCache GET error"),
+                    expect.any(Error)
+                );
 
                 getSpy.mockRestore();
+                warnSpy.mockRestore();
             });
         });
 

@@ -68,6 +68,8 @@ type StripeWebhookEvent = Parameters<typeof PaymentService.handlerStripeWebhookE
 describe('PaymentService Webhook and Query Handlers', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   describe('checkout.session.completed', () => {

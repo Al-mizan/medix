@@ -75,11 +75,16 @@ describe("sitemap generator", () => {
   });
 
   it("gracefully falls back to static routes if API fetch fails", async () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     global.fetch = vi.fn().mockRejectedValue(new Error("Connection refused"));
 
     const entries = await sitemap();
     expect(entries.length).toBeGreaterThanOrEqual(14);
     expect(entries.some((e) => e.url === "https://medix.health/consultation")).toBe(true);
+    expect(warnSpy).toHaveBeenCalledWith(
+      "Dynamic doctor sitemap fetch skipped:",
+      expect.any(Error)
+    );
   });
 
   it("returns static routes if API base URL is not defined", async () => {

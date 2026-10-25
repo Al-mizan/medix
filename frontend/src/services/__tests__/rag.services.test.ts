@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { queryRAG } from "../rag.services";
 import { httpClient } from "@/lib/axios/httpClient";
 
@@ -11,6 +11,10 @@ vi.mock("@/lib/axios/httpClient", () => ({
 describe("queryRAG Service", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it("calls /rag/query with default topK and minSimilarity when not provided", async () => {
@@ -74,8 +78,13 @@ describe("queryRAG Service", () => {
   });
 
   it("throws error when httpClient fails", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     vi.mocked(httpClient.post).mockRejectedValue(new Error("Network Error"));
 
     await expect(queryRAG({ query: "Test" })).rejects.toThrow("Network Error");
+    expect(errorSpy).toHaveBeenCalledWith(
+      "Error querying RAG AI service:",
+      expect.any(Error)
+    );
   });
 });

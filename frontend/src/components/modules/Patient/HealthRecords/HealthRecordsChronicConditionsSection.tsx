@@ -9,7 +9,7 @@ export default function HealthRecordsChronicConditionsSection({ form }: { form: 
         <Card className="border-border bg-card text-card-foreground shadow-xs">
             <CardHeader className="pb-4 border-b border-border/40">
                 <div className="flex items-center gap-2.5">
-                    <div className="flex size-9 items-center justify-center rounded-lg bg-accent/10 text-accent">
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
                         <ShieldAlert className="size-5" />
                     </div>
                     <div>

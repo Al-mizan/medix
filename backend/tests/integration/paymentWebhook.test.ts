@@ -61,6 +61,7 @@ describe('Stripe Webhook Integration Tests (POST /webhook)', () => {
   });
 
   it('rejects webhook with HTTP 400 when stripe-signature header is missing', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const res = await request(app)
       .post('/webhook')
       .set('Content-Type', 'application/json')
@@ -69,9 +70,12 @@ describe('Stripe Webhook Integration Tests (POST /webhook)', () => {
     expect(res.status).toBe(400);
     expect(res.body.message).toMatch(/missing stripe signature or webhook secret/i);
     expect(mockStripeWebhooks.constructEvent).not.toHaveBeenCalled();
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('Missing Stripe signature'));
+    errorSpy.mockRestore();
   });
 
   it('rejects webhook with HTTP 400 when signature construction fails', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     mockStripeWebhooks.constructEvent.mockImplementation(() => {
       throw new Error('Invalid signature verification');
     });
@@ -85,6 +89,11 @@ describe('Stripe Webhook Integration Tests (POST /webhook)', () => {
     expect(res.status).toBe(400);
     expect(res.body.message).toMatch(/error processing stripe webhook/i);
     expect(mockPaymentService.handlerStripeWebhookEvent).not.toHaveBeenCalled();
+    expect(errorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Error processing Stripe webhook'),
+      expect.any(Error)
+    );
+    errorSpy.mockRestore();
   });
 
   it('successfully processes valid checkout.session.completed event (HTTP 200)', async () => {
@@ -126,6 +135,7 @@ describe('Stripe Webhook Integration Tests (POST /webhook)', () => {
   });
 
   it('returns HTTP 500 when event processing throws an unexpected error', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const parsedEvent = JSON.parse(mockWebhookPayload);
     mockStripeWebhooks.constructEvent.mockReturnValue(parsedEvent);
     mockPaymentService.handlerStripeWebhookEvent.mockRejectedValue(
@@ -141,5 +151,10 @@ describe('Stripe Webhook Integration Tests (POST /webhook)', () => {
     expect(res.status).toBe(500);
     expect(res.body.success).toBe(false);
     expect(res.body.message).toMatch(/error handling stripe webhook event/i);
+    expect(errorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Error handling Stripe webhook event'),
+      expect.any(Error)
+    );
+    errorSpy.mockRestore();
   });
 });
