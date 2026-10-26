@@ -4,13 +4,13 @@ on:
   pull_request:
     branches: ["main", "development"]
   push:
-    branches: ["main"]
+    branches: ["main", "development"]
 
 permissions:
   contents: read
 
 concurrency:
-  group: deploy-main
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
