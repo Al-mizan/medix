@@ -133,7 +133,11 @@ export async function proxy(request: NextRequest) {
 
         //Rule - Enforcing user to stay in reset password or verify email page if their needPasswordChange or isEmailVerified flags are not satisfied respectively
 
-        if (accessToken) {
+        const isAction = request.headers.has("next-action");
+        const isVerificationOrResetRoute = pathname === "/verify-email" || pathname === "/reset-password";
+        const tokenNeedsVerification = decodedAccessToken && decodedAccessToken.emailVerified === false;
+
+        if (accessToken && !isAction && (isVerificationOrResetRoute || tokenNeedsVerification)) {
             const userInfo = await getUserInfo();
 
             if (userInfo) {
