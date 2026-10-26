@@ -66,3 +66,25 @@ export const getPatientByIdAction = async (
         };
     }
 };
+
+export const updatePatientByAdminAction = async (
+    id: string,
+    payload: import("@/services/adminPatient.services").IAdminUpdatePatientPayload
+): Promise<ApiResponse<import("@/types/patient.types").IPatient> | ApiErrorResponse> => {
+    if (!id) {
+        return {
+            success: false,
+            message: "Invalid patient id",
+        };
+    }
+
+    try {
+        const { updatePatientByAdmin } = await import("@/services/adminPatient.services");
+        return await updatePatientByAdmin(id, payload);
+    } catch (error: unknown) {
+        return {
+            success: false,
+            message: getActionErrorMessage(error, "Failed to update patient"),
+        };
+    }
+};

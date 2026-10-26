@@ -11,9 +11,11 @@ import {
     DialogClose,
     DialogContent,
     DialogDescription,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { type IAdmin } from "@/types/admin.types";
 import {
     updateAdminFormZodSchema,
@@ -96,134 +98,142 @@ const EditAdminModal = ({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-md">
-                <DialogHeader>
-                    <DialogTitle>Edit Administrator</DialogTitle>
-                    <DialogDescription>
-                        Update details for {admin.name}.
+            <DialogContent className="max-h-[90vh] w-[calc(100vw-1.5rem)] max-w-lg gap-0 overflow-hidden p-0 flex flex-col">
+                <DialogHeader className="border-b px-6 py-4 shrink-0">
+                    <DialogTitle className="text-lg font-semibold tracking-tight">Edit Administrator</DialogTitle>
+                    <DialogDescription className="text-xs text-muted-foreground">
+                        Update personal details and contact number for {admin.name}.
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="flex items-center gap-3 p-3 bg-muted/40 rounded-lg border">
-                    <Avatar className="h-12 w-12 border">
-                        <AvatarImage
-                            src={admin.profilePhoto || undefined}
-                            alt={admin.name}
-                        />
-                        <AvatarFallback>
-                            {admin.name.slice(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col">
-                        <span className="text-sm font-semibold text-foreground">
-                            {admin.name}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                            {admin.email}
-                        </span>
-                        <div className="pt-1">
-                            <Badge
-                                variant={
-                                    admin.user?.role === "SUPER_ADMIN"
-                                        ? "default"
-                                        : "secondary"
-                                }
-                                className="text-xs gap-1"
-                            >
-                                {admin.user?.role === "SUPER_ADMIN" ? (
-                                    <ShieldCheck className="h-3 w-3" />
-                                ) : (
-                                    <Shield className="h-3 w-3" />
-                                )}
-                                <span>
-                                    {admin.user?.role === "SUPER_ADMIN"
-                                        ? "Super Admin"
-                                        : "Admin"}
+                <ScrollArea className="max-h-[calc(90vh-8rem)] overflow-y-auto px-6 py-4">
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-3.5 p-3.5 bg-muted/40 rounded-lg border">
+                            <Avatar className="h-12 w-12 border border-border/80 shadow-xs">
+                                <AvatarImage
+                                    src={admin.profilePhoto || undefined}
+                                    alt={admin.name}
+                                />
+                                <AvatarFallback className="font-semibold text-primary">
+                                    {admin.name.slice(0, 2).toUpperCase()}
+                                </AvatarFallback>
+                            </Avatar>
+                            <div className="flex flex-col min-w-0 flex-1">
+                                <span className="text-sm font-semibold text-foreground truncate">
+                                    {admin.name}
                                 </span>
-                            </Badge>
+                                <span className="text-xs text-muted-foreground truncate">
+                                    {admin.email}
+                                </span>
+                                <div className="pt-1.5 flex items-center gap-2">
+                                    <Badge
+                                        variant={
+                                            admin.user?.role === "SUPER_ADMIN"
+                                                ? "default"
+                                                : "secondary"
+                                        }
+                                        className="text-[11px] gap-1 font-medium"
+                                    >
+                                        {admin.user?.role === "SUPER_ADMIN" ? (
+                                            <ShieldCheck className="h-3 w-3" />
+                                        ) : (
+                                            <Shield className="h-3 w-3" />
+                                        )}
+                                        <span>
+                                            {admin.user?.role === "SUPER_ADMIN"
+                                                ? "Super Admin"
+                                                : "Admin"}
+                                        </span>
+                                    </Badge>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                {isForbidden ? (
-                    <div className="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-500/30 rounded-md flex items-center gap-2 text-xs text-amber-700 dark:text-amber-300">
-                        <ShieldAlert className="h-4 w-4 shrink-0" />
-                        <span>Admins cannot edit Super Admin profiles.</span>
-                    </div>
-                ) : (
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            form.handleSubmit();
-                        }}
-                        className="space-y-4 pt-2"
-                    >
-                        <form.Field
-                            name="name"
-                            validators={{
-                                onChange: ({ value }) => {
-                                    const parsed =
-                                        updateAdminFormZodSchema.shape.name.safeParse(
-                                            value
-                                        );
-                                    return parsed.success
-                                        ? undefined
-                                        : parsed.error.issues[0]?.message;
-                                },
-                            }}
-                        >
-                            {(field) => (
-                                <AppField
-                                    field={field}
-                                    label="Full Name"
-                                    placeholder="e.g. Eleanor Vance"
-                                />
-                            )}
-                        </form.Field>
-
-                        <form.Field
-                            name="contactNumber"
-                            validators={{
-                                onChange: ({ value }) => {
-                                    const parsed =
-                                        updateAdminFormZodSchema.shape.contactNumber.safeParse(
-                                            value
-                                        );
-                                    return parsed.success
-                                        ? undefined
-                                        : parsed.error.issues[0]?.message;
-                                },
-                            }}
-                        >
-                            {(field) => (
-                                <AppField
-                                    field={field}
-                                    label="Contact Number"
-                                    placeholder="e.g. 01712345678"
-                                />
-                            )}
-                        </form.Field>
-
-                        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4">
-                            <DialogClose asChild>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    disabled={isPending}
-                                    className="w-full sm:w-auto"
+                        {isForbidden ? (
+                            <div className="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-500/30 rounded-md flex items-center gap-2 text-xs text-amber-700 dark:text-amber-300">
+                                <ShieldAlert className="h-4 w-4 shrink-0" />
+                                <span>Admins cannot edit Super Admin profiles.</span>
+                            </div>
+                        ) : (
+                            <form
+                                id="edit-admin-form"
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    form.handleSubmit();
+                                }}
+                                className="space-y-4 pt-1"
+                            >
+                                <form.Field
+                                    name="name"
+                                    validators={{
+                                        onChange: ({ value }) => {
+                                            const parsed =
+                                                updateAdminFormZodSchema.shape.name.safeParse(
+                                                    value
+                                                );
+                                            return parsed.success
+                                                ? undefined
+                                                : parsed.error.issues[0]?.message;
+                                        },
+                                    }}
                                 >
-                                    Cancel
-                                </Button>
-                            </DialogClose>
-                            <AppSubmitButton
-                                isPending={isPending}
-                                label="Save Changes"
-                                className="w-full sm:w-auto"
-                            />
-                        </div>
-                    </form>
-                )}
+                                    {(field) => (
+                                        <AppField
+                                            field={field}
+                                            label="Full Name"
+                                            placeholder="e.g. Eleanor Vance"
+                                        />
+                                    )}
+                                </form.Field>
+
+                                <form.Field
+                                    name="contactNumber"
+                                    validators={{
+                                        onChange: ({ value }) => {
+                                            const parsed =
+                                                updateAdminFormZodSchema.shape.contactNumber.safeParse(
+                                                    value
+                                                );
+                                            return parsed.success
+                                                ? undefined
+                                                : parsed.error.issues[0]?.message;
+                                        },
+                                    }}
+                                >
+                                    {(field) => (
+                                        <AppField
+                                            field={field}
+                                            label="Contact Number"
+                                            placeholder="e.g. 01712345678"
+                                        />
+                                    )}
+                                </form.Field>
+                            </form>
+                        )}
+                    </div>
+                </ScrollArea>
+
+                <DialogFooter className="border-t bg-muted/20 px-6 py-3.5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 shrink-0">
+                    <DialogClose asChild>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            disabled={isPending}
+                            className="w-full sm:w-auto"
+                        >
+                            Cancel
+                        </Button>
+                    </DialogClose>
+                    {!isForbidden && (
+                        <AppSubmitButton
+                            form="edit-admin-form"
+                            isPending={isPending}
+                            label="Save Changes"
+                            className="w-full sm:w-auto"
+                        />
+                    )}
+                </DialogFooter>
             </DialogContent>
         </Dialog>
     );

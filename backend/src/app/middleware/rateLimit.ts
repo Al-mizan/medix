@@ -96,6 +96,12 @@ export const rateLimiter = (req: Request, res: Response, next: NextFunction) => 
     }
 
     // 2. Auth Tier (/api/auth/*, /api/v1/auth/*)
+    // /auth/me is an authenticated profile read query, not a credential brute-force vector; route it to generalRateLimiter
+    const cleanPath = path.split("?")[0];
+    if (cleanPath === "/api/v1/auth/me" || cleanPath === "/api/auth/me") {
+        return generalRateLimiter(req, res, next);
+    }
+
     if (path.startsWith("/api/auth") || path.startsWith("/api/v1/auth")) {
         return authRateLimiter(req, res, next);
     }

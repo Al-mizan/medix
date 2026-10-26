@@ -69,10 +69,23 @@ const deletePatient = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const updatePatient = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await PatientService.adminUpdatePatient(id as string, req.body);
+
+    sendResponse(res, {
+        success: true,
+        httpStatusCode: status.OK,
+        message: "Patient updated successfully",
+        data: result,
+    });
+});
+
 export const PatientController = {
     updateMyProfile,
     getMyProfile,
     getAllPatients,
     getPatientById,
     deletePatient,
+    updatePatient,
 };

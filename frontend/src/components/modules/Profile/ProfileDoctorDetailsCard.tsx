@@ -1,5 +1,5 @@
 import React from "react";
-import { Building, DollarSign, Star, Stethoscope } from "lucide-react";
+import { Building, Banknote, Star, Stethoscope } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
     Card,
@@ -87,10 +87,10 @@ export default function ProfileDoctorDetailsCard({ doctorData }: ProfileDoctorDe
 
                     <div className="space-y-1">
                         <span className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
-                            <DollarSign className="size-3.5" /> Consultation Fee
+                            <Banknote className="size-3.5" /> Consultation Fee
                         </span>
                         <p className="font-medium text-foreground">
-                            ${doctorData.appointmentFee ?? 0}
+                            ৳{doctorData.appointmentFee ?? 0}
                         </p>
                     </div>
 

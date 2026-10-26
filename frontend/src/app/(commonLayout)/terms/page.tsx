@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlertCircle, CheckCircle2, Clock, DollarSign, FileCheck, Stethoscope } from "lucide-react";
+import { AlertCircle, CheckCircle2, Clock, Banknote, FileCheck, Stethoscope } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Terms of Service & Telemedicine Agreement",
@@ -87,7 +87,7 @@ export default function TermsOfServicePage() {
               </div>
 
               <div className="flex items-start gap-3 pt-3 border-t border-border/60">
-                <DollarSign className="size-5 text-primary shrink-0 mt-0.5" />
+                <Banknote className="size-5 text-primary shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-foreground">Clinician Cancellation or Platform Unavailability:</strong>
                   <p className="text-xs sm:text-sm text-text-secondary mt-0.5 text-justify">

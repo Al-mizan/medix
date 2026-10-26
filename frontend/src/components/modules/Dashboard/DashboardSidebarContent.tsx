@@ -25,7 +25,7 @@ const DashboardSidebarContent = ({
     return (
         <div className="hidden md:flex h-full w-64 shrink-0 flex-col border-r bg-card overflow-y-auto">
             {/* Logo / Brand */}
-            <div className="flex h-16 items-center border-b px-6">
+            <div className="flex h-16 items-center border-b px-6 py-6">
                 <Link href={dashboardHome} className="flex flex-col">
                     <span className="text-xl font-bold tracking-tight text-foreground">
                         Medix<span className="text-primary">.</span>

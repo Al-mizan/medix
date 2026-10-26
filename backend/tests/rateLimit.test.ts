@@ -90,6 +90,10 @@ describe("TICK-021: Sliding-Window Rate Limiter", () => {
                 res.status(200).json({ success: true, doctors: [] });
             });
 
+            testApp.get("/api/v1/auth/me", (req: Request, res: Response) => {
+                res.status(200).json({ success: true, data: { id: "user-1", email: "user@medix.com" } });
+            });
+
             testApp.get("/api-docs", (req: Request, res: Response) => {
                 res.status(200).send("docs");
             });
@@ -151,6 +155,16 @@ describe("TICK-021: Sliding-Window Rate Limiter", () => {
             const res = await request(testApp)
                 .get("/api/v1/doctors")
                 .set("X-Forwarded-For", "10.0.0.4");
+
+            expect(res.status).toBe(200);
+            expect(res.headers["x-ratelimit-limit"]).toBe("100");
+            expect(res.headers["x-ratelimit-remaining"]).toBe("99");
+        });
+
+        it("Auth Profile Exemption: /api/v1/auth/me is routed to general tier (100 limit)", async () => {
+            const res = await request(testApp)
+                .get("/api/v1/auth/me")
+                .set("X-Forwarded-For", "10.0.0.9");
 
             expect(res.status).toBe(200);
             expect(res.headers["x-ratelimit-limit"]).toBe("100");

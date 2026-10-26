@@ -3,13 +3,13 @@ import { z } from "zod";
 export const createAdminFormZodSchema = z.object({
     password: z
         .string()
-        .min(6, "Password must be at least 6 characters")
-        .max(20, "Password must be at most 20 characters"),
+        .min(8, "Password must be at least 8 characters")
+        .max(32, "Password must be at most 32 characters"),
     name: z
         .string()
         .trim()
-        .min(5, "Name must be at least 5 characters")
-        .max(30, "Name must be at most 30 characters"),
+        .min(2, "Name must be at least 2 characters")
+        .max(50, "Name must be at most 50 characters"),
     email: z.string().trim().email("Invalid email address"),
     contactNumber: z
         .string()
@@ -30,8 +30,8 @@ export const updateAdminFormZodSchema = z.object({
     name: z
         .string()
         .trim()
-        .min(5, "Name must be at least 5 characters")
-        .max(30, "Name must be at most 30 characters")
+        .min(2, "Name must be at least 2 characters")
+        .max(50, "Name must be at most 50 characters")
         .optional(),
     contactNumber: z
         .string()

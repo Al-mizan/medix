@@ -20,7 +20,7 @@ import {
     Calendar,
     CheckCircle2,
     Clock,
-    DollarSign,
+    Banknote,
     GraduationCap,
     Mail,
     Stethoscope,
@@ -147,8 +147,8 @@ const ViewDoctorScheduleDialog = ({
                                     </div>
                                     {doctor?.appointmentFee !== undefined && (
                                         <div className="pt-1 flex items-center gap-1 text-xs font-medium text-foreground">
-                                            <DollarSign className="h-3.5 w-3.5 text-muted-foreground" />
-                                            <span>Fee: ${doctor.appointmentFee}</span>
+                                            <Banknote className="h-3.5 w-3.5 text-muted-foreground" />
+                                            <span>Fee: ৳{doctor.appointmentFee}</span>
                                         </div>
                                     )}
                                 </div>

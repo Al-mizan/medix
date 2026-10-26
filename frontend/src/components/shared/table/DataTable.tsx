@@ -184,11 +184,21 @@ const DataTable = <TData,>({
                                     ))}
                                 </TableRow>
                             ))
+                        ) : hydratedIsLoading ? (
+                            Array.from({ length: 5 }).map((_, rIdx) => (
+                                <TableRow key={rIdx}>
+                                    {tableColumns.map((_, cIdx) => (
+                                        <TableCell key={cIdx} className="p-4 align-middle">
+                                            <div className="h-4 bg-muted/60 animate-pulse rounded-md w-3/4" />
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
                         ) : (
                             <TableRow>
                                 <TableCell
                                     colSpan={tableColumns.length}
-                                    className="h-24 text-center"
+                                    className="h-24 text-center text-muted-foreground"
                                 >
                                     {emptyMessage || "No data available."}
                                 </TableCell>

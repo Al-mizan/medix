@@ -62,6 +62,14 @@ const updatePatientProfileZodSchema = z.object({
     })
 })
 
+const adminUpdatePatientZodSchema = z.object({
+    name: z.string().min(2, "Name must be at least 2 characters").max(50, "Name must be at most 50 characters").optional(),
+    contactNumber: z.string().min(11, "Contact number must be at least 11 characters").max(14, "Contact number must be at most 14 characters").optional(),
+    address: z.string().max(200, "Address must be at most 200 characters").optional(),
+    status: z.enum(["ACTIVE", "BLOCKED"]).optional(),
+});
+
 export const PatientValidation = {
-    updatePatientProfileZodSchema
+    updatePatientProfileZodSchema,
+    adminUpdatePatientZodSchema,
 }

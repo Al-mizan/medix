@@ -41,3 +41,11 @@ enum PaymentStatus {
     REFUNDED
     FAILED
 }
+
+enum NotificationType {
+    APPOINTMENT
+    SCHEDULE
+    PRESCRIPTION
+    SYSTEM
+    USER
+}

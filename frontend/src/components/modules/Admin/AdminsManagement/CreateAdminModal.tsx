@@ -9,10 +9,12 @@ import {
     DialogClose,
     DialogContent,
     DialogDescription,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
 import {
     Select,
@@ -101,11 +103,11 @@ const CreateAdminModal = ({ isSuperAdmin = false }: CreateAdminModalProps) => {
                 </Button>
             </DialogTrigger>
 
-            <DialogContent className="max-w-md">
-                <DialogHeader>
-                    <DialogTitle>Add Administrator</DialogTitle>
-                    <DialogDescription>
-                        Create a new Admin or Super Admin user account.
+            <DialogContent className="max-h-[90vh] w-[calc(100vw-1.5rem)] max-w-lg gap-0 overflow-hidden p-0 flex flex-col">
+                <DialogHeader className="border-b px-6 py-4 shrink-0">
+                    <DialogTitle className="text-lg font-semibold tracking-tight">Add Administrator</DialogTitle>
+                    <DialogDescription className="text-xs text-muted-foreground">
+                        Create a new Admin or Super Admin user account with system credentials.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -115,107 +117,116 @@ const CreateAdminModal = ({ isSuperAdmin = false }: CreateAdminModalProps) => {
                         e.stopPropagation();
                         form.handleSubmit();
                     }}
-                    className="space-y-4 pt-2"
+                    className="flex flex-col flex-1 overflow-hidden"
                 >
-                    <form.Field
-                        name="name"
-                        validators={{
-                            onChange: ({ value }) => {
-                                const parsed = createAdminFormZodSchema.shape.name.safeParse(value);
-                                return parsed.success ? undefined : parsed.error.issues[0]?.message;
-                            },
-                        }}
-                    >
-                        {(field) => (
-                            <AppField
-                                field={field}
-                                label="Full Name"
-                                placeholder="e.g. Eleanor Vance"
-                            />
-                        )}
-                    </form.Field>
+                    <ScrollArea className="max-h-[calc(90vh-8rem)] overflow-y-auto px-6 py-4">
+                        <div className="space-y-4">
+                            <form.Field
+                                name="name"
+                                validators={{
+                                    onChange: ({ value }) => {
+                                        const parsed = createAdminFormZodSchema.shape.name.safeParse(value);
+                                        return parsed.success ? undefined : parsed.error.issues[0]?.message;
+                                    },
+                                }}
+                            >
+                                {(field) => (
+                                    <AppField
+                                        field={field}
+                                        label="Full Name"
+                                        placeholder="e.g. Eleanor Vance"
+                                    />
+                                )}
+                            </form.Field>
 
-                    <form.Field
-                        name="email"
-                        validators={{
-                            onChange: ({ value }) => {
-                                const parsed = createAdminFormZodSchema.shape.email.safeParse(value);
-                                return parsed.success ? undefined : parsed.error.issues[0]?.message;
-                            },
-                        }}
-                    >
-                        {(field) => (
-                            <AppField
-                                field={field}
-                                label="Email Address"
-                                type="email"
-                                placeholder="admin@example.com"
-                            />
-                        )}
-                    </form.Field>
+                            <form.Field
+                                name="email"
+                                validators={{
+                                    onChange: ({ value }) => {
+                                        const parsed = createAdminFormZodSchema.shape.email.safeParse(value);
+                                        return parsed.success ? undefined : parsed.error.issues[0]?.message;
+                                    },
+                                }}
+                            >
+                                {(field) => (
+                                    <AppField
+                                        field={field}
+                                        label="Email Address"
+                                        type="email"
+                                        placeholder="admin@example.com"
+                                    />
+                                )}
+                            </form.Field>
 
-                    <form.Field
-                        name="password"
-                        validators={{
-                            onChange: ({ value }) => {
-                                const parsed = createAdminFormZodSchema.shape.password.safeParse(value);
-                                return parsed.success ? undefined : parsed.error.issues[0]?.message;
-                            },
-                        }}
-                    >
-                        {(field) => (
-                            <AppField
-                                field={field}
-                                label="Password"
-                                type="password"
-                                placeholder="Min 6 characters"
-                            />
-                        )}
-                    </form.Field>
+                            <form.Field
+                                name="password"
+                                validators={{
+                                    onChange: ({ value }) => {
+                                        const parsed = createAdminFormZodSchema.shape.password.safeParse(value);
+                                        return parsed.success ? undefined : parsed.error.issues[0]?.message;
+                                    },
+                                }}
+                            >
+                                {(field) => (
+                                    <div className="space-y-1">
+                                        <AppField
+                                            field={field}
+                                            label="Password"
+                                            type="password"
+                                            placeholder="Min 8 characters (8-32)"
+                                        />
+                                        <p className="text-[11px] text-muted-foreground">
+                                            Must be between 8 and 32 characters long.
+                                        </p>
+                                    </div>
+                                )}
+                            </form.Field>
 
-                    <form.Field
-                        name="contactNumber"
-                        validators={{
-                            onChange: ({ value }) => {
-                                const parsed = createAdminFormZodSchema.shape.contactNumber.safeParse(value);
-                                return parsed.success ? undefined : parsed.error.issues[0]?.message;
-                            },
-                        }}
-                    >
-                        {(field) => (
-                            <AppField
-                                field={field}
-                                label="Contact Number"
-                                placeholder="e.g. 01712345678"
-                            />
-                        )}
-                    </form.Field>
+                            <form.Field
+                                name="contactNumber"
+                                validators={{
+                                    onChange: ({ value }) => {
+                                        const parsed = createAdminFormZodSchema.shape.contactNumber.safeParse(value);
+                                        return parsed.success ? undefined : parsed.error.issues[0]?.message;
+                                    },
+                                }}
+                            >
+                                {(field) => (
+                                    <AppField
+                                        field={field}
+                                        label="Contact Number (Optional)"
+                                        placeholder="e.g. 01712345678"
+                                    />
+                                )}
+                            </form.Field>
 
-                    <form.Field name="role">
-                        {(field) => (
-                            <div className="space-y-1.5">
-                                <Label htmlFor="admin-role">System Role</Label>
-                                <Select
-                                    value={field.state.value}
-                                    onValueChange={(val: "ADMIN" | "SUPER_ADMIN") =>
-                                        field.handleChange(val)
-                                    }
-                                >
-                                    <SelectTrigger id="admin-role">
-                                        <SelectValue placeholder="Select role" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="ADMIN">Admin</SelectItem>
-                                        <SelectItem value="SUPER_ADMIN">
-                                            Super Admin
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        )}
-                    </form.Field>
+                            <form.Field name="role">
+                                {(field) => (
+                                    <div className="space-y-1.5">
+                                        <Label htmlFor="admin-role">System Role</Label>
+                                        <Select
+                                            value={field.state.value}
+                                            onValueChange={(val: "ADMIN" | "SUPER_ADMIN") =>
+                                                field.handleChange(val)
+                                            }
+                                        >
+                                            <SelectTrigger id="admin-role">
+                                                <SelectValue placeholder="Select role" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="ADMIN">Admin</SelectItem>
+                                                <SelectItem value="SUPER_ADMIN">
+                                                    Super Admin
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                )}
+                            </form.Field>
+                        </div>
+                    </ScrollArea>
 
-                    <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4">
+                    <DialogFooter className="border-t bg-muted/20 px-6 py-3.5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 shrink-0">
                         <DialogClose asChild>
                             <Button type="button" variant="outline" disabled={isPending} className="w-full sm:w-auto">
                                 Cancel
@@ -226,7 +237,7 @@ const CreateAdminModal = ({ isSuperAdmin = false }: CreateAdminModalProps) => {
                             label="Create Account"
                             className="w-full sm:w-auto"
                         />
-                    </div>
+                    </DialogFooter>
                 </form>
             </DialogContent>
         </Dialog>

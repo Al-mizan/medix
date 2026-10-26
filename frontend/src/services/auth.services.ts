@@ -2,6 +2,7 @@
 
 import { setTokenInCookies } from "@/lib/tokenUtils";
 import { cookies } from "next/headers";
+import { cache } from "react";
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -54,7 +55,7 @@ export async function getNewTokensWithRefreshToken(refreshToken: string): Promis
     }
 }
 
-export async function getUserInfo() {
+export const getUserInfo = cache(async () => {
     try {
         const cookieStore = await cookies();
         const accessToken = cookieStore.get("accessToken")?.value;
@@ -93,7 +94,7 @@ export async function getUserInfo() {
         console.error("Error fetching user info:", error);
         return null;
     }
-}
+});
 
 export async function registerPatientService(payload: {
     name: string;

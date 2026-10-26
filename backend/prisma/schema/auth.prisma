@@ -16,6 +16,7 @@ model User {
     patient            Patient?
     doctor             Doctor?
     admin              Admin?
+    notifications      Notification[]
 
     @@unique([email])
     @@map("user")

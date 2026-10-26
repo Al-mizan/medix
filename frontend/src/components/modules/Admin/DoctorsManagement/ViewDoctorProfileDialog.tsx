@@ -139,8 +139,9 @@ const ViewDoctorProfileDialog = ({
                                                 <span className="font-medium">
                                                     Fee:
                                                 </span>{" "}
-                                                {doctorDetails.appointmentFee ??
-                                                    "N/A"}
+                                                {doctorDetails.appointmentFee !== undefined && doctorDetails.appointmentFee !== null
+                                                    ? `৳${doctorDetails.appointmentFee}`
+                                                    : "N/A"}
                                             </p>
                                             <p>
                                                 <span className="font-medium">

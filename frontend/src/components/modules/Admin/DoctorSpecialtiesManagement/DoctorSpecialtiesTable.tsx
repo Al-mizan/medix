@@ -11,7 +11,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { IDoctor } from "@/types/doctor.types";
-import { Award, Briefcase, DollarSign, Stethoscope } from "lucide-react";
+import { Award, Briefcase, Stethoscope } from "lucide-react";
 
 interface DoctorSpecialtiesTableProps {
     doctors: IDoctor[];
@@ -123,9 +123,8 @@ export const DoctorSpecialtiesTable = ({
                                     </TableCell>
                                     <TableCell className="text-right">
                                         {doctor.appointmentFee !== undefined ? (
-                                            <span className="text-xs font-medium text-foreground inline-flex items-center gap-0.5 justify-end">
-                                                <DollarSign className="h-3 w-3 text-muted-foreground" />
-                                                {doctor.appointmentFee}
+                                            <span className="text-xs font-semibold text-foreground inline-flex items-center justify-end">
+                                                ৳{doctor.appointmentFee}
                                             </span>
                                         ) : (
                                             <span className="text-xs text-muted-foreground">—</span>

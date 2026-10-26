@@ -35,6 +35,12 @@ router.get("/:id",
     PatientController.getPatientById
 );
 
+router.patch("/:id",
+    checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+    validateRequest(PatientValidation.adminUpdatePatientZodSchema),
+    PatientController.updatePatient
+);
+
 router.delete("/:id",
     checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
     PatientController.deletePatient

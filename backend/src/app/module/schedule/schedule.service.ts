@@ -18,54 +18,54 @@ const createSchedule = async (payload: ICreateSchedulePayload) => {
     const currentDate = new Date(startDate);
     const lastDate = new Date(endDate);
 
-    // dulpicate schedule check
     if (currentDate > lastDate) {
-        throw new Error("Start date must be before end date");
+        throw new AppError(status.BAD_REQUEST, "Start date must be before or equal to end date");
     }
-    // if dates are already booked, throw error
-    const existingSchedules = await prisma.schedule.findMany({
-        where: {
-            startDateTime: {
-                lte: new Date(endDate)
-            },
-            endDateTime: {
-                gte: new Date(startDate)
-            }
-        }
-    });
-    if (existingSchedules.length > 0) {
-        throw new Error("Some dates are already booked");
+
+    const [startHour, startMinute] = startTime.split(":").map(Number);
+    const [endHour, endMinute] = endTime.split(":").map(Number);
+    const totalMinutes = endHour * 60 + endMinute - (startHour * 60 + startMinute);
+
+    if (totalMinutes < interval) {
+        throw new AppError(
+            status.BAD_REQUEST,
+            `Time range must be at least ${interval} minutes to generate consultation slots`
+        );
     }
 
     const schedules = [];
 
     while (currentDate <= lastDate) {
-        const startDateTime = buildDateTime(currentDate, startTime);
-        const endDateTime = buildDateTime(currentDate, endTime);
+        let currentSlotStart = buildDateTime(currentDate, startTime);
+        const daySlotEnd = buildDateTime(currentDate, endTime);
 
-        while (startDateTime < endDateTime) {
-            const s = await convertDateTimetoUTC(startDateTime);
-            const e = await convertDateTimetoUTC(addMinutes(startDateTime, interval));
+        while (addMinutes(currentSlotStart, interval) <= daySlotEnd) {
+            const nextSlotEnd = addMinutes(currentSlotStart, interval);
+            const utcStart = await convertDateTimetoUTC(currentSlotStart);
+            const utcEnd = await convertDateTimetoUTC(nextSlotEnd);
 
             const scheduleData = {
-                startDateTime: s,
-                endDateTime: e
-            }
+                startDateTime: utcStart,
+                endDateTime: utcEnd,
+            };
+
             const existingSchedule = await prisma.schedule.findFirst({
                 where: {
                     startDateTime: scheduleData.startDateTime,
-                    endDateTime: scheduleData.endDateTime
-                }
-            })
+                    endDateTime: scheduleData.endDateTime,
+                },
+            });
+
             if (!existingSchedule) {
                 const result = await prisma.schedule.create({
-                    data: scheduleData
-                })
-                console.log(result);
+                    data: scheduleData,
+                });
                 schedules.push(result);
             }
-            startDateTime.setMinutes(startDateTime.getMinutes() + interval)
+
+            currentSlotStart = nextSlotEnd;
         }
+
         currentDate.setDate(currentDate.getDate() + 1);
     }
 
@@ -74,7 +74,7 @@ const createSchedule = async (payload: ICreateSchedulePayload) => {
     }
 
     return schedules;
-}
+};
 
 const getAllSchedules = async (query: IqueryParams) => {
     const queryHash = computeQueryHash(query);

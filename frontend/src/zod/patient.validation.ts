@@ -76,3 +76,29 @@ export const patientHealthDataServerSchema = z.object({
 });
 
 export type IPatientHealthDataServerPayload = z.infer<typeof patientHealthDataServerSchema>;
+
+export const adminUpdatePatientFormSchema = z.object({
+    name: z
+        .string()
+        .trim()
+        .min(2, "Name must be at least 2 characters")
+        .max(50, "Name must be at most 50 characters"),
+    contactNumber: z
+        .string()
+        .trim()
+        .refine(
+            (val) => val === "" || (val.length >= 11 && val.length <= 14),
+            "Contact number must be between 11 and 14 characters"
+        )
+        .optional(),
+    address: z
+        .string()
+        .trim()
+        .max(200, "Address must be at most 200 characters")
+        .optional(),
+    status: z.enum(["ACTIVE", "BLOCKED"], {
+        message: "Status must be either ACTIVE or BLOCKED",
+    }),
+});
+
+export type IAdminUpdatePatientFormValues = z.infer<typeof adminUpdatePatientFormSchema>;

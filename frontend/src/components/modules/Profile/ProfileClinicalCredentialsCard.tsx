@@ -1,5 +1,5 @@
 import React from "react";
-import { Building, DollarSign, Lock, Stethoscope } from "lucide-react";
+import { Building, Banknote, Lock, Stethoscope } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { IDoctorProfile } from "@/types/user.types";
 
@@ -57,10 +57,10 @@ export default function ProfileClinicalCredentialsCard({ doctorData }: ProfileCl
 
                 <div className="p-2.5 rounded-lg bg-muted/40 border border-border/60 space-y-1">
                     <span className="text-muted-foreground flex items-center gap-1">
-                        <DollarSign className="size-3" /> Consultation Fee
+                        <Banknote className="size-3" /> Consultation Fee
                     </span>
                     <p className="font-medium text-foreground">
-                        ${doctorData.appointmentFee ?? 0}
+                        ৳{doctorData.appointmentFee ?? 0}
                     </p>
                 </div>
 

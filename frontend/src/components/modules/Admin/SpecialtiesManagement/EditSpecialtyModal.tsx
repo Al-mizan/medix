@@ -10,9 +10,11 @@ import {
     DialogClose,
     DialogContent,
     DialogDescription,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { type ISpecialty } from "@/types/specialty.types";
@@ -89,99 +91,105 @@ const EditSpecialtyModal = ({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-md">
-                <DialogHeader>
-                    <DialogTitle>Edit Specialty</DialogTitle>
-                    <DialogDescription>
-                        Update details for {specialty.title}.
+            <DialogContent className="max-h-[90vh] w-[calc(100vw-1.5rem)] max-w-lg gap-0 overflow-hidden p-0 flex flex-col">
+                <DialogHeader className="border-b px-6 py-4 shrink-0">
+                    <DialogTitle className="text-lg font-semibold tracking-tight">Edit Specialty</DialogTitle>
+                    <DialogDescription className="text-xs text-muted-foreground">
+                        Update title and clinical description for {specialty.title}.
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="flex items-center gap-3 p-3 bg-muted/40 rounded-lg border">
-                    <Avatar className="h-12 w-12 rounded-md border bg-muted/20">
-                        <AvatarImage
-                            src={specialty.icon || undefined}
-                            alt={specialty.title}
-                            className="object-contain p-1"
-                        />
-                        <AvatarFallback className="rounded-md">
-                            <Stethoscope className="h-6 w-6 text-muted-foreground" />
-                        </AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col">
-                        <span className="text-sm font-semibold text-foreground">
-                            {specialty.title}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                            {specialty.doctorSpecialties?.length ?? 0} doctors assigned
-                        </span>
-                    </div>
-                </div>
-
                 <form
+                    id="edit-specialty-form"
                     onSubmit={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         form.handleSubmit();
                     }}
-                    className="space-y-4 pt-2"
+                    className="flex flex-col flex-1 overflow-hidden"
                 >
-                    <form.Field
-                        name="title"
-                        validators={{
-                            onChange: ({ value }) => {
-                                const parsed = updateSpecialtyFormZodSchema.shape.title.safeParse(value);
-                                return parsed.success ? undefined : parsed.error.issues[0]?.message;
-                            },
-                        }}
-                    >
-                        {(field) => (
-                            <AppField
-                                field={field}
-                                label="Specialty Title"
-                                placeholder="e.g. Cardiology"
-                            />
-                        )}
-                    </form.Field>
-
-                    <form.Field
-                        name="description"
-                        validators={{
-                            onChange: ({ value }) => {
-                                const parsed = updateSpecialtyFormZodSchema.shape.description.safeParse(value);
-                                return parsed.success ? undefined : parsed.error.issues[0]?.message;
-                            },
-                        }}
-                    >
-                        {(field) => (
-                            <div className="space-y-1.5">
-                                <Label htmlFor="edit-description">Description (Optional)</Label>
-                                <Textarea
-                                    id="edit-description"
-                                    placeholder="Brief description of the medical specialty..."
-                                    value={field.state.value}
-                                    onChange={(e) => field.handleChange(e.target.value)}
-                                    rows={3}
-                                />
-                                {field.state.meta.errors.length > 0 && (
-                                    <p className="text-sm text-destructive">
-                                        {String(field.state.meta.errors[0])}
-                                    </p>
-                                )}
+                    <ScrollArea className="max-h-[calc(90vh-8rem)] overflow-y-auto px-6 py-4">
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-3 p-3 bg-muted/40 rounded-lg border border-border/80">
+                                <Avatar className="h-12 w-12 rounded-md border border-border/70 bg-background shrink-0">
+                                    <AvatarImage
+                                        src={specialty.icon || undefined}
+                                        alt={specialty.title}
+                                        className="object-contain p-1"
+                                    />
+                                    <AvatarFallback className="rounded-md">
+                                        <Stethoscope className="h-6 w-6 text-muted-foreground" />
+                                    </AvatarFallback>
+                                </Avatar>
+                                <div className="flex flex-col min-w-0">
+                                    <span className="text-sm font-semibold text-foreground truncate">
+                                        {specialty.title}
+                                    </span>
+                                    <span className="text-xs text-muted-foreground">
+                                        {specialty.doctorSpecialties?.length ?? 0} doctors assigned
+                                    </span>
+                                </div>
                             </div>
-                        )}
-                    </form.Field>
 
-                    <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4">
+                            <form.Field
+                                name="title"
+                                validators={{
+                                    onChange: ({ value }) => {
+                                        const parsed = updateSpecialtyFormZodSchema.shape.title.safeParse(value);
+                                        return parsed.success ? undefined : parsed.error.issues[0]?.message;
+                                    },
+                                }}
+                            >
+                                {(field) => (
+                                    <AppField
+                                        field={field}
+                                        label="Specialty Title"
+                                        placeholder="e.g. Cardiology"
+                                    />
+                                )}
+                            </form.Field>
+
+                            <form.Field
+                                name="description"
+                                validators={{
+                                    onChange: ({ value }) => {
+                                        const parsed = updateSpecialtyFormZodSchema.shape.description.safeParse(value);
+                                        return parsed.success ? undefined : parsed.error.issues[0]?.message;
+                                    },
+                                }}
+                            >
+                                {(field) => (
+                                    <div className="space-y-1.5">
+                                        <Label htmlFor="edit-description">Description (Optional)</Label>
+                                        <Textarea
+                                            id="edit-description"
+                                            placeholder="Brief description of the medical specialty..."
+                                            value={field.state.value}
+                                            onChange={(e) => field.handleChange(e.target.value)}
+                                            rows={3}
+                                            className="resize-none text-sm"
+                                        />
+                                        {field.state.meta.errors.length > 0 && (
+                                            <p className="text-xs text-destructive">
+                                                {String(field.state.meta.errors[0])}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+                            </form.Field>
+                        </div>
+                    </ScrollArea>
+
+                    <DialogFooter className="border-t bg-muted/20 px-6 py-3.5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 shrink-0">
                         <DialogClose asChild>
                             <Button type="button" variant="outline" disabled={isPending} className="w-full sm:w-auto">
                                 Cancel
                             </Button>
                         </DialogClose>
-                        <AppSubmitButton isPending={isPending} className="w-full sm:w-auto">
+                        <AppSubmitButton form="edit-specialty-form" isPending={isPending} className="w-full sm:w-auto">
                             Save Changes
                         </AppSubmitButton>
-                    </div>
+                    </DialogFooter>
                 </form>
             </DialogContent>
         </Dialog>

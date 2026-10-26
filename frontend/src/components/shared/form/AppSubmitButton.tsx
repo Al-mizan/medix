@@ -10,6 +10,7 @@ type AppSubmitButtonProps = {
     pendingLabel?: string;
     className?: string;
     disabled?: boolean;
+    form?: string;
 };
 
 const AppSubmitButton = ({
@@ -19,6 +20,7 @@ const AppSubmitButton = ({
     pendingLabel = "Submitting...",
     className,
     disabled = false,
+    form,
 }: AppSubmitButtonProps) => {
     const isDisabled = disabled || isPending;
     const content = children ?? label;
@@ -26,6 +28,7 @@ const AppSubmitButton = ({
     return (
         <Button
             type="submit"
+            form={form}
             disabled={isDisabled}
             className={cn("w-full", className)}
         >

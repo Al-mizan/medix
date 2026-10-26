@@ -79,7 +79,7 @@ export const getPaymentsColumns = ({
             const amount = row.original.amount;
             return (
                 <span className="font-semibold text-sm text-foreground">
-                    ${typeof amount === "number" ? amount.toFixed(2) : amount}
+                    ৳{typeof amount === "number" ? amount.toFixed(2) : amount}
                 </span>
             );
         },

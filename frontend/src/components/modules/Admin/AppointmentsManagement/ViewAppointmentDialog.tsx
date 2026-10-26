@@ -242,7 +242,7 @@ const ViewAppointmentDialog = ({
                                         Fee Amount
                                     </span>
                                     <span className="text-base font-semibold text-foreground">
-                                        ${payment?.amount ?? doctor?.appointmentFee ?? 0}
+                                        ৳{payment?.amount ?? doctor?.appointmentFee ?? 0}
                                     </span>
                                 </div>
                                 <div>

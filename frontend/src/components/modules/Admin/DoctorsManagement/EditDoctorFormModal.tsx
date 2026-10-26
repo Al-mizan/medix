@@ -7,6 +7,7 @@ import {
     DialogClose,
     DialogContent,
     DialogDescription,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
@@ -45,30 +46,31 @@ const EditDoctorFormModal = ({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
-                className="max-h-[90vh] w-[calc(100vw-1.5rem)] max-w-[calc(100vw-1.5rem)] gap-0 overflow-hidden p-0 sm:w-[calc(100vw-3rem)] sm:max-w-[calc(100vw-3rem)] md:w-[calc(100vw-4rem)] md:max-w-[calc(100vw-4rem)] lg:w-[min(92vw,78rem)] lg:max-w-[min(92vw,78rem)] xl:w-[min(88vw,88rem)] xl:max-w-[min(88vw,88rem)] 2xl:w-[min(84vw,96rem)] 2xl:max-w-[min(84vw,96rem)]"
+                className="max-h-[90vh] w-[calc(100vw-1.5rem)] max-w-[calc(100vw-1.5rem)] gap-0 overflow-hidden p-0 sm:w-[calc(100vw-3rem)] sm:max-w-[calc(100vw-3rem)] md:w-[calc(100vw-4rem)] md:max-w-[calc(100vw-4rem)] lg:w-[min(92vw,78rem)] lg:max-w-[min(92vw,78rem)] xl:w-[min(88vw,88rem)] xl:max-w-[min(88vw,88rem)] 2xl:w-[min(84vw,96rem)] 2xl:max-w-[min(84vw,96rem)] flex flex-col"
                 onInteractOutside={(event) => event.preventDefault()}
                 onEscapeKeyDown={(event) => event.preventDefault()}
             >
-                <DialogHeader className="border-b px-6 py-5 pr-14">
-                    <DialogTitle>Edit Doctor Profile</DialogTitle>
-                    <DialogDescription>
+                <DialogHeader className="border-b px-6 py-4 pr-14 shrink-0">
+                    <DialogTitle className="text-lg font-semibold tracking-tight">Edit Doctor Profile</DialogTitle>
+                    <DialogDescription className="text-xs text-muted-foreground">
                         Update details, professional qualifications, and specialties.
                     </DialogDescription>
                 </DialogHeader>
 
-                <ScrollArea className="max-h-[calc(90vh-5.5rem)]">
-                    <div className="px-6 py-5">
-                        <form
-                            method="POST"
-                            action="#"
-                            noValidate
-                            onSubmit={(event) => {
-                                event.preventDefault();
-                                event.stopPropagation();
-                                form.handleSubmit();
-                            }}
-                            className="space-y-5"
-                        >
+                <form
+                    id="edit-doctor-form"
+                    method="POST"
+                    action="#"
+                    noValidate
+                    onSubmit={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        form.handleSubmit();
+                    }}
+                    className="flex flex-col flex-1 overflow-hidden"
+                >
+                    <ScrollArea className="max-h-[calc(90vh-8.5rem)] overflow-y-auto px-6 py-5">
+                        <div className="space-y-5">
                             <div className="grid gap-4 md:grid-cols-2">
                                 <DoctorIdentityFields
                                     form={form}
@@ -111,39 +113,39 @@ const EditDoctorFormModal = ({
                                     );
                                 }}
                             </form.Field>
+                        </div>
+                    </ScrollArea>
 
-                            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 border-t pt-4">
-                                <DialogClose asChild>
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        disabled={isPending}
-                                        className="w-full sm:w-auto"
-                                    >
-                                        Cancel
-                                    </Button>
-                                </DialogClose>
+                    <DialogFooter className="border-t bg-muted/20 px-6 py-3.5 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 shrink-0">
+                        <DialogClose asChild>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                disabled={isPending}
+                                className="w-full sm:w-auto"
+                            >
+                                Cancel
+                            </Button>
+                        </DialogClose>
 
-                                <form.Subscribe
-                                    selector={(state) =>
-                                        [state.canSubmit, state.isSubmitting] as const
-                                    }
+                        <form.Subscribe
+                            selector={(state) =>
+                                [state.canSubmit, state.isSubmitting] as const
+                            }
+                        >
+                            {([canSubmit, isSubmitting]) => (
+                                <AppSubmitButton
+                                    isPending={isSubmitting || isPending}
+                                    pendingLabel="Saving changes..."
+                                    disabled={!canSubmit || isLoadingSpecialties}
+                                    className="w-full sm:w-auto min-w-36"
                                 >
-                                    {([canSubmit, isSubmitting]) => (
-                                        <AppSubmitButton
-                                            isPending={isSubmitting || isPending}
-                                            pendingLabel="Saving changes..."
-                                            disabled={!canSubmit || isLoadingSpecialties}
-                                            className="w-full sm:w-auto min-w-36"
-                                        >
-                                            Save Changes
-                                        </AppSubmitButton>
-                                    )}
-                                </form.Subscribe>
-                            </div>
-                        </form>
-                    </div>
-                </ScrollArea>
+                                    Save Changes
+                                </AppSubmitButton>
+                            )}
+                        </form.Subscribe>
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
     );

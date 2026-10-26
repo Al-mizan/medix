@@ -13,6 +13,7 @@ import { SpecialtyRoutes } from "../module/specialty/specialty.route";
 import { StatsRoutes } from "../module/stats/stats.route";
 import { UserRoutes } from "../module/user/user.route";
 import { RagRoutes } from "../module/rag/rag.route";
+import { NotificationRoutes } from "../module/notification/notification.route";
 
 const router = Router();
 
@@ -30,5 +31,6 @@ router.use("/reviews", ReviewRoutes)
 router.use("/stats", StatsRoutes)
 router.use("/payments", PaymentRoutes)
 router.use("/rag", RagRoutes)
+router.use("/notifications", NotificationRoutes)
 
 export const IndexRoutes = router;

@@ -1,6 +1,7 @@
 import status from "http-status";
-import { Role } from "../../../generated/prisma/enums";
+import { NotificationType, Role } from "../../../generated/prisma/enums";
 import { Prescription, Prisma } from "../../../generated/prisma/client";
+import { NotificationService } from "../notification/notification.service";
 import { deleteFileFromCloudinary, uploadFileToCloudinary } from "../../config/cloudinary.config";
 import AppError from "../../errorHelpers/AppError";
 import { IRequestUser } from "../../interface/requestUser.interface";
@@ -131,6 +132,19 @@ const givePrescription = async (user: IRequestUser, payload: ICreatePrescription
         maxWait: 15000,
         timeout: 20000,
     });
+
+    // In-App Notification
+    try {
+        await NotificationService.createNotification({
+            userId: appointmentData.patient.userId,
+            title: "New Digital Prescription Issued",
+            message: `Dr. ${doctorData.name} has issued a digital prescription for your consultation.`,
+            type: NotificationType.PRESCRIPTION,
+            actionUrl: "/dashboard/my-prescriptions",
+        });
+    } catch (notifErr) {
+        console.error("Failed to create in-app notification for prescription:", notifErr);
+    }
 
     return result;
 

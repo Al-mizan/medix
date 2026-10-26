@@ -210,10 +210,62 @@ const deletePatient = async (id: string) => {
     return result;
 };
 
+interface IAdminUpdatePatientPayload {
+    name?: string;
+    contactNumber?: string;
+    address?: string;
+    status?: UserStatus;
+}
+
+const adminUpdatePatient = async (id: string, payload: IAdminUpdatePatientPayload) => {
+    const patient = await prisma.patient.findUniqueOrThrow({
+        where: { id, isDeleted: false },
+    });
+
+    const result = await prisma.$transaction(async (tx) => {
+        const patientUpdateData: Prisma.PatientUpdateInput = {};
+        if (payload.name !== undefined) patientUpdateData.name = payload.name;
+        if (payload.contactNumber !== undefined) patientUpdateData.contactNumber = payload.contactNumber;
+        if (payload.address !== undefined) patientUpdateData.address = payload.address;
+
+        const userUpdateData: Prisma.UserUpdateInput = {};
+        if (payload.name !== undefined) userUpdateData.name = payload.name;
+        if (payload.status !== undefined) userUpdateData.status = payload.status;
+
+        if (Object.keys(userUpdateData).length > 0) {
+            await tx.user.update({
+                where: { id: patient.userId },
+                data: userUpdateData,
+            });
+
+            if (payload.status === UserStatus.BLOCKED) {
+                await tx.session.deleteMany({
+                    where: { userId: patient.userId },
+                });
+            }
+        }
+
+        const updatedPatient = await tx.patient.update({
+            where: { id },
+            data: patientUpdateData,
+            include: {
+                user: true,
+                patientHealthData: true,
+                medicalReports: true,
+            },
+        });
+
+        return updatedPatient;
+    });
+
+    return result;
+};
+
 export const PatientService = {
     updateMyProfile,
     getMyProfile,
     getAllPatients,
     getPatientById,
     deletePatient,
+    adminUpdatePatient,
 };

@@ -1,8 +1,9 @@
 import status from "http-status";
 // import { uuidv7 } from "zod/mini";
 import { v7 as uuidv7 } from "uuid";
-import { AppointmentStatus, PaymentStatus, Role } from "../../../generated/prisma/enums";
+import { AppointmentStatus, NotificationType, PaymentStatus, Role } from "../../../generated/prisma/enums";
 import { Appointment, Prisma } from "../../../generated/prisma/client";
+import { NotificationService } from "../notification/notification.service";
 import { envVars } from "../../config/env";
 import { stripe } from "../../config/stripe.config";
 import AppError from "../../errorHelpers/AppError";
@@ -109,6 +110,28 @@ const bookAppointment = async (payload: IBookAppointmentPayload, user: IRequestU
             paymentUrl: session.url,
         };
     });
+
+    // In-app notifications for appointment booking
+    try {
+        await Promise.all([
+            NotificationService.createNotification({
+                userId: patientData.userId,
+                title: "Appointment Booked",
+                message: `Your appointment with Dr. ${doctorData.name} has been initiated.`,
+                type: NotificationType.APPOINTMENT,
+                actionUrl: "/dashboard/my-appointments",
+            }),
+            NotificationService.createNotification({
+                userId: doctorData.userId,
+                title: "New Appointment Booking",
+                message: `Patient ${patientData.name} has booked a consultation slot.`,
+                type: NotificationType.APPOINTMENT,
+                actionUrl: "/doctor/dashboard/appointments",
+            }),
+        ]);
+    } catch (notifError) {
+        console.error("Failed to create in-app notification for booking:", notifError);
+    }
 
     return {
         appointment: result.appointmentData,
@@ -278,6 +301,29 @@ const changeAppointmentStatus = async (appointmentId: string, appointmentStatus:
 
         return updated;
     });
+
+    // In-app notifications for status change
+    try {
+        const readableStatus = newStatus.toLowerCase();
+        await Promise.all([
+            NotificationService.createNotification({
+                userId: appointmentData.patient.userId,
+                title: `Appointment ${newStatus}`,
+                message: `Your appointment with Dr. ${appointmentData.doctor.name} is now ${readableStatus}.`,
+                type: NotificationType.APPOINTMENT,
+                actionUrl: "/dashboard/my-appointments",
+            }),
+            NotificationService.createNotification({
+                userId: appointmentData.doctor.userId,
+                title: `Appointment ${newStatus}`,
+                message: `Consultation with ${appointmentData.patient.name} is now ${readableStatus}.`,
+                type: NotificationType.APPOINTMENT,
+                actionUrl: "/doctor/dashboard/appointments",
+            }),
+        ]);
+    } catch (notifErr) {
+        console.error("Failed to create in-app notification for appointment status change:", notifErr);
+    }
 
     return result;
 }

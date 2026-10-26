@@ -30,3 +30,22 @@ export const deletePatient = async (id: string) => {
         throw error;
     }
 };
+
+export interface IAdminUpdatePatientPayload {
+    name?: string;
+    contactNumber?: string;
+    address?: string;
+    status?: "ACTIVE" | "BLOCKED";
+}
+
+export const updatePatientByAdmin = async (
+    id: string,
+    payload: IAdminUpdatePatientPayload
+) => {
+    try {
+        return await httpClient.patch<IPatient>(`/patients/${id}`, payload);
+    } catch (error) {
+        console.error("Error updating patient:", error);
+        throw error;
+    }
+};

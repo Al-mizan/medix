@@ -24,7 +24,7 @@ const RootDashboardLayout = async ({
                 </main>
             </div>
 
-            {/* Floating RAG AI Assistant Button (TICK-018) */}
+            {/* Floating RAG AI Assistant Button */}
             <AskMedixAIButton />
         </div>
     );

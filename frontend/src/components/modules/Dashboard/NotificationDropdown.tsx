@@ -31,7 +31,12 @@ import {
     Sparkles,
 } from "lucide-react";
 import { UserInfo } from "@/types/user.types";
-import { getMyAppointments } from "@/services/appointment.services";
+import {
+    getMyNotifications,
+    markNotificationAsRead,
+    markAllNotificationsAsRead,
+} from "@/services/notification.services";
+import { INotification } from "@/types/notification.types";
 
 export type NotificationType = "appointment" | "schedule" | "prescription" | "system" | "user";
 
@@ -48,6 +53,22 @@ export interface DynamicNotification {
 interface NotificationDropdownProps {
     userInfo?: UserInfo;
 }
+
+const normalizeNotificationType = (type?: string): NotificationType => {
+    switch (type?.toUpperCase()) {
+        case "APPOINTMENT":
+            return "appointment";
+        case "SCHEDULE":
+            return "schedule";
+        case "PRESCRIPTION":
+            return "prescription";
+        case "USER":
+            return "user";
+        case "SYSTEM":
+        default:
+            return "system";
+    }
+};
 
 const getNotificationIcon = (type: NotificationType) => {
     switch (type) {
@@ -88,114 +109,27 @@ export const resolveNotificationRoute = (type: NotificationType, role?: string):
     switch (type) {
         case "appointment":
             if (normalizedRole === "DOCTOR") return "/doctor/dashboard/appointments";
-            if (normalizedRole === "ADMIN" || normalizedRole === "SUPER_ADMIN") return "/admin/dashboard/appointments-management";
+            if (normalizedRole === "ADMIN" || normalizedRole === "SUPER_ADMIN")
+                return "/admin/dashboard/appointments-management";
             return "/dashboard/my-appointments";
         case "schedule":
             if (normalizedRole === "DOCTOR") return "/doctor/dashboard/my-schedules";
-            if (normalizedRole === "ADMIN" || normalizedRole === "SUPER_ADMIN") return "/admin/dashboard/doctor-schedules-managament";
+            if (normalizedRole === "ADMIN" || normalizedRole === "SUPER_ADMIN")
+                return "/admin/dashboard/doctor-schedules-managament";
             return "/dashboard/book-appointments";
         case "prescription":
             if (normalizedRole === "DOCTOR") return "/doctor/dashboard/prescriptions";
-            if (normalizedRole === "ADMIN" || normalizedRole === "SUPER_ADMIN") return "/admin/dashboard/prescriptions-management";
+            if (normalizedRole === "ADMIN" || normalizedRole === "SUPER_ADMIN")
+                return "/admin/dashboard/prescriptions-management";
             return "/dashboard/my-prescriptions";
         case "user":
-            if (normalizedRole === "ADMIN" || normalizedRole === "SUPER_ADMIN") return "/admin/dashboard/patients-management";
+            if (normalizedRole === "ADMIN" || normalizedRole === "SUPER_ADMIN")
+                return "/admin/dashboard/patients-management";
             return "/my-profile";
         case "system":
         default:
             return "/my-profile";
     }
-};
-
-const getBaseNotificationsForRole = (userInfo?: UserInfo): DynamicNotification[] => {
-    const role = userInfo?.role?.toUpperCase();
-    const now = Date.now();
-
-    if (role === "DOCTOR") {
-        return [
-            {
-                id: "doc-1",
-                title: "Upcoming Consultations",
-                message: "You have active 30-minute consultation slots available for patient bookings.",
-                type: "schedule",
-                timestamp: new Date(now - 1000 * 60 * 20),
-                read: false,
-            },
-            {
-                id: "doc-2",
-                title: "Prescriptions Queue",
-                message: "Consultation summaries and digital prescriptions can be authored in your clinical portal.",
-                type: "prescription",
-                timestamp: new Date(now - 1000 * 60 * 90),
-                read: false,
-            },
-            {
-                id: "doc-3",
-                title: "Patient Feedback",
-                message: "A recent consultation received high patient satisfaction ratings.",
-                type: "appointment",
-                timestamp: new Date(now - 1000 * 60 * 60 * 12),
-                read: true,
-            },
-        ];
-    }
-
-    if (role === "ADMIN" || role === "SUPER_ADMIN") {
-        return [
-            {
-                id: "adm-1",
-                title: "Doctor Directory Governance",
-                message: "Review doctor schedules and credentials in specialties management.",
-                type: "schedule",
-                timestamp: new Date(now - 1000 * 60 * 30),
-                read: false,
-            },
-            {
-                id: "adm-2",
-                title: "Patient Registrations",
-                message: "New patient accounts registered on the Medix healthcare platform.",
-                type: "user",
-                timestamp: new Date(now - 1000 * 60 * 120),
-                read: false,
-            },
-            {
-                id: "adm-3",
-                title: "System Operations",
-                message: "Database queries, Redis cache, and Stripe payment webhooks operational.",
-                type: "system",
-                timestamp: new Date(now - 1000 * 60 * 60 * 8),
-                read: true,
-            },
-        ];
-    }
-
-    // Default: PATIENT
-    return [
-        {
-            id: "pat-1",
-            title: "Telemedicine Consultation",
-            message: "Book an appointment with vetted specialists in 30-minute consultation slots.",
-            type: "appointment",
-            timestamp: new Date(now - 1000 * 60 * 15),
-            read: false,
-        },
-        {
-            id: "pat-2",
-            title: "Health Records Synced",
-            message: "Your vitals and longitudinal health records are securely updated in Medix EHR.",
-            type: "system",
-            timestamp: new Date(now - 1000 * 60 * 180),
-            read: false,
-        },
-        {
-            id: "pat-3",
-            title: "Prescription History",
-            message: "Access your digital prescriptions and diagnostic reports anytime.",
-            type: "prescription",
-            timestamp: new Date(now - 1000 * 60 * 60 * 24),
-            read: true,
-        },
-    ];
 };
 
 const NotificationDropdown = ({ userInfo }: NotificationDropdownProps) => {
@@ -205,147 +139,99 @@ const NotificationDropdown = ({ userInfo }: NotificationDropdownProps) => {
     const [activeFilter, setActiveFilter] = useState<"all" | "unread">("all");
     const [isLoading, setIsLoading] = useState(false);
     const [notifications, setNotifications] = useState<DynamicNotification[]>([]);
+    const [serverUnreadCount, setServerUnreadCount] = useState(0);
 
-    const storageKey = useMemo(() => {
-        return `medix_read_notifications_${userInfo?.id || userInfo?.email || "guest"}`;
-    }, [userInfo?.id, userInfo?.email]);
+    const mapNotification = useCallback((item: INotification): DynamicNotification => {
+        return {
+            id: item.id,
+            title: item.title,
+            message: item.message,
+            type: normalizeNotificationType(item.type),
+            timestamp: new Date(item.createdAt),
+            read: item.read,
+            actionUrl: item.actionUrl || undefined,
+        };
+    }, []);
 
-    // Load and synthesize dynamic notifications
-    useEffect(() => {
-        let isMounted = true;
-
-        const loadDynamicNotifications = async () => {
-            setIsLoading(true);
-            try {
-                const baseList = getBaseNotificationsForRole(userInfo);
-
-                // Read persisted read-status IDs from localStorage
-                let readIds: string[] = [];
-                try {
-                    const stored = localStorage.getItem(storageKey);
-                    if (stored) {
-                        readIds = JSON.parse(stored);
-                    }
-                } catch {
-                    // Ignore storage read errors
-                }
-
-                // If user is logged in, attempt to fetch live appointment updates
-                if (userInfo?.id) {
-                    try {
-                        const appointmentsRes = await getMyAppointments();
-                        const appointments = appointmentsRes?.data;
-
-                        if (Array.isArray(appointments) && appointments.length > 0) {
-                            const latest = appointments.slice(0, 3);
-                            const appointmentNotifications: DynamicNotification[] = latest.map((appt) => {
-                                const doctorName = appt.doctor?.name || "Specialist";
-                                const isPatient = userInfo.role === "PATIENT";
-                                const patientName = appt.patient?.name || "Patient";
-
-                                const statusText = appt.status ? appt.status.toLowerCase() : "scheduled";
-
-                                return {
-                                    id: `appt-${appt.id}`,
-                                    title: `Appointment ${appt.status || "Scheduled"}`,
-                                    message: isPatient
-                                        ? `Consultation with Dr. ${doctorName} is marked as ${statusText}.`
-                                        : `Consultation with ${patientName} is marked as ${statusText}.`,
-                                    type: "appointment" as NotificationType,
-                                    timestamp: new Date(appt.createdAt || Date.now()),
-                                    read: readIds.includes(`appt-${appt.id}`),
-                                };
-                            });
-
-                            if (isMounted) {
-                                // Merge appointment notifications on top of base
-                                const merged = [
-                                    ...appointmentNotifications,
-                                    ...baseList.map((item) => ({
-                                        ...item,
-                                        read: readIds.includes(item.id) ? true : item.read,
-                                    })),
-                                ];
-                                setNotifications(merged);
-                                return;
-                            }
-                        }
-                    } catch {
-                        // Network error fallback to base list
-                    }
-                }
-
-                if (isMounted) {
-                    setNotifications(
-                        baseList.map((item) => ({
-                            ...item,
-                            read: readIds.includes(item.id) ? true : item.read,
-                        }))
-                    );
-                }
-            } finally {
-                if (isMounted) {
-                    setIsLoading(false);
+    const fetchNotifications = useCallback(async () => {
+        if (!userInfo?.id) return;
+        setIsLoading(true);
+        try {
+            const res = await getMyNotifications({ limit: 50 });
+            if (res?.success && Array.isArray(res.data)) {
+                setNotifications(res.data.map(mapNotification));
+                if (res.meta?.unreadCount !== undefined) {
+                    setServerUnreadCount(res.meta.unreadCount);
                 }
             }
-        };
+        } catch (error) {
+            console.error("Failed to fetch live notifications:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [userInfo?.id, mapNotification]);
 
-        loadDynamicNotifications();
+    useEffect(() => {
+        fetchNotifications();
+    }, [fetchNotifications]);
 
-        return () => {
-            isMounted = false;
-        };
-    }, [userInfo, storageKey]);
+    // Refresh when opening popover or modal
+    const handlePopoverOpenChange = (open: boolean) => {
+        setIsPopoverOpen(open);
+        if (open) {
+            fetchNotifications();
+        }
+    };
 
     const unreadCount = useMemo(() => {
-        return notifications.filter((n) => !n.read).length;
-    }, [notifications]);
+        return notifications.filter((n) => !n.read).length || serverUnreadCount;
+    }, [notifications, serverUnreadCount]);
 
-    const persistReadStatus = useCallback(
-        (updatedNotifications: DynamicNotification[]) => {
-            try {
-                const readIds = updatedNotifications.filter((n) => n.read).map((n) => n.id);
-                localStorage.setItem(storageKey, JSON.stringify(readIds));
-            } catch {
-                // Ignore storage write errors
-            }
-        },
-        [storageKey]
-    );
-
-    const handleNotificationClick = (notification: DynamicNotification) => {
-        // 1. Mark as read locally and persist
-        const updated = notifications.map((item) =>
-            item.id === notification.id ? { ...item, read: true } : item
+    const handleNotificationClick = async (notification: DynamicNotification) => {
+        // 1. Optimistically mark as read locally
+        setNotifications((prev) =>
+            prev.map((item) => (item.id === notification.id ? { ...item, read: true } : item))
         );
-        setNotifications(updated);
-        persistReadStatus(updated);
+        setServerUnreadCount((prev) => Math.max(0, prev - 1));
 
-        // 2. Close popover/modal
+        // 2. Persist to backend
+        try {
+            await markNotificationAsRead(notification.id);
+        } catch (error) {
+            console.error("Failed to mark notification as read on server:", error);
+        }
+
+        // 3. Close popover/modal
         setIsPopoverOpen(false);
         setIsAllModalOpen(false);
 
-        // 3. Role-aware deep-link routing
-        const targetUrl = notification.actionUrl || resolveNotificationRoute(notification.type, userInfo?.role);
+        // 4. Role-aware deep-link routing
+        const targetUrl =
+            notification.actionUrl || resolveNotificationRoute(notification.type, userInfo?.role);
         router.push(targetUrl);
     };
 
-    const handleMarkAllAsRead = () => {
-        const updated = notifications.map((n) => ({ ...n, read: true }));
-        setNotifications(updated);
-        persistReadStatus(updated);
-        toast.success("All notifications marked as read");
+    const handleMarkAllAsRead = async () => {
+        // Optimistic update
+        setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+        setServerUnreadCount(0);
+
+        try {
+            await markAllNotificationsAsRead();
+            toast.success("All notifications marked as read");
+        } catch (error) {
+            console.error("Failed to mark all as read on server:", error);
+            toast.error("Could not update all notifications on server");
+        }
     };
 
     const filteredNotifications = useMemo(() => {
-        return activeFilter === "unread"
-            ? notifications.filter((n) => !n.read)
-            : notifications;
+        return activeFilter === "unread" ? notifications.filter((n) => !n.read) : notifications;
     }, [notifications, activeFilter]);
 
     return (
         <>
-            <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+            <Popover open={isPopoverOpen} onOpenChange={handlePopoverOpenChange}>
                 <PopoverTrigger asChild>
                     <Button
                         variant="outline"
@@ -418,10 +304,10 @@ const NotificationDropdown = ({ userInfo }: NotificationDropdownProps) => {
 
                     {/* Notifications List */}
                     <ScrollArea className="max-h-80">
-                        {isLoading ? (
+                        {isLoading && notifications.length === 0 ? (
                             <div className="py-10 flex flex-col items-center justify-center gap-2 text-muted-foreground">
                                 <Loader2 className="size-5 animate-spin text-primary" />
-                                <span className="text-xs">Updating alerts...</span>
+                                <span className="text-xs">Loading notifications...</span>
                             </div>
                         ) : filteredNotifications.length > 0 ? (
                             <div className="divide-y divide-border/40">
@@ -466,7 +352,7 @@ const NotificationDropdown = ({ userInfo }: NotificationDropdownProps) => {
                                 <Sparkles className="size-5 mx-auto text-muted-foreground/50 mb-1" />
                                 <p className="font-medium text-foreground">All caught up</p>
                                 <p className="text-[11px]">
-                                    {activeFilter === "unread" ? "No unread alerts" : "No recent notifications"}
+                                    {activeFilter === "unread" ? "No unread alerts" : "No notifications yet"}
                                 </p>
                             </div>
                         )}

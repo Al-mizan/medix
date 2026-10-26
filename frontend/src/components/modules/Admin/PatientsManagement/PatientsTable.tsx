@@ -19,6 +19,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import DeletePatientConfirmationDialog from "./DeletePatientConfirmationDialog";
+import EditPatientModal from "./EditPatientModal";
 import { patientColumns } from "./patientsColumns";
 import ViewPatientDialog from "./ViewPatientDialog";
 
@@ -38,15 +39,18 @@ const PatientsTable = ({
     const searchParams = useSearchParams();
     const {
         viewingItem,
+        editingItem,
         deletingItem,
         isViewDialogOpen,
+        isEditModalOpen,
         isDeleteDialogOpen,
         onViewOpenChange,
+        onEditOpenChange,
         onDeleteOpenChange,
         tableActions,
     } = useRowActionModalState<IPatient>({
         enableView: true,
-        enableEdit: false,
+        enableEdit: true,
         enableDelete: true,
     });
 
@@ -146,6 +150,12 @@ const PatientsTable = ({
                 open={isViewDialogOpen}
                 onOpenChange={onViewOpenChange}
                 patient={viewingItem}
+            />
+
+            <EditPatientModal
+                open={isEditModalOpen}
+                onOpenChange={onEditOpenChange}
+                patient={editingItem}
             />
 
             <DeletePatientConfirmationDialog

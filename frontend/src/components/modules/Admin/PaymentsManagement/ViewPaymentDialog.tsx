@@ -63,8 +63,8 @@ export const ViewPaymentDialog = ({
 
     const formattedAmount =
         typeof payment.amount === "number"
-            ? `$${payment.amount.toFixed(2)}`
-            : `$${payment.amount}`;
+            ? `৳${payment.amount.toFixed(2)}`
+            : `৳${payment.amount}`;
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
