@@ -40,7 +40,7 @@ export default function LandingFooter() {
                 <span className="text-xl font-bold tracking-tight text-foreground leading-none">
                   Medix<span className="text-primary">.</span>
                 </span>
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted mt-0.5">
+                <span className="text-xs font-semibold uppercase tracking-wider text-text-muted mt-0.5">
                   Clinical Healthcare
                 </span>
               </div>
@@ -94,7 +94,7 @@ export default function LandingFooter() {
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center sm:justify-between gap-4 text-xs text-text-secondary">
           <div className="flex items-center gap-2 font-medium">
             <ShieldCheck className="size-4 text-primary shrink-0" />
-            <span>HIPAA Aligned &bull; 256-Bit Encrypted Health Records</span>
+            <span>Strict Confidentiality &bull; 256-Bit TLS Encrypted Health Records</span>
           </div>
           <div className="flex items-center gap-2 font-medium">
             <UserCheck className="size-4 text-secondary shrink-0" />
@@ -111,7 +111,7 @@ export default function LandingFooter() {
       <div className="border-t border-border/70 bg-background/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-text-muted text-center sm:text-left">
-            &copy; {currentYear} Medix Healthcare Technologies Inc. All medical records encrypted under HIPAA & BMDC standards.
+            &copy; {currentYear} Medix Healthcare Technologies Inc. All medical records protected under BMDC clinical governance.
           </p>
 
           {/* Social / Support links */}

@@ -15,7 +15,7 @@ const RootDashboardLayout = async ({
             {/* Dashboard Sidebar */}
             <DashboardSidebar />
 
-            <div className="relative flex flex-1 flex-col min-h-0 min-w-0 overflow-hidden">
+            <div className="relative flex flex-1 flex-col min-h-0 min-w-0 overflow-hidden my-0.75">
                 {/* DashboardNavbar */}
                 <DashboardNavbar />
                 {/* Dashboard Content */}

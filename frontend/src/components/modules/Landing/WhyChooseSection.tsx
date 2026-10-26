@@ -39,7 +39,7 @@ export default function WhyChooseSection() {
         {/* 3-Step Visual Storyboard */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
           {/* Step 01: Choose Specialist */}
-          <div className="group flex flex-col justify-between rounded-2xl border border-border/80 bg-background p-6 shadow-2xs hover:border-primary/40 hover:shadow-md transition-all duration-200">
+          <div className="group flex flex-col justify-between rounded-2xl border border-border/80 bg-background p-6 hover:border-primary/40 hover:shadow-md transition-all duration-200">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="flex size-9 items-center justify-center rounded-xl bg-tint-primary-bg text-primary font-extrabold text-sm border border-primary/15">
@@ -60,7 +60,7 @@ export default function WhyChooseSection() {
               </div>
 
               {/* Tangible Mini Product Mockup: Doctor Profile Card */}
-              <div className="rounded-xl border border-border/80 bg-surface/80 p-4 space-y-3 shadow-2xs">
+              <div className="rounded-xl border border-border/80 bg-surface/80 p-4 space-y-3">
                 <div className="flex items-center gap-3">
                   <Avatar className="size-11 ring-2 ring-primary/20 rounded-xl">
                     <AvatarImage
@@ -101,13 +101,13 @@ export default function WhyChooseSection() {
           </div>
 
           {/* Step 02: Video Consultation */}
-          <div className="group flex flex-col justify-between rounded-2xl border border-border/80 bg-background p-6 shadow-2xs hover:border-primary/40 hover:shadow-md transition-all duration-200">
+          <div className="group flex flex-col justify-between rounded-2xl border border-border/80 bg-background p-6 hover:border-primary/40 hover:shadow-md transition-all duration-200">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="flex size-9 items-center justify-center rounded-xl bg-tint-primary-bg text-primary font-extrabold text-sm border border-primary/15">
                   02
                 </span>
-                <Badge variant="outline" className="text-[11px] font-semibold text-secondary border-secondary/30 bg-tint-secondary-bg">
+                <Badge variant="outline" className="text-[11px] font-semibold text-tint-secondary-text border-secondary/20 bg-tint-secondary-bg">
                   Private HD Video
                 </Badge>
               </div>
@@ -122,7 +122,7 @@ export default function WhyChooseSection() {
               </div>
 
               {/* Tangible Mini Product Mockup: Video Telehealth HUD */}
-              <div className="rounded-xl border border-border/80 bg-zinc-900 text-white p-3.5 space-y-2.5 shadow-xs">
+              <div className="rounded-xl border border-border/80 bg-zinc-900 text-white p-3.5 space-y-2.5">
                 <div className="flex items-center justify-between text-[11px] text-zinc-400">
                   <span className="flex items-center gap-1.5 text-emerald-400 font-semibold">
                     <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -169,7 +169,7 @@ export default function WhyChooseSection() {
           </div>
 
           {/* Step 03: Instant Prescription & Follow-up */}
-          <div className="group flex flex-col justify-between rounded-2xl border border-border/80 bg-background p-6 shadow-2xs hover:border-primary/40 hover:shadow-md transition-all duration-200">
+          <div className="group flex flex-col justify-between rounded-2xl border border-border/80 bg-background p-6 hover:border-primary/40 hover:shadow-md transition-all duration-200">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="flex size-9 items-center justify-center rounded-xl bg-tint-primary-bg text-primary font-extrabold text-sm border border-primary/15">
@@ -182,15 +182,15 @@ export default function WhyChooseSection() {
 
               <div>
                 <h3 className="text-lg font-bold text-foreground">
-                  Get Rx & 7-Day Care
+                  Get Rx & Care Plan
                 </h3>
                 <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                  Receive verifiable digital prescriptions immediately, plus 7 days of free doctor chat.
+                  Receive verifiable digital prescriptions immediately, with seamless follow-up appointment booking.
                 </p>
               </div>
 
               {/* Tangible Mini Product Mockup: Digital Rx Preview */}
-              <div className="rounded-xl border border-border/80 bg-surface/80 p-3.5 space-y-2.5 shadow-2xs">
+              <div className="rounded-xl border border-border/80 bg-surface/80 p-3.5 space-y-2.5">
                 <div className="flex items-center justify-between pb-2 border-b border-border/60">
                   <div>
                     <div className="text-xs font-bold text-foreground">Digital Prescription</div>
@@ -216,7 +216,7 @@ export default function WhyChooseSection() {
                   </span>
                   <span className="flex items-center gap-1 text-primary font-semibold">
                     <MessageSquare className="size-3" />
-                    7-Day Chat
+                    Follow-Up Care
                   </span>
                 </div>
               </div>
@@ -224,7 +224,7 @@ export default function WhyChooseSection() {
 
             <div className="mt-6 pt-3 border-t border-border/60 text-[11px] text-text-muted flex items-center gap-1.5">
               <FileCheck2 className="size-3.5 text-secondary shrink-0" />
-              <span>Complimentary 7-Day Follow-Up</span>
+              <span>Complimentary Follow-Up Access</span>
             </div>
           </div>
         </div>

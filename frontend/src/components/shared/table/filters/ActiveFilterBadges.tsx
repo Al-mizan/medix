@@ -73,12 +73,16 @@ export default function ActiveFilterBadges({
             }
 
             if (filter.type === "range" && isRangeValue(filterValue)) {
+                const isFeeFilter = filter.id.toLowerCase().includes("fee");
                 for (const op of RANGE_OPERATORS) {
                     const val = filterValue[op]?.trim();
                     if (val) {
+                        const formattedVal = isFeeFilter && !isNaN(Number(val))
+                            ? `৳ ${Number(val).toLocaleString("en-BD")} BDT`
+                            : val;
                         badges.push({
                             key: `${filter.id}:${op}`,
-                            label: `${filter.label}: ${RANGE_OPERATOR_LABEL[op]} ${val}`,
+                            label: `${filter.label}: ${RANGE_OPERATOR_LABEL[op]} ${formattedVal}`,
                             onRemove: () => {
                                 const next: DataTableRangeValue = {
                                     ...filterValue,
@@ -110,14 +114,14 @@ export default function ActiveFilterBadges({
                 <Badge
                     key={badge.key}
                     variant="secondary"
-                    className="flex items-center gap-1 pr-1 text-xs"
+                    className="flex items-center gap-1.5 py-1 px-2.5 text-xs rounded-full font-medium"
                 >
-                    {badge.label}
+                    <span>{badge.label}</span>
                     <button
                         type="button"
                         onClick={badge.onRemove}
                         disabled={isLoading}
-                        className="ml-0.5 rounded-full p-0.5 hover:bg-muted-foreground/20 disabled:pointer-events-none"
+                        className="rounded-full p-0.5 hover:bg-muted-foreground/20 text-muted-foreground hover:text-foreground disabled:pointer-events-none min-h-[22px] min-w-[22px] flex items-center justify-center transition-colors"
                         aria-label={`Remove ${badge.label}`}
                     >
                         <X className="h-3 w-3" />

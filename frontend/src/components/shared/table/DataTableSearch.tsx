@@ -60,6 +60,11 @@ const DataTableSearch = ({
             <Input
                 value={value}
                 onChange={(event) => setValue(event.target.value)}
+                onKeyDown={(event) => {
+                    if (event.key === "Escape") {
+                        handleClear();
+                    }
+                }}
                 placeholder={placeholder}
                 className={`h-9 pl-9 ${isLoading && value.length > 0 ? "pr-14" : "pr-9"}`}
                 aria-label={placeholder}
@@ -78,8 +83,8 @@ const DataTableSearch = ({
                 <Button
                     type="button"
                     variant="ghost"
-                    size="icon-xs"
-                    className="absolute top-1/2 right-1 -translate-y-1/2"
+                    size="icon"
+                    className="absolute top-1/2 right-1 -translate-y-1/2 size-7 min-h-[28px] min-w-[28px] text-muted-foreground hover:text-foreground"
                     onClick={handleClear}
                     aria-label="Clear search"
                 >

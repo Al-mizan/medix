@@ -105,9 +105,9 @@ export default function CookieConsentBanner() {
             <div className="flex items-center justify-between">
               <h4 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
                 <span>Privacy & Cookies</span>
-                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-secondary bg-tint-secondary-bg px-1.5 py-0.5 rounded-md">
-                  <ShieldCheck className="size-3" />
-                  HIPAA Aware
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-tint-secondary-text bg-tint-secondary-bg px-1.5 py-0.5 rounded-md">
+                  <ShieldCheck className="size-3 text-secondary" />
+                  Confidential
                 </span>
               </h4>
               <button

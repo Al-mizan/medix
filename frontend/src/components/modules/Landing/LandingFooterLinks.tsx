@@ -97,7 +97,7 @@ export default function LandingFooterLinks() {
               href="/privacy"
               className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded"
             >
-              Privacy Policy & HIPAA
+              Privacy Policy & Confidentiality
             </Link>
           </li>
           <li>

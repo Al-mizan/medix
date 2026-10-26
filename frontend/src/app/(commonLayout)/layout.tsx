@@ -10,7 +10,7 @@ export default async function CommonLayout({
     const user = await getUserInfo();
 
     return (
-        <div className="relative min-h-screen flex flex-col pb-16 md:pb-0">
+        <div className="relative min-h-screen flex flex-col pb-20 md:pb-0">
             <Navbar user={user} />
             <div className="flex-1">{children}</div>
             <StickyMobileCTA />

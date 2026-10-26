@@ -130,9 +130,7 @@ export default function SpecialtiesSection() {
         {!isLoading && specialties.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3.5 sm:gap-4">
             {specialties.map((specialty) => {
-              const href = `/consultation?specialty=${encodeURIComponent(
-                specialty.id
-              )}&specialties.specialty.title=${encodeURIComponent(
+              const href = `/consultation?specialties.specialty.title=${encodeURIComponent(
                 specialty.title
               )}`;
 
@@ -140,7 +138,7 @@ export default function SpecialtiesSection() {
                 <Link
                   key={specialty.id}
                   href={href}
-                  className="group relative flex flex-col justify-between rounded-2xl border border-border/70 bg-surface p-4 sm:p-5 shadow-2xs transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  className="group relative flex flex-col justify-between rounded-2xl border border-border/70 bg-surface p-4 sm:p-5 transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
                   <div className="space-y-3">
                     {/* Visual Clinical Icon */}

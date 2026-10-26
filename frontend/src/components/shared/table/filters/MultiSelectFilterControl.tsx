@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import {
     DataTableFilterValue,
     MultiSelectFilterConfig,
@@ -25,6 +26,11 @@ export default function MultiSelectFilterControl({
     onFilterChange,
 }: MultiSelectFilterControlProps) {
     const [selectedValues, setSelectedValues] = useState<string[]>(value);
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const filteredOptions = filter.options.filter((option) =>
+        option.label.toLowerCase().includes(searchQuery.trim().toLowerCase()),
+    );
 
     const applyNow = () => {
         onFilterChange(
@@ -35,32 +41,59 @@ export default function MultiSelectFilterControl({
 
     return (
         <div className="space-y-3">
-            <div className="max-h-52 space-y-2 overflow-auto pr-1">
-                {filter.options.map((option) => {
-                    const checked = selectedValues.includes(option.value);
-
-                    return (
-                        <label
-                            key={option.value}
-                            className="flex cursor-pointer items-center gap-2 text-sm"
+            {filter.options.length > 5 && (
+                <div className="relative">
+                    <Input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder={`Filter ${filter.label.toLowerCase()}...`}
+                        className="h-8 text-xs pr-7"
+                    />
+                    {searchQuery && (
+                        <button
+                            type="button"
+                            onClick={() => setSearchQuery("")}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-xs"
                         >
-                            <Checkbox
-                                checked={checked}
-                                onCheckedChange={(checkedState) => {
-                                    const nextValues = checkedState
-                                        ? [...selectedValues, option.value]
-                                        : selectedValues.filter(
-                                              (item) => item !== option.value,
-                                          );
+                            &times;
+                        </button>
+                    )}
+                </div>
+            )}
 
-                                    setSelectedValues(nextValues);
-                                }}
-                                disabled={isLoading}
-                            />
-                            <span>{option.label}</span>
-                        </label>
-                    );
-                })}
+            <div className="max-h-52 space-y-2 overflow-auto pr-1">
+                {filteredOptions.length === 0 ? (
+                    <p className="text-xs text-muted-foreground py-2 text-center">
+                        No matches found
+                    </p>
+                ) : (
+                    filteredOptions.map((option) => {
+                        const checked = selectedValues.includes(option.value);
+
+                        return (
+                            <label
+                                key={option.value}
+                                className="flex cursor-pointer items-center gap-2 text-sm hover:text-primary transition-colors py-0.5"
+                            >
+                                <Checkbox
+                                    checked={checked}
+                                    onCheckedChange={(checkedState) => {
+                                        const nextValues = checkedState
+                                            ? [...selectedValues, option.value]
+                                            : selectedValues.filter(
+                                                  (item) => item !== option.value,
+                                              );
+
+                                        setSelectedValues(nextValues);
+                                    }}
+                                    disabled={isLoading}
+                                />
+                                <span className="text-xs font-medium text-foreground">{option.label}</span>
+                            </label>
+                        );
+                    })
+                )}
             </div>
 
             <div className="flex items-center justify-between gap-2">

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Activity, ArrowRight, Menu, LayoutDashboard, PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { getDefaultDashboardRoute } from "@/lib/authUtils";
 import type { UserInfo } from "@/types/user.types";
 
@@ -109,73 +109,85 @@ export default function Navbar({ user }: NavbarProps) {
                 variant="outline"
                 size="icon"
                 aria-label="Open clinical navigation menu"
-                className="size-10 border-border"
+                className="size-11 min-h-[44px] min-w-[44px] border-border"
               >
                 <Menu className="size-5 text-foreground" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-80 p-6 flex flex-col justify-between">
-              <SheetHeader className="text-left space-y-4">
-                <SheetTitle asChild>
-                  <div className="flex items-center gap-2.5">
-                    <div className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-xs">
-                      <Activity className="size-5" />
+            <SheetContent side="right" className="w-full max-w-xs sm:max-w-sm p-0 flex flex-col h-full bg-surface">
+              {/* Drawer Accessible Header */}
+              <SheetHeader className="p-5 border-b border-border/70 text-left">
+                <SheetTitle className="flex items-center gap-2.5">
+                  <div className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-xs shrink-0">
+                    <Activity className="size-5" />
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold tracking-tight text-foreground leading-none">
+                      Medix<span className="text-primary">.</span>
                     </div>
-                    <div>
-                      <div className="text-lg font-bold tracking-tight text-foreground leading-none">
-                        Medix<span className="text-primary">.</span>
-                      </div>
-                      <div className="text-[10px] font-semibold uppercase tracking-wider text-text-muted mt-0.5">
-                        Clinical Healthcare
-                      </div>
+                    <div className="text-xs font-semibold uppercase tracking-wider text-text-muted mt-0.5">
+                      Clinical Healthcare
                     </div>
                   </div>
                 </SheetTitle>
+                <SheetDescription className="text-xs text-text-muted pt-1">
+                  Clinical navigation and patient portal access
+                </SheetDescription>
               </SheetHeader>
 
-              {/* Mobile Navigation Links */}
-              <nav aria-label="Mobile Navigation" className="flex flex-col space-y-1.5 my-6">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-between text-base font-medium text-foreground hover:text-primary hover:bg-muted/60 px-3 py-2.5 rounded-lg transition-colors min-h-[44px]"
-                  >
-                    <span>{link.label}</span>
-                    <ArrowRight className="size-4 text-text-muted" />
-                  </Link>
-                ))}
-              </nav>
+              {/* Scrollable Center Body */}
+              <div className="flex-1 overflow-y-auto p-5 space-y-6">
+                {/* Mobile Navigation Links */}
+                <nav aria-label="Mobile Navigation" className="flex flex-col space-y-1.5">
+                  {navLinks.map((link) => {
+                    const isActive = pathname === link.href || (link.href === "/consultation" && pathname?.startsWith("/consultation"));
+                    return (
+                      <Link
+                        key={link.label}
+                        href={link.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center justify-between text-sm font-medium px-3.5 py-3 rounded-lg transition-colors min-h-[44px] ${
+                          isActive
+                            ? "bg-tint-primary-bg text-primary font-bold"
+                            : "text-foreground hover:text-primary hover:bg-muted/60"
+                        }`}
+                      >
+                        <span>{link.label}</span>
+                        <ArrowRight className={`size-4 ${isActive ? "text-primary" : "text-text-muted"}`} />
+                      </Link>
+                    );
+                  })}
+                </nav>
 
-              {/* 24/7 Hotline Strip for Mobile */}
-              <div className="rounded-xl border border-border bg-muted/50 p-3.5 space-y-1.5 mb-4">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-                  <PhoneCall className="size-3.5 text-secondary" />
-                  <span>24/7 Clinical Hotline</span>
+                {/* 24/7 Hotline Strip for Mobile */}
+                <div className="rounded-xl border border-border bg-muted/50 p-4 space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                    <PhoneCall className="size-3.5 text-secondary" />
+                    <span>24/7 Clinical Hotline</span>
+                  </div>
+                  <p className="text-xs text-text-secondary">
+                    Immediate triage assistance & doctor routing
+                  </p>
+                  <a
+                    href="tel:+8801700000000"
+                    className="block text-sm font-bold text-primary hover:underline pt-0.5"
+                  >
+                    +880 1700-000000
+                  </a>
                 </div>
-                <p className="text-xs text-text-secondary">
-                  Immediate triage assistance & doctor routing
-                </p>
-                <a
-                  href="tel:+8801700000000"
-                  className="block text-sm font-bold text-primary hover:underline pt-0.5"
-                >
-                  +880 1700-000000
-                </a>
               </div>
 
-              {/* Mobile Action Buttons */}
-              <div className="pt-4 border-t border-border flex flex-col gap-2.5">
+              {/* Mobile Action Buttons with Safe-Area Padding */}
+              <div className="p-5 border-t border-border bg-surface flex flex-col gap-2.5 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))]">
                 {user ? (
-                  <Button asChild variant="outline" className="w-full gap-2 h-11">
+                  <Button asChild variant="outline" className="w-full gap-2 h-11 min-h-[44px]">
                     <Link href={dashboardRoute} onClick={() => setMobileMenuOpen(false)}>
                       <LayoutDashboard className="size-4 text-primary" />
                       <span>My Health Dashboard</span>
                     </Link>
                   </Button>
                 ) : (
-                  <Button asChild variant="outline" className="w-full h-11">
+                  <Button asChild variant="outline" className="w-full h-11 min-h-[44px]">
                     <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
                       Sign In
                     </Link>
@@ -183,7 +195,7 @@ export default function Navbar({ user }: NavbarProps) {
                 )}
                 <Button
                   asChild
-                  className="w-full bg-accent text-accent-foreground hover:bg-accent-hover h-11 font-semibold"
+                  className="w-full bg-accent text-accent-foreground hover:bg-accent-hover h-11 min-h-[44px] font-semibold"
                 >
                   <Link href="/consultation" onClick={() => setMobileMenuOpen(false)}>
                     Book Appointment

@@ -8,15 +8,15 @@ import { Button } from "@/components/ui/button";
 export default function StickyMobileCTA() {
   const pathname = usePathname();
 
-  // Hide sticky CTA on session/video call pages or when user is already booking
-  if (pathname?.includes("/consultation/session")) {
+  // Hide sticky CTA on consultation pages and in-session video call pages to reclaim viewport space
+  if (pathname === "/consultation" || pathname?.includes("/consultation/session")) {
     return null;
   }
 
   return (
     <aside
       aria-label="Mobile quick clinical care navigation"
-      className="fixed bottom-0 inset-x-0 z-40 md:hidden border-t border-border/90 bg-surface/95 backdrop-blur-lg px-4 py-2.5 shadow-xl transition-all"
+      className="fixed bottom-0 inset-x-0 z-40 md:hidden border-t border-border/90 bg-surface/95 backdrop-blur-lg px-4 pt-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom,0px))] shadow-xl transition-all"
     >
       <div className="flex items-center justify-between gap-3 max-w-md mx-auto">
         <Button

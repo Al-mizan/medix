@@ -60,7 +60,7 @@ export default async function HomePage() {
     }),
     queryClient.prefetchQuery({
       queryKey: ["top-doctors"],
-      queryFn: () => getDoctors("sort=-averageRating&limit=6"),
+      queryFn: () => getDoctors("sortBy=averageRating&sortOrder=desc&limit=6"),
     }),
   ]).catch((error) => {
     // Non-blocking catch to ensure landing page renders even if backend is temporarily unreachable

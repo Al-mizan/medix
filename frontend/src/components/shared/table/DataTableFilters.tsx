@@ -83,9 +83,7 @@ const DataTableFilters = ({
                     );
 
                     return (
-                        <Popover
-                            key={`${filter.id}-${JSON.stringify(filterValue ?? null)}`}
-                        >
+                        <Popover key={filter.id}>
                             <PopoverTrigger asChild>
                                 <Button
                                     variant="outline"

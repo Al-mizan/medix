@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 export default function HeroPreviewCard() {
 
   return (
-    <div className="relative mx-auto w-full max-w-lg rounded-2xl border border-border/80 bg-surface shadow-xl overflow-hidden transition-all">
+    <div className="relative mx-auto w-full max-w-lg rounded-2xl border border-border/80 bg-surface overflow-hidden transition-all">
       {/* App Window Chrome Header */}
       <div className="border-b border-border/70 bg-muted/40 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -80,9 +80,9 @@ export default function HeroPreviewCard() {
             </div>
 
             <div className="space-y-0.5">
-              <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
+              <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
                 Dr. Sarah Jenkins, MD
-              </h3>
+              </h2>
               <p className="text-xs text-white/70">
                 Senior Cardiologist · BMDC #84920
               </p>
@@ -182,7 +182,7 @@ export default function HeroPreviewCard() {
         >
           <Link href="/consultation" className="flex items-center justify-center gap-2">
             <Calendar className="size-4" />
-            <span>Start Consultation with On-Duty Specialist</span>
+            <span>Start Consultation</span>
           </Link>
         </Button>
       </div>

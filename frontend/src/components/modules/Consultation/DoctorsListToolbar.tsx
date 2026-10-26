@@ -43,12 +43,12 @@ export default function DoctorsListToolbar({
     : "default";
 
   return (
-    <div className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
+    <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
       <div className="flex flex-wrap items-start gap-3">
         <DataTableSearch
           key={searchTermFromUrl}
           initialValue={searchTermFromUrl}
-          placeholder="Search doctor by name, qualification, email..."
+          placeholder="Search by doctor name, specialty, or hospital..."
           debounceMs={300}
           onDebouncedChange={onSearchChange}
           isLoading={isBusy}
@@ -62,8 +62,8 @@ export default function DoctorsListToolbar({
           isLoading={isBusy}
         />
 
-        <div className="ml-auto flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Sort</span>
+        <div className="w-full sm:w-auto sm:ml-auto flex items-center justify-between sm:justify-start gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-border/60">
+          <span className="text-sm font-medium text-muted-foreground">Sort</span>
           <Select
             value={currentSortValue}
             onValueChange={(value) => {
@@ -76,7 +76,7 @@ export default function DoctorsListToolbar({
               onSortingChange([{ id: sortBy, desc: sortOrder === "desc" }]);
             }}
           >
-            <SelectTrigger className="w-55" disabled={isBusy}>
+            <SelectTrigger className="w-48 sm:w-52" disabled={isBusy}>
               <SelectValue placeholder="Sort doctors" />
             </SelectTrigger>
             <SelectContent>

@@ -12,7 +12,7 @@ import TopDoctorCard from "./TopDoctorCard";
 export default function TopDoctorsSection() {
   const { data: response, isLoading } = useQuery({
     queryKey: ["top-doctors"],
-    queryFn: () => getDoctors("sort=-averageRating&limit=6"),
+    queryFn: () => getDoctors("sortBy=averageRating&sortOrder=desc&limit=6"),
     staleTime: 1000 * 60 * 60,
     gcTime: 1000 * 60 * 60 * 6,
   });

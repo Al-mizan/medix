@@ -175,7 +175,7 @@ const DoctorsList = ({
 
   return (
     <section className="space-y-6 pb-8">
-      <div className="relative overflow-hidden rounded-2xl border border-border bg-card text-card-foreground bg-gradient-to-br from-primary/5 via-card to-secondary/5 p-6 shadow-xs">
+      <div className="relative overflow-hidden rounded-2xl border border-border bg-card text-card-foreground bg-gradient-to-br from-primary/5 via-card to-secondary/5 p-6">
         <div className="relative space-y-2">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl text-foreground">
             Consult With Our Specialists
@@ -202,7 +202,7 @@ const DoctorsList = ({
       {isBusy && <DoctorListSkeleton />}
 
       {!isBusy && doctors.length === 0 && (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed bg-card/50 p-10 text-center shadow-xs sm:p-14">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed bg-card/50 p-10 text-center sm:p-14">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
             <SearchX className="h-8 w-8" />
           </div>

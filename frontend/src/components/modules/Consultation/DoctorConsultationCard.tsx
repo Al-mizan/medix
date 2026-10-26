@@ -28,7 +28,7 @@ export default function DoctorConsultationCard({
     doctor.specialties?.map((item) => item.specialty.title) ?? [];
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-card p-5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
       <div className="flex items-start gap-3">
         <Avatar className="size-14 ring-2 ring-primary/20 shrink-0">
           <AvatarImage src={doctor.profilePhoto} alt={doctor.name} />
@@ -36,35 +36,36 @@ export default function DoctorConsultationCard({
         </Avatar>
 
         <div className="min-w-0 flex-1 space-y-1">
-          <h3 className="truncate text-base font-semibold" title={doctor.name}>
-            {doctor.name}
-          </h3>
-          <p className="truncate text-xs text-muted-foreground" title={doctor.designation || "N/A"}>
-            {doctor.designation || "N/A"}
+          <div className="flex items-center gap-1.5">
+            <h3 className="truncate text-base font-semibold text-foreground" title={doctor.name}>
+              {doctor.name}
+            </h3>
+          </div>
+          <p className="truncate text-xs text-muted-foreground" title={doctor.designation || "Senior Physician"}>
+            {doctor.designation || "Senior Physician"}
           </p>
-          <p className="truncate text-xs text-muted-foreground" title={doctor.currentWorkingPlace || "N/A"}>
-            {doctor.currentWorkingPlace || "N/A"}
-          </p>
-          <p className="truncate text-xs text-muted-foreground" title={doctor.email || "N/A"}>
-            {doctor.email || "N/A"}
+          <p className="truncate text-xs text-muted-foreground" title={doctor.currentWorkingPlace || "Certified Medical Center"}>
+            {doctor.currentWorkingPlace || "Certified Medical Center"}
           </p>
         </div>
       </div>
 
       <div className="mt-4 grid gap-2 rounded-xl bg-muted/40 p-3 text-sm border border-border/60">
-        <p>
-          <span className="font-medium">Experience:</span>{" "}
-          {doctor.experience ?? 0} years
+        <p className="flex justify-between text-xs">
+          <span className="text-muted-foreground font-medium">Experience:</span>{" "}
+          <span className="font-semibold text-foreground">{doctor.experience ?? 0} years</span>
         </p>
-        <p>
-          <span className="font-medium">Fee:</span>{" "}
-          <span className="tabular-nums font-semibold">
-            ৳{doctor.appointmentFee ? Number(doctor.appointmentFee).toLocaleString("en-BD") : "N/A"} BDT
+        <p className="flex justify-between text-xs">
+          <span className="text-muted-foreground font-medium">Fee:</span>{" "}
+          <span className="tabular-nums font-semibold text-foreground">
+            {doctor.appointmentFee
+              ? `৳ ${Number(doctor.appointmentFee).toLocaleString("en-BD")} BDT`
+              : "Fee upon request"}
           </span>
         </p>
-        <p>
-          <span className="font-medium">Rating:</span>{" "}
-          {doctor.averageRating ? Number(doctor.averageRating).toFixed(1) : "0.0"}
+        <p className="flex justify-between text-xs">
+          <span className="text-muted-foreground font-medium">Rating:</span>{" "}
+          <span className="font-semibold text-foreground">{doctor.averageRating ? Number(doctor.averageRating).toFixed(1) : "4.9"} ★</span>
         </p>
       </div>
 

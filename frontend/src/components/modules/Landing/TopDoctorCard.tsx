@@ -25,7 +25,7 @@ export default function TopDoctorCard({ doctor }: TopDoctorCardProps) {
   const experienceYears = doctor.experience ?? 5;
 
   return (
-    <article className="group relative flex flex-col justify-between rounded-2xl border border-border/80 bg-surface p-5 sm:p-6 shadow-2xs transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover:shadow-md">
+    <article className="group relative flex flex-col justify-between rounded-2xl border border-border/80 bg-surface p-5 sm:p-6 transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover:shadow-md">
       {/* Physician Visual Card Body */}
       <div className="space-y-4">
         {/* Top Header: Avatar + Identity */}
@@ -98,7 +98,7 @@ export default function TopDoctorCard({ doctor }: TopDoctorCardProps) {
           <span className="text-border">&bull;</span>
 
           <div className="text-right">
-            <span className="font-extrabold text-foreground tabular-nums text-sm">৳{fee} BDT</span>
+            <span className="font-extrabold text-foreground tabular-nums text-sm">৳ {fee} BDT</span>
             <span className="text-[10px] text-text-muted ml-0.5">/ visit</span>
           </div>
         </div>
@@ -118,7 +118,7 @@ export default function TopDoctorCard({ doctor }: TopDoctorCardProps) {
         <Button
           asChild
           size="default"
-          className="w-full bg-accent text-accent-foreground hover:bg-accent-hover font-semibold shadow-2xs h-10 rounded-xl focus-visible:ring-2 focus-visible:ring-accent transition-all"
+          className="w-full bg-accent text-accent-foreground hover:bg-accent-hover font-semibold h-10 rounded-xl focus-visible:ring-2 focus-visible:ring-accent transition-all"
         >
           <Link
             href={`/consultation/doctor/${doctor.id}`}
