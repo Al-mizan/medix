@@ -29,6 +29,9 @@ process.env.STRIPE_WEBHOOK_SECRET = 'whsec_mock';
 process.env.SUPER_ADMIN_EMAIL = 'admin@medix.com';
 process.env.SUPER_ADMIN_PASSWORD = 'Password123!';
 process.env.PAYMENT_CURRENCY = 'bdt';
+process.env.OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || 'mock-openrouter-key';
+process.env.GROQ_API_KEY = process.env.GROQ_API_KEY || 'mock-groq-key';
+process.env.HF_API_KEY = process.env.HF_API_KEY || 'mock-hf-key';
 
 import { vi, beforeEach } from 'vitest';
 

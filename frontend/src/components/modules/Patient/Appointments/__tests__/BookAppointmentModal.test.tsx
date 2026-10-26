@@ -4,6 +4,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import BookAppointmentModal from "../BookAppointmentModal";
 import * as doctorServices from "@/services/doctor.services";
+import { IDoctorDetails } from "@/types/doctor.types";
 
 vi.mock("next/navigation", () => ({
   useRouter: vi.fn(() => ({
@@ -52,7 +53,7 @@ describe("BookAppointmentModal Inline Validation & Skeletons", () => {
             },
           },
         ],
-      } as any,
+      } as unknown as IDoctorDetails,
     });
 
     render(
@@ -102,7 +103,7 @@ describe("BookAppointmentModal Inline Validation & Skeletons", () => {
             },
           },
         ],
-      } as any,
+      } as unknown as IDoctorDetails,
     });
 
     render(

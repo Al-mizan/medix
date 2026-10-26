@@ -4,6 +4,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import DoctorsList from "../DoctorsList";
 import * as doctorServices from "@/services/doctor.services";
+import { IDoctor } from "@/types/doctor.types";
 
 // Mock next/navigation
 const mockSearchParams = new URLSearchParams("searchTerm=cardio");
@@ -109,7 +110,7 @@ describe("DoctorsList Component & Empty State Polish", () => {
           },
           specialties: [],
         },
-      ] as any,
+      ] as unknown as IDoctor[],
       meta: {
         page: 1,
         limit: 12,

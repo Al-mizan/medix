@@ -31,7 +31,7 @@ import {
 } from "@/zod/patient.validation";
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Calendar, Mail, Phone, UserCheck, ShieldAlert } from "lucide-react";
+import { Calendar, Mail, UserCheck, ShieldAlert } from "lucide-react";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";

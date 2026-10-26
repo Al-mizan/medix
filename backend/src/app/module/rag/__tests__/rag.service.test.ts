@@ -4,6 +4,32 @@ import { EmbeddingService } from "../embedding.service";
 import { LlmService } from "../llm.service";
 
 describe("RAG Service & Providers", () => {
+    beforeEach(() => {
+        vi.stubEnv("OPENROUTER_API_KEY", "mock-openrouter-key");
+        vi.stubEnv("GROQ_API_KEY", "mock-groq-key");
+        vi.stubEnv("HF_API_KEY", "mock-hf-key");
+
+        const mockVector = new Array(384).fill(0.02);
+        vi.spyOn(globalThis, "fetch").mockImplementation(async (url) => {
+            const urlStr = String(url);
+            if (urlStr.includes("embeddings") || urlStr.includes("models/")) {
+                return new Response(JSON.stringify({ data: [{ embedding: mockVector }] }), {
+                    status: 200,
+                    headers: { "Content-Type": "application/json" },
+                });
+            }
+            if (urlStr.includes("chat/completions")) {
+                return new Response(JSON.stringify({
+                    choices: [{ message: { content: "Dr. John is a specialist in Neurology." } }],
+                }), {
+                    status: 200,
+                    headers: { "Content-Type": "application/json" },
+                });
+            }
+            return new Response("Not found", { status: 404 });
+        });
+    });
+
     it("should successfully generate 384-dimensional embedding via EmbeddingService", async () => {
         const embeddingService = new EmbeddingService();
         const vector = await embeddingService.generateEmbedding("Clinical guidelines for cardiology");

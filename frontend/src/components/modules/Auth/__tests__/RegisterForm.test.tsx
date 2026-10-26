@@ -3,7 +3,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import RegisterForm from "../RegisterForm";
-import * as authActionModule from "@/app/_actions/auth.actions";
 
 vi.mock("@/app/_actions/auth.actions", () => ({
   registerAction: vi.fn(),

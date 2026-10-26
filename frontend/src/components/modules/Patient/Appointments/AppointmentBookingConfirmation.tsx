@@ -29,10 +29,8 @@ import {
   Calendar,
   CalendarX,
   Check,
-  CheckCircle2,
   Clock,
   CreditCard,
-  FileText,
   Loader2,
   Lock,
   Phone,
@@ -252,7 +250,7 @@ const AppointmentBookingConfirmation = ({
                 Suggested Next Steps
               </p>
               <ul className="text-sm text-muted-foreground space-y-1.5 list-disc list-inside">
-                <li>Return to the doctor's profile to view alternate available dates and times.</li>
+                <li>Return to the doctor&apos;s profile to view alternate available dates and times.</li>
                 <li>Explore other certified specialists in the same medical department.</li>
                 <li>Review any active consultations in your patient appointments dashboard.</li>
               </ul>
@@ -266,7 +264,7 @@ const AppointmentBookingConfirmation = ({
             >
               <Link href={`/consultation/doctor/${doctorId}`}>
                 <Calendar className="size-4" />
-                View Doctor's Available Slots
+                View Doctor&apos;s Available Slots
               </Link>
             </Button>
             <Button asChild variant="outline" className="w-full sm:w-auto border-border">
@@ -521,7 +519,7 @@ const AppointmentBookingConfirmation = ({
                   <div className="flex items-start gap-2 p-3 rounded-lg bg-tint-primary-bg/50 border border-primary/20 text-xs text-muted-foreground">
                     <ShieldCheck className="size-4 text-primary shrink-0 mt-0.5" />
                     <span>
-                      The attending doctor will generate the clinical summary and valid digital prescription directly in the dependent patient's name.
+                      The attending doctor will generate the clinical summary and valid digital prescription directly in the dependent patient&apos;s name.
                     </span>
                   </div>
 
