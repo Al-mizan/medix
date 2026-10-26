@@ -12,7 +12,7 @@ const emptyStringToUndefined = (value: unknown) => {
 export const createDoctorFormZodSchema = z.object({
   password: z
     .string()
-    .min(6, "Password must be at least 6 characters")
+    .min(8, "Password must be at least 8 characters")
     .max(20, "Password must be at most 20 characters"),
   name: z
     .string()
@@ -76,7 +76,7 @@ export const createDoctorFormZodSchema = z.object({
 export const createDoctorServerZodSchema = z.object({
   password: z
     .string()
-    .min(6, "Password must be at least 6 characters")
+    .min(8, "Password must be at least 8 characters")
     .max(20, "Password must be at most 20 characters"),
   doctor: z.object({
     name: z
