@@ -20,6 +20,11 @@ const getInitials = (name?: string) => {
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
+const isValidImageUrl = (url?: string | null): boolean => {
+    if (!url) return false;
+    return url.startsWith("http://") || url.startsWith("https://") || url.startsWith("/");
+};
+
 export const SpecialtyCard = ({ specialty, doctors }: SpecialtyCardProps) => {
     return (
         <Card className="flex flex-col h-full overflow-hidden border-border/80 shadow-sm transition-all hover:shadow-md">
@@ -27,7 +32,7 @@ export const SpecialtyCard = ({ specialty, doctors }: SpecialtyCardProps) => {
                 <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-lg border bg-background flex items-center justify-center overflow-hidden shrink-0">
-                            {specialty.icon ? (
+                            {isValidImageUrl(specialty.icon) ? (
                                 <Image
                                     src={specialty.icon}
                                     alt={specialty.title}

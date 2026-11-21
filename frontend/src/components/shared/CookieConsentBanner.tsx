@@ -18,7 +18,6 @@ export const setPersistentConsentCookie = (level: "accepted" | "essential") => {
   if (typeof document === "undefined") return;
   const isSecure = typeof window !== "undefined" && window.location.protocol === "https:";
   const secureFlag = isSecure ? "; Secure" : "";
-  // 1 year = 365 days = 31536000 seconds
   document.cookie = `${CONSENT_KEY}=${encodeURIComponent(level)}; path=/; max-age=31536000; SameSite=Lax${secureFlag}`;
 };
 
@@ -90,22 +89,54 @@ export default function CookieConsentBanner() {
   if (hasSavedConsent || dismissed) return null;
 
   return (
-    <div
+    <aside
       role="region"
       aria-label="Cookie consent banner"
-      className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-50 animate-in fade-in slide-in-from-bottom-5 duration-300"
+      className="fixed bottom-19 left-2.5 right-2.5 sm:bottom-6 sm:right-6 sm:left-auto sm:max-w-sm z-40 animate-in fade-in slide-in-from-bottom-3 duration-300"
     >
-      <div className="rounded-2xl border border-border/80 bg-surface/95 backdrop-blur-md p-5 shadow-xl transition-all">
-        <div className="flex items-start gap-3.5">
+      <div className="rounded-xl sm:rounded-2xl border border-border/90 bg-surface/95 backdrop-blur-xl p-3 sm:p-4.5 shadow-lg sm:shadow-xl transition-all">
+        {/* Mobile Compact View */}
+        <div className="sm:hidden flex items-center justify-between gap-2.5">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <Cookie className="size-4 text-primary shrink-0" />
+            <p className="text-[11px] text-text-secondary leading-tight truncate">
+              We use essential cookies.{" "}
+              <Link href="/privacy" className="underline text-primary font-medium">
+                Privacy
+              </Link>
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => handleConsent("accepted")}
+              className="bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-[11px] h-7 px-2.5 rounded-lg shadow-2xs"
+            >
+              Accept
+            </Button>
+            <button
+              type="button"
+              onClick={() => handleConsent("essential")}
+              aria-label="Dismiss cookie notice"
+              className="text-text-muted hover:text-foreground transition-colors p-1"
+            >
+              <X className="size-3.5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Desktop View */}
+        <div className="hidden sm:flex items-start gap-3">
           <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-tint-primary-bg text-primary border border-primary/20">
-            <Cookie className="size-5" />
+            <Cookie className="size-4.5" />
           </div>
 
-          <div className="flex-1 space-y-2">
-            <div className="flex items-center justify-between">
-              <h4 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+          <div className="flex-1 min-w-0 space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <h4 className="text-xs sm:text-sm font-semibold text-foreground flex items-center gap-1.5 truncate">
                 <span>Privacy & Cookies</span>
-                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-tint-secondary-text bg-tint-secondary-bg px-1.5 py-0.5 rounded-md">
+                <span className="inline-flex items-center gap-1 text-[10px] font-medium text-tint-secondary-text bg-tint-secondary-bg px-1.5 py-0.5 rounded-md shrink-0">
                   <ShieldCheck className="size-3 text-secondary" />
                   Confidential
                 </span>
@@ -114,14 +145,14 @@ export default function CookieConsentBanner() {
                 type="button"
                 onClick={() => handleConsent("essential")}
                 aria-label="Dismiss cookie notice"
-                className="text-text-muted hover:text-foreground transition-colors p-1"
+                className="text-text-muted hover:text-foreground transition-colors p-1 -mr-1"
               >
-                <X className="size-4" />
+                <X className="size-3.5" />
               </button>
             </div>
 
             <p className="text-xs text-text-secondary leading-relaxed">
-              We use essential cookies to maintain secure sessions and operational integrity. With your consent, we also utilize anonymized telemetry to optimize clinical workflows. See our{" "}
+              We use essential cookies to maintain secure sessions. With your consent, we also utilize anonymized telemetry to optimize clinical workflows. See our{" "}
               <Link
                 href="/privacy"
                 className="font-medium text-primary underline underline-offset-2 hover:text-primary-hover"
@@ -131,12 +162,12 @@ export default function CookieConsentBanner() {
               .
             </p>
 
-            <div className="flex items-center gap-2 pt-1">
+            <div className="flex items-center gap-2 pt-0.5">
               <Button
                 type="button"
                 size="sm"
                 onClick={() => handleConsent("accepted")}
-                className="bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-xs px-3.5 py-1.5 h-8 shadow-xs"
+                className="bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs px-3.5 py-1.5 h-8 shadow-xs rounded-lg"
               >
                 Accept All
               </Button>
@@ -145,7 +176,7 @@ export default function CookieConsentBanner() {
                 size="sm"
                 variant="outline"
                 onClick={() => handleConsent("essential")}
-                className="border-border text-foreground hover:bg-muted font-medium text-xs px-3.5 py-1.5 h-8"
+                className="border-border text-foreground hover:bg-muted font-medium text-xs px-3.5 py-1.5 h-8 rounded-lg"
               >
                 Essential Only
               </Button>
@@ -153,6 +184,6 @@ export default function CookieConsentBanner() {
           </div>
         </div>
       </div>
-    </div>
+    </aside>
   );
 }

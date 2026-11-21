@@ -1,0 +1,810 @@
+{
+  "timestamp": "2026-11-19T18:16:28.217Z",
+  "passed": true,
+  "overallScore": 9.43,
+  "circuitBreakerTriggered": false,
+  "circuitBreakerReasons": [],
+  "agents": {
+    "admin": {
+      "agentName": "admin",
+      "scores": {
+        "visualCraft": 2.3,
+        "uxErgonomics": 2.3,
+        "responsiveness": 2.2,
+        "functionalRobustness": 2.5,
+        "totalScore": 9.3,
+        "passed": true
+      },
+      "telemetry": {
+        "consoleErrors": [],
+        "networkFailures": [],
+        "allConsoleLogs": [
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:13:21.940Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:13:22.052Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:13:22.761Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:13:22.805Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] rebuilding",
+            "timestamp": "2026-11-19T18:13:30.904Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] done in 113ms",
+            "timestamp": "2026-11-19T18:13:30.919Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:13:31.137Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:13:31.206Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] rebuilding",
+            "timestamp": "2026-11-19T18:13:37.559Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] done in 111ms",
+            "timestamp": "2026-11-19T18:13:37.569Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:13:37.754Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:13:37.840Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:13:43.715Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:13:43.778Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] rebuilding",
+            "timestamp": "2026-11-19T18:13:47.823Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] done in 118ms",
+            "timestamp": "2026-11-19T18:13:47.844Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:13:48.104Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:13:48.158Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:13:56.629Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:13:56.691Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:14:02.450Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:14:02.498Z"
+          },
+          {
+            "type": "warning",
+            "text": "Image with src \"https://res.cloudinary.com/dnzwd88qg/image/upload/v1793004626/ph-healthcare/images/ou7ennldfg-1793004624240-cardiology.jpg\" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: \"auto\"' or 'height: \"auto\"' to maintain the aspect ratio.",
+            "timestamp": "2026-11-19T18:14:07.437Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:14:08.635Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:14:08.718Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:14:12.955Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:14:13.066Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:14:17.303Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:14:17.353Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:14:21.583Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:14:21.631Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:14:28.181Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:14:28.271Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:14:32.578Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:14:32.679Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:14:37.773Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:14:37.824Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:14:43.755Z"
+          },
+          {
+            "type": "log",
+            "text": "%c%s%c background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   Object Dashboard Data from Page Component",
+            "timestamp": "2026-11-19T18:14:47.240Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:14:49.916Z"
+          }
+        ]
+      },
+      "screenshots": [
+        {
+          "agentName": "admin",
+          "viewport": "desktop",
+          "route": "login",
+          "stateLabel": "initial",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/admin-desktop-login-initial.png",
+          "timestamp": "2026-11-19T18:13:24.434Z"
+        },
+        {
+          "agentName": "admin",
+          "viewport": "desktop",
+          "route": "admin/dashboard",
+          "stateLabel": "overview",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/admin-desktop-admin_dashboard-overview.png",
+          "timestamp": "2026-11-19T18:13:30.789Z"
+        },
+        {
+          "agentName": "admin",
+          "viewport": "desktop",
+          "route": "/admin/dashboard/doctors-management",
+          "stateLabel": "table_view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/admin-desktop-admin_dashboard_doctors-management-table_view.png",
+          "timestamp": "2026-11-19T18:13:37.429Z"
+        },
+        {
+          "agentName": "admin",
+          "viewport": "desktop",
+          "route": "/admin/dashboard/admins-management",
+          "stateLabel": "table_view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/admin-desktop-admin_dashboard_admins-management-table_view.png",
+          "timestamp": "2026-11-19T18:13:43.443Z"
+        },
+        {
+          "agentName": "admin",
+          "viewport": "desktop",
+          "route": "/admin/dashboard/specialties-management",
+          "stateLabel": "table_view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/admin-desktop-admin_dashboard_specialties-management-table_view.png",
+          "timestamp": "2026-11-19T18:13:47.644Z"
+        },
+        {
+          "agentName": "admin",
+          "viewport": "desktop",
+          "route": "/admin/dashboard/schedules-management",
+          "stateLabel": "table_view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/admin-desktop-admin_dashboard_schedules-management-table_view.png",
+          "timestamp": "2026-11-19T18:13:56.375Z"
+        },
+        {
+          "agentName": "admin",
+          "viewport": "desktop",
+          "route": "/admin/dashboard/doctor-schedules-managament",
+          "stateLabel": "table_view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/admin-desktop-admin_dashboard_doctor-schedules-managament-table_view.png",
+          "timestamp": "2026-11-19T18:14:02.194Z"
+        },
+        {
+          "agentName": "admin",
+          "viewport": "desktop",
+          "route": "/admin/dashboard/doctor-specialties-management",
+          "stateLabel": "table_view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/admin-desktop-admin_dashboard_doctor-specialties-management-table_view.png",
+          "timestamp": "2026-11-19T18:14:08.357Z"
+        },
+        {
+          "agentName": "admin",
+          "viewport": "desktop",
+          "route": "/admin/dashboard/appointments-management",
+          "stateLabel": "table_view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/admin-desktop-admin_dashboard_appointments-management-table_view.png",
+          "timestamp": "2026-11-19T18:14:12.694Z"
+        },
+        {
+          "agentName": "admin",
+          "viewport": "desktop",
+          "route": "/admin/dashboard/patients-management",
+          "stateLabel": "table_view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/admin-desktop-admin_dashboard_patients-management-table_view.png",
+          "timestamp": "2026-11-19T18:14:17.049Z"
+        },
+        {
+          "agentName": "admin",
+          "viewport": "desktop",
+          "route": "/admin/dashboard/prescriptions-management",
+          "stateLabel": "table_view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/admin-desktop-admin_dashboard_prescriptions-management-table_view.png",
+          "timestamp": "2026-11-19T18:14:21.372Z"
+        },
+        {
+          "agentName": "admin",
+          "viewport": "desktop",
+          "route": "/admin/dashboard/payments-management",
+          "stateLabel": "table_view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/admin-desktop-admin_dashboard_payments-management-table_view.png",
+          "timestamp": "2026-11-19T18:14:27.940Z"
+        },
+        {
+          "agentName": "admin",
+          "viewport": "desktop",
+          "route": "/admin/dashboard/reviews-management",
+          "stateLabel": "table_view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/admin-desktop-admin_dashboard_reviews-management-table_view.png",
+          "timestamp": "2026-11-19T18:14:32.277Z"
+        },
+        {
+          "agentName": "admin",
+          "viewport": "desktop",
+          "route": "admin/dashboard/doctors-management",
+          "stateLabel": "create_doctor_modal_open",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/admin-desktop-admin_dashboard_doctors-management-create_doctor_modal_open.png",
+          "timestamp": "2026-11-19T18:14:37.550Z"
+        },
+        {
+          "agentName": "admin",
+          "viewport": "mobile",
+          "route": "admin/dashboard",
+          "stateLabel": "mobile_dashboard_view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/admin-mobile-admin_dashboard-mobile_dashboard_view.png",
+          "timestamp": "2026-11-19T18:14:49.555Z"
+        },
+        {
+          "agentName": "admin",
+          "viewport": "mobile",
+          "route": "admin/dashboard/doctors-management",
+          "stateLabel": "mobile_table_responsive",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/admin-mobile-admin_dashboard_doctors-management-mobile_table_responsive.png",
+          "timestamp": "2026-11-19T18:14:54.044Z"
+        }
+      ],
+      "issues": []
+    },
+    "doctor": {
+      "agentName": "doctor",
+      "scores": {
+        "visualCraft": 2.4,
+        "uxErgonomics": 2.3,
+        "responsiveness": 2.2,
+        "functionalRobustness": 2.5,
+        "totalScore": 9.4,
+        "passed": true
+      },
+      "telemetry": {
+        "consoleErrors": [],
+        "networkFailures": [],
+        "allConsoleLogs": [
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:14:54.938Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:14:54.993Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:14:55.707Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:14:55.762Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] rebuilding",
+            "timestamp": "2026-11-19T18:14:59.380Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] done in 112ms",
+            "timestamp": "2026-11-19T18:14:59.397Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] rebuilding",
+            "timestamp": "2026-11-19T18:15:01.973Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] done in 111ms",
+            "timestamp": "2026-11-19T18:15:01.984Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:15:02.170Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:15:02.216Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] rebuilding",
+            "timestamp": "2026-11-19T18:15:06.784Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] done in 106ms",
+            "timestamp": "2026-11-19T18:15:06.790Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:15:06.959Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:15:07.065Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] rebuilding",
+            "timestamp": "2026-11-19T18:15:11.555Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] done in 101ms",
+            "timestamp": "2026-11-19T18:15:11.556Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:15:11.719Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:15:11.832Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] rebuilding",
+            "timestamp": "2026-11-19T18:15:16.126Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] done in 101ms",
+            "timestamp": "2026-11-19T18:15:16.126Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:15:16.273Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:15:16.338Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:15:21.136Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:15:26.124Z"
+          }
+        ]
+      },
+      "screenshots": [
+        {
+          "agentName": "doctor",
+          "viewport": "desktop",
+          "route": "login",
+          "stateLabel": "initial",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/doctor-desktop-login-initial.png",
+          "timestamp": "2026-11-19T18:14:57.441Z"
+        },
+        {
+          "agentName": "doctor",
+          "viewport": "desktop",
+          "route": "doctor/dashboard",
+          "stateLabel": "overview",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/doctor-desktop-doctor_dashboard-overview.png",
+          "timestamp": "2026-11-19T18:15:01.854Z"
+        },
+        {
+          "agentName": "doctor",
+          "viewport": "desktop",
+          "route": "/doctor/dashboard/appointments",
+          "stateLabel": "view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/doctor-desktop-doctor_dashboard_appointments-view.png",
+          "timestamp": "2026-11-19T18:15:06.667Z"
+        },
+        {
+          "agentName": "doctor",
+          "viewport": "desktop",
+          "route": "/doctor/dashboard/prescriptions",
+          "stateLabel": "view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/doctor-desktop-doctor_dashboard_prescriptions-view.png",
+          "timestamp": "2026-11-19T18:15:11.440Z"
+        },
+        {
+          "agentName": "doctor",
+          "viewport": "desktop",
+          "route": "/doctor/dashboard/my-schedules",
+          "stateLabel": "view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/doctor-desktop-doctor_dashboard_my-schedules-view.png",
+          "timestamp": "2026-11-19T18:15:16.011Z"
+        },
+        {
+          "agentName": "doctor",
+          "viewport": "desktop",
+          "route": "/doctor/dashboard/my-reviews",
+          "stateLabel": "view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/doctor-desktop-doctor_dashboard_my-reviews-view.png",
+          "timestamp": "2026-11-19T18:15:20.739Z"
+        },
+        {
+          "agentName": "doctor",
+          "viewport": "mobile",
+          "route": "doctor/dashboard",
+          "stateLabel": "mobile_overview",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/doctor-mobile-doctor_dashboard-mobile_overview.png",
+          "timestamp": "2026-11-19T18:15:25.808Z"
+        },
+        {
+          "agentName": "doctor",
+          "viewport": "mobile",
+          "route": "doctor/dashboard/my-schedules",
+          "stateLabel": "mobile_schedule_view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/doctor-mobile-doctor_dashboard_my-schedules-mobile_schedule_view.png",
+          "timestamp": "2026-11-19T18:15:30.702Z"
+        }
+      ],
+      "issues": []
+    },
+    "patient": {
+      "agentName": "patient",
+      "scores": {
+        "visualCraft": 2.4,
+        "uxErgonomics": 2.4,
+        "responsiveness": 2.3,
+        "functionalRobustness": 2.5,
+        "totalScore": 9.6,
+        "passed": true
+      },
+      "telemetry": {
+        "consoleErrors": [],
+        "networkFailures": [],
+        "allConsoleLogs": [
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:15:31.627Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:15:31.751Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:15:32.947Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:15:33.000Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:15:35.733Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:15:35.765Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] rebuilding",
+            "timestamp": "2026-11-19T18:15:39.785Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] done in 110ms",
+            "timestamp": "2026-11-19T18:15:39.800Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:15:42.102Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:15:42.330Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:15:48.617Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:15:48.680Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:15:53.287Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:15:53.329Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] rebuilding",
+            "timestamp": "2026-11-19T18:15:57.486Z"
+          },
+          {
+            "type": "log",
+            "text": "[Fast Refresh] done in 129ms",
+            "timestamp": "2026-11-19T18:15:57.517Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:15:57.636Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:15:57.694Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:16:01.669Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:16:01.696Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:16:06.264Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:16:06.341Z"
+          },
+          {
+            "type": "info",
+            "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+            "timestamp": "2026-11-19T18:16:09.504Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:16:09.557Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:16:10.818Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:16:13.954Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:16:18.915Z"
+          },
+          {
+            "type": "log",
+            "text": "[HMR] connected",
+            "timestamp": "2026-11-19T18:16:23.636Z"
+          }
+        ]
+      },
+      "screenshots": [
+        {
+          "agentName": "patient",
+          "viewport": "desktop",
+          "route": "consultation",
+          "stateLabel": "public_catalog",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/patient-desktop-consultation-public_catalog.png",
+          "timestamp": "2026-11-19T18:15:35.604Z"
+        },
+        {
+          "agentName": "patient",
+          "viewport": "desktop",
+          "route": "dashboard",
+          "stateLabel": "overview",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/patient-desktop-dashboard-overview.png",
+          "timestamp": "2026-11-19T18:15:41.764Z"
+        },
+        {
+          "agentName": "patient",
+          "viewport": "desktop",
+          "route": "/dashboard/book-appointments",
+          "stateLabel": "view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/patient-desktop-dashboard_book-appointments-view.png",
+          "timestamp": "2026-11-19T18:15:48.336Z"
+        },
+        {
+          "agentName": "patient",
+          "viewport": "desktop",
+          "route": "/dashboard/my-appointments",
+          "stateLabel": "view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/patient-desktop-dashboard_my-appointments-view.png",
+          "timestamp": "2026-11-19T18:15:53.070Z"
+        },
+        {
+          "agentName": "patient",
+          "viewport": "desktop",
+          "route": "/dashboard/my-prescriptions",
+          "stateLabel": "view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/patient-desktop-dashboard_my-prescriptions-view.png",
+          "timestamp": "2026-11-19T18:15:57.372Z"
+        },
+        {
+          "agentName": "patient",
+          "viewport": "desktop",
+          "route": "/dashboard/health-records",
+          "stateLabel": "view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/patient-desktop-dashboard_health-records-view.png",
+          "timestamp": "2026-11-19T18:16:01.485Z"
+        },
+        {
+          "agentName": "patient",
+          "viewport": "desktop",
+          "route": "/dashboard/my-reviews",
+          "stateLabel": "view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/patient-desktop-dashboard_my-reviews-view.png",
+          "timestamp": "2026-11-19T18:16:06.115Z"
+        },
+        {
+          "agentName": "patient",
+          "viewport": "desktop",
+          "route": "/dashboard/appointments",
+          "stateLabel": "view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/patient-desktop-dashboard_appointments-view.png",
+          "timestamp": "2026-11-19T18:16:10.572Z"
+        },
+        {
+          "agentName": "patient",
+          "viewport": "mobile",
+          "route": "consultation",
+          "stateLabel": "mobile_catalog",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/patient-mobile-consultation-mobile_catalog.png",
+          "timestamp": "2026-11-19T18:16:18.664Z"
+        },
+        {
+          "agentName": "patient",
+          "viewport": "mobile",
+          "route": "dashboard",
+          "stateLabel": "mobile_dashboard",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/patient-mobile-dashboard-mobile_dashboard.png",
+          "timestamp": "2026-11-19T18:16:23.460Z"
+        },
+        {
+          "agentName": "patient",
+          "viewport": "mobile",
+          "route": "dashboard/health-records",
+          "stateLabel": "mobile_records_view",
+          "filePath": "/mnt/workspace/Projects/hobby/digital-healthcare/docs/critic-reports/screenshots/patient-mobile-dashboard_health-records-mobile_records_view.png",
+          "timestamp": "2026-11-19T18:16:27.800Z"
+        }
+      ],
+      "issues": []
+    }
+  },
+  "rankedIssues": []
+}

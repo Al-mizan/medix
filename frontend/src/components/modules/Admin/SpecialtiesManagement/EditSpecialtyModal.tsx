@@ -113,7 +113,14 @@ const EditSpecialtyModal = ({
                             <div className="flex items-center gap-3 p-3 bg-muted/40 rounded-lg border border-border/80">
                                 <Avatar className="h-12 w-12 rounded-md border border-border/70 bg-background shrink-0">
                                     <AvatarImage
-                                        src={specialty.icon || undefined}
+                                        src={
+                                            specialty.icon &&
+                                            (specialty.icon.startsWith("http://") ||
+                                                specialty.icon.startsWith("https://") ||
+                                                specialty.icon.startsWith("/"))
+                                                ? specialty.icon
+                                                : undefined
+                                        }
                                         alt={specialty.title}
                                         className="object-contain p-1"
                                     />

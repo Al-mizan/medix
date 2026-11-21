@@ -5,6 +5,11 @@ import { ISpecialty } from "@/types/specialty.types";
 import { ColumnDef } from "@tanstack/react-table";
 import { Stethoscope } from "lucide-react";
 
+const isValidImageUrl = (url?: string | null): boolean => {
+    if (!url) return false;
+    return url.startsWith("http://") || url.startsWith("https://") || url.startsWith("/");
+};
+
 export const specialtyColumns: ColumnDef<ISpecialty>[] = [
     {
         id: "icon",
@@ -18,7 +23,7 @@ export const specialtyColumns: ColumnDef<ISpecialty>[] = [
             return (
                 <Avatar className="h-10 w-10 rounded-md border bg-muted/30">
                     <AvatarImage
-                        src={icon || undefined}
+                        src={isValidImageUrl(icon) ? icon : undefined}
                         alt={title}
                         className="object-contain p-1"
                     />
